@@ -36,8 +36,8 @@
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "00000000-0000-0000-0000-000000000002",
-        "roleAssignmentId": "[guid(concat(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName')))]",
-        "storageRoleAssignmentId": "[guid(concat(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName')))]",
+        "roleAssignmentId": "00000000-0000-0000-0000-000000000003",
+        "storageRoleAssignmentId": "00000000-0000-0000-0000-000000000004",
         "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
         "AzureSearchDataSourceName": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
@@ -391,13 +391,12 @@
             "apiVersion": "2021-04-15",
             "name": "[format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleAssignmentId'))]",
             "properties": {
-                "roleDefinitionId": "[concat(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name')), '/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002')]",
+                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', split(format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleDefinitionId')), '/')[0], split(format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleDefinitionId')), '/')[1])]",
                 "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('WebsiteName')), '2021-02-01', 'Full').identity.principalId]",
                 "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
-                "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
             ]
         },
         {
