@@ -402,8 +402,7 @@
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'))]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'), variables('cosmosdb_container_name'))]",
-                "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]",
-                "[resourceId('Microsoft.Resources/deployments', 'cosmosDbSetupDeployment')]"
+                "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]"
             ]
         },
         {
@@ -591,41 +590,6 @@
                             "apiVersion": "2018-11-30",
                             "name": "[variables('deployScriptIdentityName')]",
                             "location": "[resourceGroup().location]"
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "condition": "[variables('WebAppEnableChatHistory')]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2022-09-01",
-            "name": "cosmosDbSetupDeployment",
-            "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'), variables('cosmosdb_container_name'))]",
-                "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "type": "Microsoft.Resources/deploymentScripts",
-                            "apiVersion": "2020-10-01",
-                            "name": "verifyCosmosDbReady",
-                            "location": "[resourceGroup().location]",
-                            "kind": "AzurePowerShell",
-                            "properties": {
-                                "azPowerShellVersion": "8.3",
-                                "timeout": "PT10M",
-                                "retentionInterval": "PT1H",
-                                "scriptContent": "Start-Sleep -Seconds 30; Write-Output 'Cosmos DB setup verification complete'",
-                                "cleanupPreference": "OnSuccess"
-                            }
                         }
                     ]
                 }
