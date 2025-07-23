@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "deployUrl": "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Ftemplates%2Fdeployment.json%3Fsv%3D2024-11-04%26ss%3Dbfqt%26srt%3Dsco%26sp%3Drwlacuptf%26se%3D2027-04-01T01%253A49%253A08Z%26st%3D2025-07-23T17%253A34%253A08Z%26spr%3Dhttps%26sig%3D6l%252BSbsKwy%252BYpe%252BpMacLLHpgTQfLJcTi%252Bg3nL8ERl%252F9E%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Ftemplates%2FcreateUiDefinition.json%3Fsv%3D2024-11-04%26ss%3Dbfqt%26srt%3Dsco%26sp%3Drwlacuptf%26se%3D2027-04-01T01%253A49%253A08Z%26st%3D2025-07-23T17%253A34%253A08Z%26spr%3Dhttps%26sig%3D6l%252BSbsKwy%252BYpe%252BpMacLLHpgTQfLJcTi%252Bg3nL8ERl%252F9E%253D"
+        "deployUrl": "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fsv%3D2024-11-04%26ss%3Dbfqt%26srt%3Dsco%26sp%3Drwlacuptf%26se%3D2027-04-01T01%253A49%253A08Z%26st%3D2025-07-23T17%253A34%253A08Z%26spr%3Dhttps%26sig%3D6l%252BSbsKwy%252BYpe%252BpMacLLHpgTQfLJcTi%252Bg3nL8ERl%252F9E%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition.json%3Fsv%3D2024-11-04%26ss%3Dbfqt%26srt%3Dsco%26sp%3Drwlacuptf%26se%3D2027-04-01T01%253A49%253A08Z%26st%3D2025-07-23T17%253A34%253A08Z%26spr%3Dhttps%26sig%3D6l%252BSbsKwy%252BYpe%252BpMacLLHpgTQfLJcTi%252Bg3nL8ERl%252F9E%253D"
     },
     "parameters": {
         "AzureOpenAIModelName": {
