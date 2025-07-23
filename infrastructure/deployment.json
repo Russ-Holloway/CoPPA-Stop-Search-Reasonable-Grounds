@@ -425,8 +425,7 @@
             "kind": "OpenAI",
             "properties": {
                 "customSubDomainName": "[variables('AzureOpenAIResource')]",
-                "publicNetworkAccess": "Enabled",
-                "restore": true
+                "publicNetworkAccess": "Enabled"
             },
             "sku": {
                 "name": "S0"
