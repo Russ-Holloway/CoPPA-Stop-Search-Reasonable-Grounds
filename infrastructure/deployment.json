@@ -391,7 +391,7 @@
             "apiVersion": "2021-04-15",
             "name": "[format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleAssignmentId'))]",
             "properties": {
-                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.DocumentDB/databaseAccounts/', variables('cosmosdb_account_name'), '/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002')]",
+                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.DocumentDB/databaseAccounts/', variables('cosmosdb_account_name'), '/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002')]",
                 "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('WebsiteName')), '2021-02-01', 'Full').identity.principalId]",
                 "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
             },
