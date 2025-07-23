@@ -2,39 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "ForceCode": {
-            "type": "string",
-            "metadata": {
-                "description": "Police force code (automatically generated from resource group name)"
-            },
-            "defaultValue": "[split(resourceGroup().name, '-')[1]]",
-            "minLength": 2,
-            "maxLength": 3
-        },
-        "EnvironmentSuffix": {
-            "type": "string",
-            "metadata": {
-                "description": "Environment suffix (fixed to production)"
-            },
-            "defaultValue": "prod",
-            "allowedValues": ["prod"]
-        },
-        "ServiceSuffix": {
-            "type": "string",
-            "metadata": {
-                "description": "Service suffix (fixed to coppa)"
-            },
-            "defaultValue": "coppa"
-        },
-        "InstanceNumber": {
-            "type": "string",
-            "metadata": {
-                "description": "Instance number (automatically set to 02)"
-            },
-            "defaultValue": "02",
-            "minLength": 2,
-            "maxLength": 2
-        },
         "ResourceGroupName": {
             "type": "string",
             "metadata": {
@@ -61,46 +28,50 @@
             "metadata": {
                 "description": "Name for the search data source"
             },
-            "defaultValue": "[concat(parameters('ForceCode'), '-search-ds-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]"
+            "defaultValue": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]"
         },
         "SearchIndexName": {
             "type": "string",
             "metadata": {
                 "description": "Name for the search index"
             },
-            "defaultValue": "[concat(parameters('ForceCode'), '-search-idx-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]"
+            "defaultValue": "[concat(variables('ForceCode'), '-search-idx-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]"
         },
         "SearchIndexerName": {
             "type": "string",
             "metadata": {
                 "description": "Name for the search indexer"
             },
-            "defaultValue": "[concat(parameters('ForceCode'), '-search-idxr-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]"
+            "defaultValue": "[concat(variables('ForceCode'), '-search-idxr-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]"
         }
     },
     "variables": {
-        "HostingPlanName": "[concat('asp-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "ForceCode": "[split(resourceGroup().name, '-')[1]]",
+        "EnvironmentSuffix": "prod",
+        "ServiceSuffix": "coppa",
+        "InstanceNumber": "02",
+        "HostingPlanName": "[concat('asp-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "HostingPlanSku": "B3",
-        "WebsiteName": "[concat('app-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
-        "ApplicationInsightsName": "[concat('appi-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
-        "LogAnalyticsWorkspaceName": "[concat('log-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
-        "AzureSearchService": "[concat('srch-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
-        "AzureOpenAIResource": "[concat('cog-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "WebsiteName": "[concat('app-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "ApplicationInsightsName": "[concat('appi-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "LogAnalyticsWorkspaceName": "[concat('log-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "AzureSearchService": "[concat('srch-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureSearchSku": "standard",
-        "StorageAccountName": "[concat('st', parameters('ForceCode'), parameters('EnvironmentSuffix'), parameters('ServiceSuffix'), parameters('InstanceNumber'))]",
+        "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'), variables('InstanceNumber'))]",
         "StorageContainerName": "docs",
-        "cosmosdb_account_name": "[concat('db-app-', parameters('ForceCode'), '-coppa')]",
+        "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-coppa')]",
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "00000000-0000-0000-0000-000000000002",
         "roleAssignmentId": "00000000-0000-0000-0000-000000000003",
         "storageRoleAssignmentId": "00000000-0000-0000-0000-000000000004",
-        "deployScriptIdentityName": "[concat('id-', parameters('ForceCode'), '-deploy-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
         "AzureSearchDataSourceName": "[parameters('SearchDataSourceName')]",
         "AzureSearchIndexName": "[parameters('SearchIndexName')]",
         "AzureSearchIndexerName": "[parameters('SearchIndexerName')]",
-        "AzureSearchSkillsetName": "[concat(parameters('ForceCode'), '-skillset-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'))]",
+        "AzureSearchSkillsetName": "[concat(variables('ForceCode'), '-skillset-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureSearchUseSemanticSearch": "true",
         "AzureSearchSemanticSearchConfig": "default",
         "AzureSearchIndexIsPrechunked": "false",
