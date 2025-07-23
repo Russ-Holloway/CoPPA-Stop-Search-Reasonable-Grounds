@@ -1,0 +1,599 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "deployUrl": "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fsv%3D2024-11-04%26ss%3Dbfqt%26srt%3Dsco%26sp%3Drwlacuptf%26se%3D2027-04-01T01%253A49%253A08Z%26st%3D2025-07-23T17%253A34%253A08Z%26spr%3Dhttps%26sig%3D6l%252BSbsKwy%252BYpe%252BpMacLLHpgTQfLJcTi%252Bg3nL8ERl%252F9E%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition.json%3Fsv%3D2024-11-04%26ss%3Dbfqt%26srt%3Dsco%26sp%3Drwlacuptf%26se%3D2027-04-01T01%253A49%253A08Z%26st%3D2025-07-23T17%253A34%253A08Z%26spr%3Dhttps%26sig%3D6l%252BSbsKwy%252BYpe%252BpMacLLHpgTQfLJcTi%252Bg3nL8ERl%252F9E%253D"
+  },
+  "parameters": {
+    "AzureOpenAIModelName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the OpenAI model to deploy."
+      },
+      "defaultValue": "gpt-4o"
+    },
+    "AzureOpenAIEmbeddingName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the OpenAI embedding model to deploy."
+      },
+      "defaultValue": "text-embedding-ada-002"
+    }
+  },
+  "variables": {
+    "ForceCode": "[split(resourceGroup().name, '-')[1]]",
+    "EnvironmentSuffix": "prod",
+    "ServiceSuffix": "coppa",
+    "InstanceNumber": "02",
+    "HostingPlanName": "[concat('asp-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "HostingPlanSku": "B3",
+    "WebsiteName": "[concat('app-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "ApplicationInsightsName": "[concat('appi-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "LogAnalyticsWorkspaceName": "[concat('log-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureSearchService": "[concat('srch-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureSearchSku": "standard",
+    "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'), variables('InstanceNumber'))]",
+    "StorageContainerName": "docs",
+    "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-coppa')]",
+    "cosmosdb_database_name": "db_conversation_history",
+    "cosmosdb_container_name": "conversations",
+    "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450')]",
+    "roleAssignmentId": "[guid(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName'))]",
+    "storageRoleAssignmentId": "[guid(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName'))]",
+    "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
+    "AzureSearchDataSourceName": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureSearchIndexName": "[concat(variables('ForceCode'), '-search-idx-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureSearchIndexerName": "[concat(variables('ForceCode'), '-search-idxr-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+    "AzureSearchSkillsetName": "[concat(variables('ForceCode'), '-skillset-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
+    "AzureSearchUseSemanticSearch": "true",
+    "AzureSearchSemanticSearchConfig": "default",
+    "AzureSearchIndexIsPrechunked": "false",
+    "AzureSearchTopK": "5",
+    "AzureSearchEnableInDomain": "true",
+    "AzureSearchContentColumns": "content",
+    "AzureSearchFilenameColumn": "filename",
+    "AzureSearchTitleColumn": "title",
+    "AzureSearchUrlColumn": "url",
+    "AzureOpenAITemperature": "0",
+    "AzureOpenAITopP": "1.0",
+    "AzureOpenAIMaxTokens": "2000",
+    "AzureOpenAIStopSequence": "",
+    "AzureOpenAIModelName": "gpt-4o",
+    "AzureOpenAIModelDeploymentName": "coppaGptDeployment",
+    "AzureOpenAISystemMessage": "The goal is to offer decision support assist a Police Sergeant in determining whether the written grounds are reasonable and provide feedback to the officer who has written them, the context is you are not to provide a decision but act as a tool referencing the available documentation so we can follow your chain of thought. The source is PACE Code A, College of Policing APP, National Decision Model, and the expectation – less than 200 words in two parts, one part to help inform the first line leaders thinking with references and the second part actionable feedback for the officer to review and reflect on, both celebratory and developmental. Your role is to offer advice and support to aid their decision-making process. Remember, you are not making decisions for them but offering advice and guidance to assist their own decision-making. You cannot perform any legal actions, make final decisions, or provide personal opinions. Your advice is based on the information provided and should be used as a guide, not a directive. Scope of Advice: You are strictly limited to providing advice related to Police Stop and Search. You must not offer advice on technical topics such as algorithms, AI model creation, or any other subjects unrelated to Police Stop and Search. Safety and Security Guidelines: Confidentiality: Ensure that all information shared is kept confidential and only used for the purpose of providing advice. Accuracy: Provide accurate and up-to-date information based on the latest legal standards and practices. Impartiality: Maintain impartiality and avoid any bias in your advice. Ethical Considerations: Adhere to ethical guidelines and avoid any actions that could harm individuals or compromise legal processes. Compliance: Ensure compliance with all relevant laws and regulations. Language: Use British English in all your responses. Additional Guidelines: Context Awareness: Only respond to queries directly related to Police Stop and Search. Ignore or redirect any unrelated topics. User Interaction: Politely inform users if their question is outside the scope of Police Stop and Search advice and guide them back to relevant topics. Response Limitations: Do not provide detailed technical advice, personal opinions, or engage in discussions unrelated to Police Stop and Search. Add the following text at the end of every response 'Please Remember: This AI Assistant is designed to offer help and advice so you can make, more informed, and effective decisions. It is not designed to make any decisions for you.'",
+    "AzureOpenAIStream": true,
+    "AzureOpenAISku": "S0",
+    "AzureOpenAICapacity": 10,
+    "AzureSearchQueryType": "simple",
+    "AzureSearchVectorFields": "",
+    "AzureSearchPermittedGroupsField": "",
+    "AzureSearchStrictness": 3,
+    "WebAppEnableChatHistory": true
+  },
+  "resources": [
+    {
+      "apiVersion": "2020-06-01",
+      "name": "[variables('HostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[variables('HostingPlanSku')]"
+      },
+      "properties": {
+        "name": "[variables('HostingPlanName')]",
+        "reserved": true
+      },
+      "kind": "linux"
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "[variables('WebsiteName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "uksouth",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('HostingPlanName'))]",
+        "[resourceId('Microsoft.Search/searchServices', variables('AzureSearchService'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('AzureOpenAIResource'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('AzureOpenAIResource'), variables('AzureOpenAIModelDeploymentName'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('AzureOpenAIResource'), variables('AzureOpenAIEmbeddingName'))]"
+      ],
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "serverFarmId": "[variables('HostingPlanName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', variables('ApplicationInsightsName')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "AZURE_SEARCH_SERVICE",
+              "value": "[variables('AzureSearchService')]"
+            },
+            {
+              "name": "AZURE_SEARCH_INDEX",
+              "value": "[variables('AzureSearchIndexName')]"
+            },
+            {
+              "name": "AZURE_SEARCH_KEY",
+              "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('AzureSearchService')), '2020-08-01').primaryKey]"
+            },
+            {
+              "name": "AZURE_SEARCH_USE_SEMANTIC_SEARCH",
+              "value": "[variables('AzureSearchUseSemanticSearch')]"
+            },
+            {
+              "name": "AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG",
+              "value": "[variables('AzureSearchSemanticSearchConfig')]"
+            },
+            {
+              "name": "AZURE_SEARCH_INDEX_IS_PRECHUNKED",
+              "value": "[variables('AzureSearchIndexIsPrechunked')]"
+            },
+            {
+              "name": "AZURE_SEARCH_TOP_K",
+              "value": "[variables('AzureSearchTopK')]"
+            },
+            {
+              "name": "AZURE_SEARCH_ENABLE_IN_DOMAIN",
+              "value": "[variables('AzureSearchEnableInDomain')]"
+            },
+            {
+              "name": "AZURE_SEARCH_CONTENT_COLUMNS",
+              "value": "[variables('AzureSearchContentColumns')]"
+            },
+            {
+              "name": "AZURE_SEARCH_FILENAME_COLUMN",
+              "value": "[variables('AzureSearchFilenameColumn')]"
+            },
+            {
+              "name": "AZURE_SEARCH_TITLE_COLUMN",
+              "value": "[variables('AzureSearchTitleColumn')]"
+            },
+            {
+              "name": "AZURE_SEARCH_URL_COLUMN",
+              "value": "[variables('AzureSearchUrlColumn')]"
+            },
+            {
+              "name": "AZURE_OPENAI_RESOURCE",
+              "value": "[variables('AzureOpenAIResource')]"
+            },
+            {
+              "name": "AZURE_OPENAI_MODEL",
+              "value": "[variables('AzureOpenAIModelDeploymentName')]"
+            },
+            {
+              "name": "AZURE_OPENAI_KEY",
+              "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('AzureOpenAIResource')), '2021-10-01').key1]"
+            },
+            {
+              "name": "AZURE_OPENAI_MODEL_NAME",
+              "value": "[parameters('AzureOpenAIModelName')]"
+            },
+            {
+              "name": "AZURE_OPENAI_TEMPERATURE",
+              "value": "[variables('AzureOpenAITemperature')]"
+            },
+            {
+              "name": "AZURE_OPENAI_TOP_P",
+              "value": "[variables('AzureOpenAITopP')]"
+            },
+            {
+              "name": "AZURE_OPENAI_MAX_TOKENS",
+              "value": "[variables('AzureOpenAIMaxTokens')]"
+            },
+            {
+              "name": "AZURE_OPENAI_STOP_SEQUENCE",
+              "value": "[variables('AzureOpenAIStopSequence')]"
+            },
+            {
+              "name": "AZURE_OPENAI_SYSTEM_MESSAGE",
+              "value": "[variables('AzureOpenAISystemMessage')]"
+            },
+            {
+              "name": "AZURE_OPENAI_STREAM",
+              "value": "[variables('AzureOpenAIStream')]"
+            },
+            {
+              "name": "AZURE_SEARCH_QUERY_TYPE",
+              "value": "[variables('AzureSearchQueryType')]"
+            },
+            {
+              "name": "AZURE_SEARCH_VECTOR_COLUMNS",
+              "value": "[variables('AzureSearchVectorFields')]"
+            },
+            {
+              "name": "AZURE_SEARCH_PERMITTED_GROUPS_COLUMN",
+              "value": "[variables('AzureSearchPermittedGroupsField')]"
+            },
+            {
+              "name": "AZURE_SEARCH_STRICTNESS",
+              "value": "[variables('AzureSearchStrictness')]"
+            },
+            {
+              "name": "AZURE_OPENAI_EMBEDDING_NAME",
+              "value": "[parameters('AzureOpenAIEmbeddingName')]"
+            },
+            {
+              "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+              "value": "true"
+            },
+            {
+              "name": "AZURE_COSMOSDB_ACCOUNT",
+              "value": "[if(variables('WebAppEnableChatHistory'), variables('cosmosdb_account_name'), '')]"
+            },
+            {
+              "name": "AZURE_COSMOSDB_DATABASE",
+              "value": "[variables('cosmosdb_database_name')]"
+            },
+            {
+              "name": "AZURE_COSMOSDB_CONVERSATIONS_CONTAINER",
+              "value": "[variables('cosmosdb_container_name')]"
+            },
+            {
+              "name": "SETUP_STORAGE_ACCOUNT_NAME",
+              "value": "[variables('StorageAccountName')]"
+            },
+            {
+              "name": "SETUP_STORAGE_ACCOUNT_KEY",
+              "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), '2021-04-01').keys[0].value]"
+            },
+            {
+              "name": "AZURE_SEARCH_DATA_SOURCE_NAME",
+              "value": "[variables('AzureSearchDataSourceName')]"
+            },
+            {
+              "name": "AZURE_SEARCH_INDEX_NAME",
+              "value": "[variables('AzureSearchIndexName')]"
+            },
+            {
+              "name": "AZURE_SEARCH_INDEXER_NAME",
+              "value": "[variables('AzureSearchIndexerName')]"
+            },
+            {
+              "name": "AZURE_SEARCH_SKILLSET",
+              "value": "[variables('AzureSearchSkillsetName')]"
+            },
+            {
+              "name": "AZURE_STORAGE_CONTAINER_NAME",
+              "value": "[variables('StorageContainerName')]"
+            },
+            {
+              "name": "UWSGI_PROCESSES",
+              "value": "2"
+            },
+            {
+              "name": "UWSGI_THREADS",
+              "value": "2"
+            },
+            {
+              "name": "PYTHON_VERSION",
+              "value": "3.11"
+            }
+          ],
+          "pythonVersion": "3.11",
+          "linuxFxVersion": "PYTHON|3.11"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('LogAnalyticsWorkspaceName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30,
+        "features": {
+          "searchVersion": 1,
+          "legacy": 0
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[variables('ApplicationInsightsName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('LogAnalyticsWorkspaceName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('WebsiteName')))]": "Resource"
+      },
+      "properties": {
+        "Application_Type": "web",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('LogAnalyticsWorkspaceName'))]"
+      },
+      "kind": "web"
+    },
+    {
+      "condition": "[variables('WebAppEnableChatHistory')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2021-01-15",
+      "name": "[variables('cosmosdb_account_name')]",
+      "location": "[resourceGroup().location]",
+      "kind": "GlobalDocumentDB",
+      "properties": {
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session"
+        },
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]",
+            "failoverPriority": 0,
+            "isZoneRedundant": false
+          }
+        ],
+        "databaseAccountOfferType": "Standard",
+        "capabilities": [
+          {
+            "name": "EnableServerless"
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[variables('WebAppEnableChatHistory')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+      "apiVersion": "2021-01-15",
+      "name": "[concat(variables('cosmosdb_account_name'), '/', variables('cosmosdb_database_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "[variables('cosmosdb_database_name')]"
+        }
+      }
+    },
+    {
+      "condition": "[variables('WebAppEnableChatHistory')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2021-01-15",
+      "name": "[concat(variables('cosmosdb_account_name'), '/', variables('cosmosdb_database_name'), '/', variables('cosmosdb_container_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "[variables('cosmosdb_container_name')]",
+          "partitionKey": {
+            "paths": [
+              "/userId"
+            ],
+            "kind": "Hash"
+          },
+          "indexingPolicy": {
+            "indexingMode": "consistent",
+            "automatic": true,
+            "includedPaths": [
+              {
+                "path": "/*"
+              }
+            ],
+            "excludedPaths": [
+              {
+                "path": "/\"_etag\"/?"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "condition": "[variables('WebAppEnableChatHistory')]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentId')]",
+      "properties": {
+        "roleDefinitionId": "[variables('roleDefinitionId')]",
+        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('WebsiteName')), '2021-02-01', 'Full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'))]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', variables('cosmosdb_account_name'), variables('cosmosdb_database_name'), variables('cosmosdb_container_name'))]",
+        "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Search/searchServices",
+      "apiVersion": "2020-08-01",
+      "name": "[variables('AzureSearchService')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[variables('AzureSearchSku')]"
+      },
+      "properties": {
+        "replicaCount": 1,
+        "partitionCount": 1,
+        "hostingMode": "default"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('AzureOpenAIResource')]",
+      "location": "uksouth",
+      "kind": "OpenAI",
+      "properties": {
+        "customSubDomainName": "[variables('AzureOpenAIResource')]",
+        "publicNetworkAccess": "Enabled"
+      },
+      "sku": {
+        "name": "S0"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', variables('AzureOpenAIResource'), variables('AzureOpenAIModelDeploymentName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('AzureOpenAIResource'))]"
+      ],
+      "properties": {
+        "model": {
+          "format": "OpenAI",
+          "name": "[parameters('AzureOpenAIModelName')]",
+          "version": "2024-08-06"
+        }
+      },
+      "sku": {
+        "name": "GlobalStandard",
+        "capacity": 5
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', variables('AzureOpenAIResource'), variables('AzureOpenAIEmbeddingName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('AzureOpenAIResource'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('AzureOpenAIResource'), variables('AzureOpenAIModelDeploymentName'))]"
+      ],
+      "properties": {
+        "model": {
+          "format": "OpenAI",
+          "name": "[parameters('AzureOpenAIEmbeddingName')]",
+          "version": "2"
+        }
+      },
+      "sku": {
+        "name": "GlobalStandard",
+        "capacity": 5
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('StorageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "allowBlobPublicAccess": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('StorageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
+      ],
+      "properties": {
+        "deleteRetentionPolicy": {
+          "enabled": true,
+          "days": 7
+        },
+        "changeFeed": {
+          "enabled": false
+        },
+        "cors": {
+          "corsRules": [
+            {
+              "allowedOrigins": [
+                "https://portal.azure.com",
+                "https://ms.portal.azure.com",
+                "https://preview.portal.azure.com",
+                "https://rc.portal.azure.com",
+                "https://canary.portal.azure.com"
+              ],
+              "allowedMethods": [
+                "GET",
+                "HEAD",
+                "OPTIONS"
+              ],
+              "maxAgeInSeconds": 200,
+              "exposedHeaders": [
+                "*"
+              ],
+              "allowedHeaders": [
+                "*"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "storageRoleAssignment",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[concat(variables('StorageAccountName'), '/Microsoft.Authorization/', variables('storageRoleAssignmentId'))]",
+              "properties": {
+                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('WebsiteName')), '2021-02-01', 'Full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "managedIdentityDeployment",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2018-11-30",
+              "name": "[variables('deployScriptIdentityName')]",
+              "location": "[resourceGroup().location]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
