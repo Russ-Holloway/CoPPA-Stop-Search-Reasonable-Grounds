@@ -1,0 +1,103 @@
+.container {
+  max-height: calc(100vh - 100px);
+  width: 300px;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px var(--shadow-light);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-primary);
+  overflow: hidden;
+  color: var(--text-primary);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.listContainer {
+  overflow: hidden auto;
+  max-height: calc(90vh - 105px);
+  padding: 16px;
+}
+
+.itemCell {
+  max-width: 270px;
+  min-height: 40px;
+  cursor: pointer;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  display: flex;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+}
+
+.itemCell:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.itemButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  margin: auto 8px auto 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.itemButton:hover {
+  background: var(--accent-primary);
+  border-color: transparent;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.chatGroup {
+  margin: auto 0;
+  width: 100%;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.chatList {
+  width: 100%;
+}
+
+.chatMonth {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  padding-left: 15px;
+  color: var(--text-primary);
+}
+
+.chatTitle {
+  width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 100%;
+  }
+}

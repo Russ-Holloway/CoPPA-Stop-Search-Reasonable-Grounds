@@ -1,0 +1,211 @@
+.questionInputContainer {
+  height: auto;
+  min-height: 280px;
+  position: relative;
+  margin: 0;
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Dark mode styling for question input container */
+:global(.dark-mode) .questionInputContainer {
+  background: #2d3748;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.questionInputTextArea {
+  width: calc(100% - 40px);
+  min-height: calc(100% - 40px);
+  margin: 20px;
+  padding: 30px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 20px;
+  line-height: 32px;
+  resize: none;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: #1f2937;
+}
+
+/* Dark mode styling for question input text area */
+:global(.dark-mode) .questionInputTextArea {
+  background: transparent;
+  color: #ffffff;
+}
+
+/* Force FluentUI TextField to respect our width */
+.questionInputTextArea :global(.ms-TextField-wrapper),
+.questionInputTextArea :global(.ms-TextField-fieldGroup),
+.questionInputTextArea :global(.ms-TextField-field) {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.questionInputTextArea:focus {
+  outline: none;
+}
+
+/* Dark mode focus styling */
+:global(.dark-mode) .questionInputTextArea:focus {
+  outline: none;
+}
+
+.questionInputSendButtonContainer {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.questionInputSendButton {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #1f2937;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 6px 20px rgba(31, 41, 55, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.questionInputSendButton:hover {
+  transform: translateY(-1px);
+  background: #111827;
+  box-shadow:
+    0 8px 25px rgba(31, 41, 55, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: #f0f9ff;
+}
+
+.questionInputSendButton:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+.questionInputSendButton:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 8px rgba(102, 126, 234, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.questionInputSendButtonDisabled {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 2px 8px rgba(107, 114, 128, 0.2),
+    inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.questionInputBottomBorder {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0%;
+  bottom: 0%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.questionInputOptionsButton {
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+.questionInputOptionsButton:hover {
+  background: rgba(102, 126, 234, 0.2);
+  transform: scale(1.05);
+}
+
+.errorMessage {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 20px;
+  right: 20px;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 480px) {
+  .questionInputContainer {
+    margin: 0 auto;
+    min-height: 160px;
+    width: 95%;
+  }
+
+  .questionInputTextArea {
+    font-size: 16px;
+    line-height: 24px;
+    min-height: 100px;
+    padding: 24px 28px;
+    width: calc(100% - 40px);
+    margin: 20px;
+  }
+
+  .questionInputSendButton {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+  }
+
+  .questionInputSendButtonDisabled {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+  }
+
+  .questionInputSendButtonContainer {
+    right: 20px;
+  }
+}

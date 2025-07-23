@@ -1,0 +1,166 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "testPrefix": {
+            "type": "string",
+            "defaultValue": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
+            "metadata": {
+                "description": "Prefix for test resources to ensure uniqueness"
+            }
+        }
+    },    "variables": {
+        "searchServiceName": "[concat('test-search-', parameters('testPrefix'))]",
+        "storageAccountName": "[concat('st', substring(parameters('testPrefix'), 0, 6))]",
+        "openAIResourceName": "[concat('test-openai-', parameters('testPrefix'))]",
+        "containerName": "testdocs",
+        "deploymentScriptUri": "https://stbtpukssandopenai.blob.core.windows.net/policing-assistant-azure-deployment-template/setup_search_components.ps1",
+        "deployScriptIdentityName": "[concat('test-identity-', parameters('testPrefix'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Search/searchServices",
+            "apiVersion": "2020-08-01",
+            "name": "[variables('searchServiceName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "free"
+            },
+            "properties": {
+                "replicaCount": 1,
+                "partitionCount": 1,
+                "hostingMode": "default"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-04-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "supportsHttpsTrafficOnly": true
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('storageAccountName'), '/default/', variables('containerName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ],
+            "properties": {
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "apiVersion": "2023-05-01",
+            "name": "[variables('openAIResourceName')]",
+            "location": "uksouth",
+            "kind": "OpenAI",
+            "properties": {
+                "customSubDomainName": "[variables('openAIResourceName')]",
+                "publicNetworkAccess": "Enabled"
+            },
+            "sku": {
+                "name": "S0"
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts/deployments",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(variables('openAIResourceName'), '/text-embedding-ada-002')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openAIResourceName'))]"
+            ],
+            "properties": {
+                "model": {
+                    "format": "OpenAI",
+                    "name": "text-embedding-ada-002",
+                    "version": "2"
+                }
+            },
+            "sku": {
+                "name": "Standard",
+                "capacity": 120
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts/deployments",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(variables('openAIResourceName'), '/gpt-4o')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openAIResourceName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('openAIResourceName'), 'text-embedding-ada-002')]"
+            ],
+            "properties": {
+                "model": {
+                    "format": "OpenAI",
+                    "name": "gpt-4o",
+                    "version": "2024-08-06"
+                }
+            },
+            "sku": {
+                "name": "GlobalStandard",
+                "capacity": 10
+            }
+        },
+        {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2018-11-30",
+            "name": "[variables('deployScriptIdentityName')]",
+            "location": "[resourceGroup().location]"
+        },
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2020-10-01",
+            "name": "testSearchComponentsSetup",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Search/searchServices', variables('searchServiceName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openAIResourceName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('openAIResourceName'), 'text-embedding-ada-002')]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('openAIResourceName'), 'gpt-4o')]",
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName'), 'default', variables('containerName'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('deployScriptIdentityName'))]"
+            ],
+            "kind": "AzurePowerShell",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('deployScriptIdentityName'))]": {}
+                }
+            },
+            "properties": {
+                "azPowerShellVersion": "6.4",
+                "timeout": "PT30M",
+                "arguments": "[concat('-searchServiceName \"', variables('searchServiceName'), '\" -searchServiceKey \"', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceName')), '2020-08-01').primaryKey, '\" -dataSourceName \"test-data-source\" -indexName \"test-index\" -indexerName \"test-indexer\" -skillset1Name \"test-skillset-1\" -skillset2Name \"test-skillset-2\" -storageAccountName \"', variables('storageAccountName'), '\" -storageAccountKey \"', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2021-04-01').keys[0].value, '\" -storageContainerName \"', variables('containerName'), '\" -openAIEndpoint \"', reference(resourceId('Microsoft.CognitiveServices/accounts', variables('openAIResourceName'))).endpoint, '\" -openAIKey \"', listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openAIResourceName')), '2021-10-01').key1, '\" -openAIEmbeddingDeployment \"text-embedding-ada-002\" -openAIGptDeployment \"gpt-4o\"')]",
+                "primaryScriptUri": "[variables('deploymentScriptUri')]",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+            }
+        }
+    ],
+    "outputs": {
+        "searchServiceName": {
+            "type": "string",
+            "value": "[variables('searchServiceName')]"
+        },
+        "storageAccountName": {
+            "type": "string",
+            "value": "[variables('storageAccountName')]"
+        },
+        "openAIResourceName": {
+            "type": "string",
+            "value": "[variables('openAIResourceName')]"
+        },
+        "deploymentScriptOutput": {
+            "type": "object",
+            "value": "[reference('testSearchComponentsSetup')]"
+        }
+    }
+}

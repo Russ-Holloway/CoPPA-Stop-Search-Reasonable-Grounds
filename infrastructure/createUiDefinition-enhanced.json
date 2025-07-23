@@ -1,0 +1,322 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "config": {
+            "basics": {
+                "description": "**British Transport Police - Policing Assistant Deployment**\n\nThis template deploys the Policing Assistant application with Azure OpenAI, Cognitive Search, and supporting infrastructure.\n\n**Please follow your organization's naming conventions when filling out the resource names below.**",
+                "location": {
+                    "label": "Region",
+                    "toolTip": "Select the Azure region for deployment",
+                    "resourceTypes": [
+                        "Microsoft.Web/sites",
+                        "Microsoft.Search/searchServices",
+                        "Microsoft.CognitiveServices/accounts"
+                    ],
+                    "allowedValues": [
+                        "uksouth",
+                        "ukwest",
+                        "westeurope",
+                        "northeurope"
+                    ]
+                }
+            }
+        },
+        "basics": [
+            {
+                "name": "deploymentPrefix",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Deployment Prefix",
+                "defaultValue": "btp-policing",
+                "toolTip": "Prefix for all resource names (e.g., 'btp-policing'). Must be 3-10 characters, lowercase letters and numbers only.",
+                "constraints": {
+                    "required": true,
+                    "regex": "^[a-z0-9-]{3,10}$",
+                    "validationMessage": "Must be 3-10 characters, lowercase letters, numbers, and hyphens only."
+                }
+            },
+            {
+                "name": "environmentSuffix",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Environment",
+                "defaultValue": "dev",
+                "toolTip": "Select the environment type for this deployment",
+                "constraints": {
+                    "required": true,
+                    "allowedValues": [
+                        {
+                            "label": "Development",
+                            "value": "dev"
+                        },
+                        {
+                            "label": "Test",
+                            "value": "test"
+                        },
+                        {
+                            "label": "User Acceptance Testing",
+                            "value": "uat"
+                        },
+                        {
+                            "label": "Production",
+                            "value": "prod"
+                        }
+                    ]
+                }
+            }
+        ],
+        "steps": [
+            {
+                "name": "namingConfiguration",
+                "label": "Resource Naming",
+                "elements": [
+                    {
+                        "name": "namingInfo",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "Configure names for all Azure resources. Default names follow BTP naming conventions, but you can customize them as needed."
+                        }
+                    },
+                    {
+                        "name": "webAppName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Web Application Name",
+                        "defaultValue": "[concat(basics('deploymentPrefix'), '-assistant-', basics('environmentSuffix'))]",
+                        "toolTip": "Name for the web application hosting the Policing Assistant",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-]{2,60}$",
+                            "validationMessage": "Must be 2-60 characters, letters, numbers, and hyphens only."
+                        }
+                    },
+                    {
+                        "name": "searchServiceName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Search Service Name",
+                        "defaultValue": "[concat(basics('deploymentPrefix'), '-search-', basics('environmentSuffix'))]",
+                        "toolTip": "Name for the Azure Cognitive Search service",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-]{2,60}$",
+                            "validationMessage": "Must be 2-60 characters, letters, numbers, and hyphens only."
+                        }
+                    },
+                    {
+                        "name": "openAIServiceName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "OpenAI Service Name",
+                        "defaultValue": "[concat(basics('deploymentPrefix'), '-openai-', basics('environmentSuffix'))]",
+                        "toolTip": "Name for the Azure OpenAI service",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-]{2,64}$",
+                            "validationMessage": "Must be 2-64 characters, letters, numbers, and hyphens only."
+                        }
+                    },
+                    {
+                        "name": "storageAccountName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Storage Account Name",
+                        "defaultValue": "[take(concat('st', replace(replace(basics('deploymentPrefix'), '-', ''), '_', ''), basics('environmentSuffix'), '001'), 24)]",
+                        "toolTip": "Name for the storage account. Must be globally unique, 3-24 characters, lowercase letters and numbers only.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-z0-9]{3,24}$",
+                            "validationMessage": "Must be 3-24 characters, lowercase letters and numbers only."
+                        }
+                    },
+                    {
+                        "name": "cosmosDbName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Cosmos DB Account Name",
+                        "defaultValue": "[concat(basics('deploymentPrefix'), '-cosmos-', basics('environmentSuffix'))]",
+                        "toolTip": "Name for the Cosmos DB account (for chat history)",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-]{3,44}$",
+                            "validationMessage": "Must be 3-44 characters, letters, numbers, and hyphens only."
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "searchConfiguration",
+                "label": "Search Configuration",
+                "elements": [
+                    {
+                        "name": "searchInfo",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "Configure the search index and related components for document indexing and retrieval."
+                        }
+                    },
+                    {
+                        "name": "searchServiceSku",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Search Service SKU",
+                        "defaultValue": "standard",
+                        "toolTip": "Select the pricing tier for the Azure Search service",
+                        "constraints": {
+                            "required": true,
+                            "allowedValues": [
+                                {
+                                    "label": "Free (Limited features)",
+                                    "value": "free"
+                                },
+                                {
+                                    "label": "Basic (Small workloads)",
+                                    "value": "basic"
+                                },
+                                {
+                                    "label": "Standard (Recommended)",
+                                    "value": "standard"
+                                },
+                                {
+                                    "label": "Standard 2 (High performance)",
+                                    "value": "standard2"
+                                },
+                                {
+                                    "label": "Standard 3 (High performance)",
+                                    "value": "standard3"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "searchIndexName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Search Index Name",
+                        "defaultValue": "policing-index",
+                        "toolTip": "Name for the search index that will contain document data",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-_]{1,128}$",
+                            "validationMessage": "Must be 1-128 characters, letters, numbers, hyphens, and underscores only."
+                        }
+                    },
+                    {
+                        "name": "searchIndexerName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Search Indexer Name",
+                        "defaultValue": "policing-indexer",
+                        "toolTip": "Name for the search indexer that will process documents",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-_]{1,128}$",
+                            "validationMessage": "Must be 1-128 characters, letters, numbers, hyphens, and underscores only."
+                        }
+                    },
+                    {
+                        "name": "searchDataSourceName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Search Data Source Name",
+                        "defaultValue": "policing-datasource",
+                        "toolTip": "Name for the search data source pointing to storage",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-zA-Z0-9-_]{1,128}$",
+                            "validationMessage": "Must be 1-128 characters, letters, numbers, hyphens, and underscores only."
+                        }
+                    },
+                    {
+                        "name": "storageContainerName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Document Container Name",
+                        "defaultValue": "docs",
+                        "toolTip": "Name for the storage container that will hold documents to be indexed",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-z0-9-]{3,63}$",
+                            "validationMessage": "Must be 3-63 characters, lowercase letters, numbers, and hyphens only."
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "aiConfiguration",
+                "label": "AI Configuration",
+                "elements": [
+                    {
+                        "name": "aiInfo",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "Configure the Azure OpenAI models for chat and document embedding capabilities."
+                        }
+                    },
+                    {
+                        "name": "openAIModelName",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "OpenAI Chat Model",
+                        "defaultValue": "gpt-4o",
+                        "toolTip": "Select the OpenAI model for chat functionality",
+                        "constraints": {
+                            "required": true,
+                            "allowedValues": [
+                                {
+                                    "label": "GPT-4o (Recommended)",
+                                    "value": "gpt-4o"
+                                },
+                                {
+                                    "label": "GPT-4 Turbo",
+                                    "value": "gpt-4-turbo"
+                                },
+                                {
+                                    "label": "GPT-35 Turbo",
+                                    "value": "gpt-35-turbo"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "embeddingModelName",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Embedding Model",
+                        "defaultValue": "text-embedding-ada-002",
+                        "toolTip": "Select the embedding model for document vectorization",
+                        "constraints": {
+                            "required": true,
+                            "allowedValues": [
+                                {
+                                    "label": "text-embedding-ada-002 (Recommended)",
+                                    "value": "text-embedding-ada-002"
+                                },
+                                {
+                                    "label": "text-embedding-3-small",
+                                    "value": "text-embedding-3-small"
+                                },
+                                {
+                                    "label": "text-embedding-3-large",
+                                    "value": "text-embedding-3-large"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "location": "[location()]",
+            "DeploymentPrefix": "[basics('deploymentPrefix')]",
+            "EnvironmentSuffix": "[basics('environmentSuffix')]",
+            "WebAppName": "[steps('namingConfiguration').webAppName]",
+            "SearchServiceName": "[steps('namingConfiguration').searchServiceName]",
+            "SearchServiceSku": "[steps('searchConfiguration').searchServiceSku]",
+            "OpenAIServiceName": "[steps('namingConfiguration').openAIServiceName]",
+            "StorageAccountName": "[steps('namingConfiguration').storageAccountName]",
+            "StorageContainerName": "[steps('searchConfiguration').storageContainerName]",
+            "CosmosDbAccountName": "[steps('namingConfiguration').cosmosDbName]",
+            "ApplicationInsightsName": "[concat(basics('deploymentPrefix'), '-appinsights-', basics('environmentSuffix'))]",
+            "SearchIndexName": "[steps('searchConfiguration').searchIndexName]",
+            "SearchIndexerName": "[steps('searchConfiguration').searchIndexerName]",
+            "SearchDataSourceName": "[steps('searchConfiguration').searchDataSourceName]",
+            "AzureOpenAIModelName": "[steps('aiConfiguration').openAIModelName]",
+            "AzureOpenAIEmbeddingName": "[steps('aiConfiguration').embeddingModelName]"
+        }
+    }
+}

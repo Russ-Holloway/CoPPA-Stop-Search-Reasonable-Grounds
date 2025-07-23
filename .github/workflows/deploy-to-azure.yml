@@ -1,0 +1,56 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm install
+        npm run build
+        cd ..
+
+    - name: Create deployment package
+      run: |
+        # Create a clean deployment package
+        mkdir deploy-package
+        cp -r backend/* deploy-package/ || true
+        cp -r static deploy-package/ || true
+        cp -r frontend/dist/* deploy-package/static/ || true
+        cp app.py deploy-package/
+        cp requirements.txt deploy-package/
+        cp gunicorn.conf.py deploy-package/ || true
+        cp start.sh deploy-package/ || true
+        
+        # Create zip for deployment
+        cd deploy-package
+        zip -r ../deployment.zip .
+        cd ..
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'app-btp-prod-01'  # Replace with your actual app name
+        slot-name: 'Production'
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        package: deployment.zip

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AzureOpenAIModel": {
+      "value": "deployment-gpt4o"
+    },
+    "AzureOpenAIModelName": {
+      "value": "gpt-4o"
+    }
+  }
+}

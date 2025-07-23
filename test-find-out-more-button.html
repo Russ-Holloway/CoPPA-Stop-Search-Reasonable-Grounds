@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Out More Button Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-left-logo {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+            height: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .button-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        
+        .button {
+            width: 180px;
+            border: 1px solid #d1d1d1;
+            background: white;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button:hover {
+            background: #f0f0f0;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 480px) {
+            .button-stack {
+                gap: 4px;
+            }
+            
+            .button {
+                width: auto;
+                padding: 0 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Find Out More Button Test</h1>
+        <p>Testing the new "Find out more" button layout positioned underneath the "Send Feedback" button.</p>
+        
+        <div class="test-section">
+            <h2>📍 Header Left Logo Area Simulation</h2>
+            <div class="header-left-logo">
+                <div class="logo">🛡️</div>
+                <div class="button-stack">
+                    <button class="button">
+                        📧 Send Feedback
+                    </button>
+                    <button class="button">
+                        ℹ️ Find out more
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>✅ Implementation Details</h2>
+            <ul>
+                <li><strong>Backend:</strong> Added <code>find_out_more_link</code> to <code>_UiSettings</code> class</li>
+                <li><strong>Frontend Models:</strong> Updated TypeScript interface with new field</li>
+                <li><strong>Button Component:</strong> Created <code>FindOutMoreButton</code> component</li>
+                <li><strong>Layout:</strong> Buttons stacked vertically in <code>buttonStack</code> container</li>
+                <li><strong>Environment Variable:</strong> <code>UI_FIND_OUT_MORE_LINK</code></li>
+                <li><strong>Responsive:</strong> Mobile-friendly with reduced gap on small screens</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Configuration Example</h2>
+            <pre style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; font-family: monospace;">
+# Add to your .env file or Azure App Service settings:
+UI_FIND_OUT_MORE_LINK=https://your-website.com/about-coppa
+
+# This will display the "Find out more" button under the feedback button
+# When clicked, it opens the link in a new tab
+            </pre>
+        </div>
+        
+        <div class="test-section">
+            <h2>📱 Mobile View</h2>
+            <p>On mobile devices (max-width: 480px), the button gap is reduced from 8px to 4px for better spacing.</p>
+        </div>
+    </div>
+</body>
+</html>

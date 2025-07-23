@@ -1,0 +1,65 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [],
+        "steps": [
+            {                "name": "deployment",
+                "label": "Deployment Settings",
+                "elements": [
+                    {
+                        "name": "infoBox",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "All parameters are pre-configured. You only need to select your subscription and resource group. Then proceed to Review + Create.",
+                            "uri": "https://github.com/Russ-Holloway/Policing-Assistant"
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "WebsiteName": "policing-app",
+            "location": "[location()]",
+            "HostingPlanName": "policing-app-plan",
+            "HostingPlanSku": "B3",
+            "ApplicationInsightsName": "policing-app-insights",
+            "AzureSearchService": "policing-search-service",            "AzureSearchSku": "standard",
+            "AzureSearchIndex": "",
+            "AzureSearchUseSemanticSearch": "true",
+            "AzureSearchSemanticSearchConfig": "default",
+            "AzureSearchIndexIsPrechunked": "false",
+            "AzureSearchTopK": "5",
+            "AzureSearchEnableInDomain": "false",
+            "AzureSearchContentColumns": "content",
+            "AzureSearchFilenameColumn": "filename",
+            "AzureSearchTitleColumn": "title",
+            "AzureSearchUrlColumn": "url",
+            "AzureOpenAIResource": "policing-openai-resource",            "AzureOpenAIEmbeddingModelName": "text-embedding-ada-002",
+            "AzureOpenAIEmbeddingName": "text-embedding-ada-002",
+            "AzureOpenAICapacity": 10,
+            "AzureOpenAISku": "S0",
+            "AzureOpenAITemperature": 0,
+            "AzureOpenAITopP": 1,
+            "AzureOpenAIMaxTokens": 1000,
+            "AzureOpenAIStopSequence": "\n",            "AzureOpenAISystemMessage": "You are an AI assistant specialized in policing matters. Your purpose is to help police officers and staff find relevant information from the department's knowledge base to assist with their duties. Provide clear, factual information while maintaining awareness of law enforcement protocols and policies.",
+            "StorageAccountName": "stpolicing001",
+            "AzureOpenAIStream": true,
+            "AzureSearchQueryType": "simple",
+            "AzureSearchVectorFields": "",            "AzureSearchPermittedGroupsField": "",
+            "AzureSearchStrictness": 3,
+            "WebAppEnableChatHistory": true,
+            "GitRepoUrl": "https://github.com/Russ-Holloway/Policing-Assistant",            "GitBranch": "main",
+            "AzureSearchDataSourceName": "police-data-source",
+            "AzureSearchIndexName": "police-index",
+            "AzureSearchIndexerName": "police-indexer",
+            "AzureSearchSkillset1Name": "policing-text-skillset",
+            "AzureSearchSkillset2Name": "policing-enrichment-skillset",
+            "StorageContainerName": "docs",
+            "ResourceGroupName": "[resourceGroup().name]"
+        }
+    }
+}

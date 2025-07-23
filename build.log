@@ -1,0 +1,11 @@
+nohup: ignoring input
+npm ERR! code ENOENT
+npm ERR! syscall open
+npm ERR! path /workspaces/CoPPA/package.json
+npm ERR! errno -2
+npm ERR! enoent ENOENT: no such file or directory, open '/workspaces/CoPPA/package.json'
+npm ERR! enoent This is related to npm not being able to find a file.
+npm ERR! enoent 
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/vscode/.npm/_logs/2025-07-15T16_42_29_151Z-debug-0.log
