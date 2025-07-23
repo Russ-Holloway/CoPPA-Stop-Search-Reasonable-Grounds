@@ -22,27 +22,6 @@
                 "description": "The name of the OpenAI embedding model to deploy."
             },
             "defaultValue": "text-embedding-ada-002"
-        },
-        "SearchDataSourceName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name for the search data source"
-            },
-            "defaultValue": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]"
-        },
-        "SearchIndexName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name for the search index"
-            },
-            "defaultValue": "[concat(variables('ForceCode'), '-search-idx-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]"
-        },
-        "SearchIndexerName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name for the search indexer"
-            },
-            "defaultValue": "[concat(variables('ForceCode'), '-search-idxr-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]"
         }
     },
     "variables": {
@@ -68,9 +47,9 @@
         "storageRoleAssignmentId": "00000000-0000-0000-0000-000000000004",
         "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
-        "AzureSearchDataSourceName": "[parameters('SearchDataSourceName')]",
-        "AzureSearchIndexName": "[parameters('SearchIndexName')]",
-        "AzureSearchIndexerName": "[parameters('SearchIndexerName')]",
+        "AzureSearchDataSourceName": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "AzureSearchIndexName": "[concat(variables('ForceCode'), '-search-idx-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "AzureSearchIndexerName": "[concat(variables('ForceCode'), '-search-idxr-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureSearchSkillsetName": "[concat(variables('ForceCode'), '-skillset-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureSearchUseSemanticSearch": "true",
         "AzureSearchSemanticSearchConfig": "default",
