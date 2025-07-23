@@ -19,12 +19,19 @@
             "defaultValue": "prod",
             "allowedValues": ["prod"]
         },
+        "ServiceSuffix": {
+            "type": "string",
+            "metadata": {
+                "description": "Service suffix (fixed to coppa)"
+            },
+            "defaultValue": "coppa"
+        },
         "InstanceNumber": {
             "type": "string",
             "metadata": {
-                "description": "Instance number (automatically set to 01)"
+                "description": "Instance number (automatically set to 02)"
             },
-            "defaultValue": "01",
+            "defaultValue": "02",
             "minLength": 2,
             "maxLength": 2
         },
@@ -54,33 +61,33 @@
             "metadata": {
                 "description": "Name for the search data source"
             },
-            "defaultValue": "[concat(parameters('ForceCode'), '-search-ds-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]"
+            "defaultValue": "[concat(parameters('ForceCode'), '-search-ds-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]"
         },
         "SearchIndexName": {
             "type": "string",
             "metadata": {
                 "description": "Name for the search index"
             },
-            "defaultValue": "[concat(parameters('ForceCode'), '-search-idx-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]"
+            "defaultValue": "[concat(parameters('ForceCode'), '-search-idx-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]"
         },
         "SearchIndexerName": {
             "type": "string",
             "metadata": {
                 "description": "Name for the search indexer"
             },
-            "defaultValue": "[concat(parameters('ForceCode'), '-search-idxr-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]"
+            "defaultValue": "[concat(parameters('ForceCode'), '-search-idxr-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]"
         }
     },
     "variables": {
-        "HostingPlanName": "[concat('asp-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
+        "HostingPlanName": "[concat('asp-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
         "HostingPlanSku": "B3",
-        "WebsiteName": "[concat('app-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
-        "ApplicationInsightsName": "[concat('appi-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
-        "LogAnalyticsWorkspaceName": "[concat('log-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
-        "AzureSearchService": "[concat('srch-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
-        "AzureOpenAIResource": "[concat('cog-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
+        "WebsiteName": "[concat('app-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "ApplicationInsightsName": "[concat('appi-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "LogAnalyticsWorkspaceName": "[concat('log-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "AzureSearchService": "[concat('srch-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
+        "AzureOpenAIResource": "[concat('cog-', parameters('ForceCode'), '-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
         "AzureSearchSku": "standard",
-        "StorageAccountName": "[concat('st', parameters('ForceCode'), parameters('EnvironmentSuffix'), parameters('InstanceNumber'))]",
+        "StorageAccountName": "[concat('st', parameters('ForceCode'), parameters('EnvironmentSuffix'), parameters('ServiceSuffix'), parameters('InstanceNumber'))]",
         "StorageContainerName": "docs",
         "cosmosdb_account_name": "[concat('db-app-', parameters('ForceCode'), '-coppa')]",
         "cosmosdb_database_name": "db_conversation_history",
@@ -88,13 +95,12 @@
         "roleDefinitionId": "00000000-0000-0000-0000-000000000002",
         "roleAssignmentId": "00000000-0000-0000-0000-000000000003",
         "storageRoleAssignmentId": "00000000-0000-0000-0000-000000000004",
-        "deployScriptIdentityName": "[concat('id-', parameters('ForceCode'), '-deploy-', parameters('EnvironmentSuffix'), '-', parameters('InstanceNumber'))]",
+        "deployScriptIdentityName": "[concat('id-', parameters('ForceCode'), '-deploy-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'), '-', parameters('InstanceNumber'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
         "AzureSearchDataSourceName": "[parameters('SearchDataSourceName')]",
         "AzureSearchIndexName": "[parameters('SearchIndexName')]",
         "AzureSearchIndexerName": "[parameters('SearchIndexerName')]",
-        "AzureSearchSkillset1Name": "[concat(parameters('ForceCode'), '-skillset-1-', parameters('EnvironmentSuffix'))]",
-        "AzureSearchSkillset2Name": "[concat(parameters('ForceCode'), '-skillset-2-', parameters('EnvironmentSuffix'))]",
+        "AzureSearchSkillsetName": "[concat(parameters('ForceCode'), '-skillset-', parameters('EnvironmentSuffix'), '-', parameters('ServiceSuffix'))]",
         "AzureSearchUseSemanticSearch": "true",
         "AzureSearchSemanticSearchConfig": "default",
         "AzureSearchIndexIsPrechunked": "false",
@@ -109,7 +115,7 @@
         "AzureOpenAIMaxTokens": "2000",
         "AzureOpenAIStopSequence": "",
         "AzureOpenAIModelName": "gpt-4o",
-        "AzureOpenAIModelDeploymentName": "policingGptDeployment",
+        "AzureOpenAIModelDeploymentName": "coppaGptDeployment",
         "AzureOpenAISystemMessage": "You are an AI assistant specialized in policing matters. Your purpose is to help police officers and staff find relevant information from the department's knowledge base to assist with their duties. Provide clear, factual information while maintaining awareness of law enforcement protocols and policies.",
         "AzureOpenAIStream": true,
         "AzureOpenAISku": "S0",
@@ -303,12 +309,8 @@
                             "value": "[variables('AzureSearchIndexerName')]"
                         },
                         {
-                            "name": "AZURE_SEARCH_SKILLSET1_NAME",
-                            "value": "[variables('AzureSearchSkillset1Name')]"
-                        },
-                        {
-                            "name": "AZURE_SEARCH_SKILLSET2_NAME",
-                            "value": "[variables('AzureSearchSkillset2Name')]"
+                            "name": "AZURE_SEARCH_SKILLSET",
+                            "value": "[variables('AzureSearchSkillsetName')]"
                         },
                         {
                             "name": "AZURE_STORAGE_CONTAINER_NAME",
@@ -572,18 +574,6 @@
                 "cors": {
                     "corsRules": []
                 }
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2021-04-01",
-            "name": "[concat(variables('StorageAccountName'), '/default/', variables('StorageContainerName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('StorageAccountName'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName'))]"
-            ],
-            "properties": {
-                "publicAccess": "Blob"
             }
         },
         {
