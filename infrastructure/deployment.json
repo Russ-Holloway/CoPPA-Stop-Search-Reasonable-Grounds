@@ -35,7 +35,7 @@
         "AzureSearchSku": "standard",
         "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'), variables('InstanceNumber'))]",
         "StorageContainerName": "docs",
-        "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-coppa')]",
+        "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'), '-', substring(uniqueString(resourceGroup().id), 0, 8))]",
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450')]",
