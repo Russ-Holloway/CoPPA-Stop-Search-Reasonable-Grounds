@@ -39,8 +39,8 @@
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "00000000-0000-0000-0000-000000000002",
-        "roleAssignmentId": "00000000-0000-0000-0000-000000000003",
-        "storageRoleAssignmentId": "00000000-0000-0000-0000-000000000004",
+        "roleAssignmentId": "[guid(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName'))]",
+        "storageRoleAssignmentId": "[guid(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName'))]",
         "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
         "AzureSearchDataSourceName": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
@@ -399,7 +399,8 @@
                 "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
+                "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]"
             ]
         },
         {
