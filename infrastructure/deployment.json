@@ -515,7 +515,29 @@
                     "enabled": false
                 },
                 "cors": {
-                    "corsRules": []
+                    "corsRules": [
+                        {
+                            "allowedOrigins": [
+                                "https://portal.azure.com",
+                                "https://ms.portal.azure.com",
+                                "https://preview.portal.azure.com",
+                                "https://rc.portal.azure.com",
+                                "https://canary.portal.azure.com"
+                            ],
+                            "allowedMethods": [
+                                "GET",
+                                "HEAD",
+                                "OPTIONS"
+                            ],
+                            "maxAgeInSeconds": 200,
+                            "exposedHeaders": [
+                                "*"
+                            ],
+                            "allowedHeaders": [
+                                "*"
+                            ]
+                        }
+                    ]
                 }
             }
         },
