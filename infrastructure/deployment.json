@@ -35,7 +35,7 @@
         "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-coppa')]",
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
-        "roleDefinitionId": "00000000-0000-0000-0000-000000000002",
+        "roleDefinitionId": "[guid(concat(subscription().subscriptionId, resourceGroup().id, 'cosmosdb-data-contributor'))]",
         "roleAssignmentId": "[guid(concat(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName')))]",
         "storageRoleAssignmentId": "[guid(concat(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName')))]",
         "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
