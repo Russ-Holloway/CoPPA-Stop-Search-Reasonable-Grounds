@@ -2,13 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "ResourceGroupName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the resource group where the resources will be deployed."
-            },
-            "defaultValue": "[resourceGroup().name]"
-        },
         "AzureOpenAIModelName": {
             "type": "string",
             "metadata": {
