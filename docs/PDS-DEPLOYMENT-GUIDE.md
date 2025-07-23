@@ -24,15 +24,15 @@ All resources created by this deployment follow the PDS naming strategy:
 3. Review the auto-generated resource names
 4. Deploy the solution
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fsv%3D2024-11-04%26ss%3Dbt%26srt%3Dsco%26sp%3Drltf%26se%3D2026-08-01T18%3A11%3A42Z%26st%3D2025-07-19T09%3A56%3A42Z%26spr%3Dhttps%26sig%3D8ZzA5IXoU%252FGgPS0XOkC738gYQY67DFv%252FWD0%252BI9zkioI%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition-pds.json%3Fsv%3D2024-11-04%26ss%3Dbt%26srt%3Dsco%26sp%3Drltf%26se%3D2026-08-01T18%3A11%3A42Z%26st%3D2025-07-19T09%3A56%3A42Z%26spr%3Dhttps%26sig%3D8ZzA5IXoU%252FGgPS0XOkC738gYQY67DFv%252FWD0%252BI9zkioI%253D)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fst%3D2025-07-23%26se%3D2026-07-23%26sp%3Drlpt%26spr%3Dhttps%26sv%3D2022-11-02%26ss%3Db%26srt%3Dsco%26sig%3DT8GTdzBqPHDxODY%2FUHs7rlDPVFIgNOkHIi1pRAwtw4E%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition-pds.json%3Fst%3D2025-07-23%26se%3D2026-07-23%26sp%3Drlpt%26spr%3Dhttps%26sv%3D2022-11-02%26ss%3Db%26srt%3Dsco%26sig%3DT8GTdzBqPHDxODY%2FUHs7rlDPVFIgNOkHIi1pRAwtw4E%253D)
 
 ### Option 2: PowerShell Deployment
 ```powershell
 # Set your deployment parameters
-$resourceGroupName = "rg-btp-policing-prod-01"
+$resourceGroupName = "rg-btp-policing-prod-02"
 $forceCode = "btp"  # Change to your force code
 $environment = "prod"  # dev, test, or prod
-$instanceNumber = "01"
+$instanceNumber = "02"
 
 # Deploy the template
 New-AzResourceGroupDeployment `
