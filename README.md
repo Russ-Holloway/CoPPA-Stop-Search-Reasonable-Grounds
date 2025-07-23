@@ -37,7 +37,7 @@
 - **WCAG 2.1 AA Accessibility:** Full accessibility compliance for inclusive access
 - **Security Standards:** Enterprise-grade security with Azure best practices
 
-[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fsv%3D2024-11-04%26ss%3Dbt%26srt%3Dsco%26sp%3Drltf%26se%3D2026-08-01T18%3A11%3A42Z%26st%3D2025-07-19T09%3A56%3A42Z%26spr%3Dhttps%26sig%3D8ZzA5IXoU%252FGgPS0XOkC738gYQY67DFv%252FWD0%252BI9zkioI%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition-simple.json%3Fsv%3D2024-11-04%26ss%3Dbt%26srt%3Dsco%26sp%3Drltf%26se%3D2026-08-01T18%3A11%3A42Z%26st%3D2025-07-19T09%3A56%3A42Z%26spr%3Dhttps%26sig%3D8ZzA5IXoU%252FGgPS0XOkC738gYQY67DFv%252FWD0%252BI9zkioI%253D)
+[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fst%3D2025-07-23%26se%3D2026-07-23%26sp%3Drlpt%26spr%3Dhttps%26sv%3D2022-11-02%26ss%3Db%26srt%3Dsco%26sig%3DT8GTdzBqPHDxODY%2FUHs7rlDPVFIgNOkHIi1pRAwtw4E%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition-pds.json%3Fst%3D2025-07-23%26se%3D2026-07-23%26sp%3Drlpt%26spr%3Dhttps%26sv%3D2022-11-02%26ss%3Db%26srt%3Dsco%26sig%3DT8GTdzBqPHDxODY%2FUHs7rlDPVFIgNOkHIi1pRAwtw4E%253D)
 
 **🎯 Simplified Deployment Process:**
 1. **Create Resource Group:** Use PDS naming like `rg-btp-prod-01`, `rg-met-prod-01`, etc.
