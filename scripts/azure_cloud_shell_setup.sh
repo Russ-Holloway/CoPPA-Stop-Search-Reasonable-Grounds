@@ -32,15 +32,33 @@ echo "✅ Container '$CONTAINER_NAME' is ready"
 
 # Enable CORS for the storage account
 echo "🌐 Configuring CORS settings..."
-az storage cors add \
-    --methods GET POST PUT \
-    --origins "https://portal.azure.com" "https://ms.portal.azure.com" "*" \
-    --allowed-headers "*" \
-    --exposed-headers "*" \
-    --max-age 3600 \
+
+# First, clear any existing CORS rules
+echo "🔄 Clearing existing CORS rules..."
+az storage cors clear \
     --services b \
     --account-name $STORAGE_ACCOUNT \
     --only-show-errors
+
+# Add new CORS rules
+echo "➕ Adding new CORS rules..."
+az storage cors add \
+    --methods GET POST PUT OPTIONS \
+    --origins "*" \
+    --allowed-headers "*" \
+    --exposed-headers "*" \
+    --max-age 86400 \
+    --services b \
+    --account-name $STORAGE_ACCOUNT \
+    --only-show-errors
+
+# Verify CORS settings
+echo "🔍 Verifying CORS settings..."
+az storage cors list \
+    --services b \
+    --account-name $STORAGE_ACCOUNT \
+    --output table
+
 echo "✅ CORS configured successfully"
 
 # Generate SAS tokens (valid for 1 year from today)
