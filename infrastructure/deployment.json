@@ -387,16 +387,43 @@
         },
         {
             "condition": "[variables('WebAppEnableChatHistory')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            "apiVersion": "2021-04-15",
+            "name": "[format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleDefinitionId'))]",
+            "properties": {
+                "roleName": "CosmosDB Data Contributor",
+                "type": "CustomRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
+                        ]
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
+            ]
+        },
+        {
+            "condition": "[variables('WebAppEnableChatHistory')]",
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
             "apiVersion": "2021-04-15",
             "name": "[format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleAssignmentId'))]",
             "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', split(format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleDefinitionId')), '/')[0], split(format('{0}/{1}', variables('cosmosdb_account_name'), variables('roleDefinitionId')), '/')[1])]",
+                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', variables('cosmosdb_account_name'), variables('roleDefinitionId'))]",
                 "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('WebsiteName')), '2021-02-01', 'Full').identity.principalId]",
                 "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosdb_account_name'))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', variables('cosmosdb_account_name'), variables('roleDefinitionId'))]",
+                "[resourceId('Microsoft.Web/sites', variables('WebsiteName'))]"
             ]
         },
         {
