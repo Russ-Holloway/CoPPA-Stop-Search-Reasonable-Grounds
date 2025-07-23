@@ -1,6 +1,9 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
+    "metadata": {
+        "deployUrl": "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Ftemplates%2Fdeployment.json%3Fsv%3D2024-11-04%26ss%3Db%26srt%3Dsco%26sp%3Drltf%26se%3D2026-10-01T23%253A59%253A59Z%26st%3D2025-01-23T10%253A00%253A00Z%26spr%3Dhttps%26sig%3DTZOdlkK8pqw2%252F2fX5vE7vN8R9Q1mJ3sP4wY6zA0uL2I%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Ftemplates%2FcreateUiDefinition.json%3Fsv%3D2024-11-04%26ss%3Db%26srt%3Dsco%26sp%3Drltf%26se%3D2026-10-01T23%253A59%253A59Z%26st%3D2025-01-23T10%253A00%253A00Z%26spr%3Dhttps%26sig%3DTZOdlkK8pqw2%252F2fX5vE7vN8R9Q1mJ3sP4wY6zA0uL2I%253D"
+    },
     "parameters": {
         "AzureOpenAIModelName": {
             "type": "string",
