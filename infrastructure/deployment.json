@@ -18,6 +18,12 @@
                 "description": "The name of the OpenAI embedding model to deploy."
             },
             "defaultValue": "text-embedding-ada-002"
+        },
+        "AuthClientSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Azure AD App Registration client secret for authentication."
+            }
         }
     },
     "variables": {
@@ -131,32 +137,12 @@
                             "value": "[variables('AzureSearchSemanticSearchConfig')]"
                         },
                         {
-                            "name": "AZURE_SEARCH_INDEX_IS_PRECHUNKED",
-                            "value": "[variables('AzureSearchIndexIsPrechunked')]"
-                        },
-                        {
                             "name": "AZURE_SEARCH_TOP_K",
                             "value": "[variables('AzureSearchTopK')]"
                         },
                         {
                             "name": "AZURE_SEARCH_ENABLE_IN_DOMAIN",
                             "value": "[variables('AzureSearchEnableInDomain')]"
-                        },
-                        {
-                            "name": "AZURE_SEARCH_CONTENT_COLUMNS",
-                            "value": "[variables('AzureSearchContentColumns')]"
-                        },
-                        {
-                            "name": "AZURE_SEARCH_FILENAME_COLUMN",
-                            "value": "[variables('AzureSearchFilenameColumn')]"
-                        },
-                        {
-                            "name": "AZURE_SEARCH_TITLE_COLUMN",
-                            "value": "[variables('AzureSearchTitleColumn')]"
-                        },
-                        {
-                            "name": "AZURE_SEARCH_URL_COLUMN",
-                            "value": "[variables('AzureSearchUrlColumn')]"
                         },
                         {
                             "name": "AZURE_OPENAI_RESOURCE",
@@ -203,16 +189,20 @@
                             "value": "[variables('AzureSearchQueryType')]"
                         },
                         {
-                            "name": "AZURE_SEARCH_VECTOR_COLUMNS",
-                            "value": "[variables('AzureSearchVectorFields')]"
-                        },
-                        {
                             "name": "AZURE_SEARCH_PERMITTED_GROUPS_COLUMN",
                             "value": "[variables('AzureSearchPermittedGroupsField')]"
                         },
                         {
                             "name": "AZURE_SEARCH_STRICTNESS",
                             "value": "[variables('AzureSearchStrictness')]"
+                        },
+                        {
+                            "name": "AZURE_SEARCH_DATA_SOURCE",
+                            "value": "[variables('AzureSearchDataSourceName')]"
+                        },
+                        {
+                            "name": "AZURE_SEARCH_INDEXER",
+                            "value": "[variables('AzureSearchIndexerName')]"
                         },
                         {
                             "name": "AZURE_OPENAI_EMBEDDING_NAME",
@@ -235,24 +225,44 @@
                             "value": "[variables('cosmosdb_container_name')]"
                         },
                         {
-                            "name": "SETUP_STORAGE_ACCOUNT_NAME",
-                            "value": "[variables('StorageAccountName')]"
+                            "name": "AUTH_CLIENT_SECRET",
+                            "value": "[parameters('AuthClientSecret')]"
                         },
                         {
-                            "name": "SETUP_STORAGE_ACCOUNT_KEY",
-                            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('StorageAccountName')), '2021-04-01').keys[0].value]"
+                            "name": "UI_CHAT_TITLE",
+                            "value": "CoPPA Stop and Search Assistant"
                         },
                         {
-                            "name": "AZURE_SEARCH_DATA_SOURCE_NAME",
-                            "value": "[variables('AzureSearchDataSourceName')]"
+                            "name": "UI_TITLE",
+                            "value": "CoPPA Stop and Search Decision Support"
                         },
                         {
-                            "name": "AZURE_SEARCH_INDEX_NAME",
-                            "value": "[variables('AzureSearchIndexName')]"
+                            "name": "UI_FAVICON",
+                            "value": "/favicon.ico"
                         },
                         {
-                            "name": "AZURE_SEARCH_INDEXER_NAME",
-                            "value": "[variables('AzureSearchIndexerName')]"
+                            "name": "UI_LOGO",
+                            "value": "/logo.png"
+                        },
+                        {
+                            "name": "UI_POLICE_FORCE_LOGO",
+                            "value": "/police-logo.png"
+                        },
+                        {
+                            "name": "UI_POLICE_FORCE_TAGLINE",
+                            "value": "Supporting Professional Decision Making"
+                        },
+                        {
+                            "name": "UI_POLICE_FORCE_TAGLINE_2",
+                            "value": "Evidence-Based Stop and Search Guidance"
+                        },
+                        {
+                            "name": "UI_FEEDBACK_EMAIL",
+                            "value": "feedback@coppa.police.uk"
+                        },
+                        {
+                            "name": "UI_FIND_OUT_MORE_LINK",
+                            "value": "https://www.college.police.uk/guidance/stop-and-search"
                         },
                         {
                             "name": "AZURE_SEARCH_SKILLSET",
@@ -263,12 +273,16 @@
                             "value": "[variables('StorageContainerName')]"
                         },
                         {
-                            "name": "UWSGI_PROCESSES",
-                            "value": "2"
+                            "name": "DATASOURCE_TYPE",
+                            "value": "AzureCognitiveSearch"
                         },
                         {
-                            "name": "UWSGI_THREADS",
-                            "value": "2"
+                            "name": "minTlsVersion",
+                            "value": "1.2"
+                        },
+                        {
+                            "name": "WEBSITE_AUTH_AAD_ALLOWED_TENANTS",
+                            "value": ""
                         },
                         {
                             "name": "PYTHON_VERSION",
