@@ -14,17 +14,17 @@
 .answerText {
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px; /* Increased from 14px */
+  line-height: 24px; /* Increased from 20px */
   color: #323130;
   flex: none;
   order: 1;
   align-self: stretch;
   flex-grow: 0;
-  margin: 11px;
+  margin: 15px; /* Increased from 11px */
   white-space: normal;
   word-wrap: break-word;
-  max-width: 800px;
+  max-width: 900px; /* Increased from 800px */
   overflow-x: auto;
 }
 
@@ -268,7 +268,7 @@ sup {
 /* Citation panel styles */
 .mainAnswerLayout {
   display: flex;
-  gap: 16px;
+  gap: 24px; /* Increased from 16px for more spacing */
   width: 100%;
 }
 
@@ -278,16 +278,17 @@ sup {
 }
 
 .externalCitationColumn {
-  flex: 0 0 400px; /* Fixed width of 400px, doesn't grow or shrink */
-  max-width: 400px;
+  flex: 0 0 500px; /* Fixed width of 500px (increased from 400px), doesn't grow or shrink */
+  max-width: 500px;
 }
 
 .externalCitationPanel {
   background: #ffffff;
   border: 1px solid #e1e5e9;
   border-radius: 6px;
-  padding: 16px;
+  padding: 20px; /* Increased from 16px */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 300px; /* Added minimum height for better visibility */
   height: fit-content;
 }
 
@@ -326,9 +327,14 @@ sup {
 }
 
 .citationInlineText {
-  display: inline;
-  color: #323130;
-  font-weight: normal;
+  display: inline !important;
+  color: #323130 !important;
+  font-weight: normal !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  text-decoration: none !important;
+  cursor: default !important;
 }
 
 :global(.dark-mode) .externalCitationPanel {
