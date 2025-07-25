@@ -28,16 +28,43 @@
   word-wrap: break-word;
   width: 100% !important;
   max-width: none !important;
+  min-width: 100% !important;
   box-sizing: border-box;
 }
 
 .answerText p {
   margin-bottom: 16px;
   line-height: 1.6;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
 }
 
 .answerText p:last-child {
   margin-bottom: 0;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+}
+
+/* NUCLEAR OVERRIDE: FORCE ALL ANSWER TEXT CONTENT TO FULL WIDTH */
+.answerText *,
+.answerText div,
+.answerText span,
+.answerText p,
+.answerText h1,
+.answerText h2,
+.answerText h3,
+.answerText h4,
+.answerText h5,
+.answerText h6,
+.answerText ul,
+.answerText ol,
+.answerText li {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* TRIPLE CHECK: NUCLEAR OVERRIDE - Block ALL possible link styling */
@@ -497,4 +524,32 @@ span[class*="citation"] {
     flex: none;
     max-width: none;
   }
+}
+
+/* NUCLEAR ABSOLUTE PRIORITY: FORCE ANSWER TEXT TO FULL WIDTH ABOVE ALL ELSE */
+.answerText,
+.answerText *,
+.answerText > *,
+.answerText div,
+.answerText p,
+.answerText span {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  flex: 1 1 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* GLOBAL NUCLEAR OVERRIDE: FORCE ANSWER CONTENT FULL WIDTH */
+:global(.answerText),
+:global(.answerText *),
+:global(.answerText > *),
+:global(.answerText div),
+:global(.answerText p),
+:global(.answerText span) {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+  flex: 1 1 100% !important;
+  box-sizing: border-box !important;
 }
