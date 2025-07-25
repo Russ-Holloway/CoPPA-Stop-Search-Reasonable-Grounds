@@ -338,47 +338,47 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             <Stack.Item>
               <Stack horizontal grow>
                 <Stack.Item grow>
-                  {/* Render answer with proper markdown formatting */}
-                  {parsedAnswer && parsedAnswer.markdownFormatText && (
-                    <div className={styles.answerText}>
-                      <ReactMarkdown
-                        linkTarget="_blank"
-                        children={parsedAnswer.markdownFormatText}
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw]}
-                        components={{
-                          a: ({ href, children }) => {
-                            // Check if this is a citation link (contains a number in brackets)
-                            const citationMatch = children?.toString().match(/\[(\d+)\]/)
-                            if (citationMatch) {
-                              const citationIndex = parseInt(citationMatch[1]) - 1
-                              const citation = parsedAnswer?.citations[citationIndex]
-                              if (citation) {
-                                return (
-                                  <a
-                                    href="#"
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleCitationButtonClick(citation)
-                                    }}
-                                    className={styles.citationLink}
-                                  >
-                                    {children}
-                                  </a>
-                                )
-                              }
-                            }
-                            // Regular external links
+              {/* Render answer with proper markdown formatting */}
+              {parsedAnswer && parsedAnswer.markdownFormatText && (
+                <div className={styles.answerText}>
+                  <ReactMarkdown
+                    linkTarget="_blank"
+                    children={parsedAnswer.markdownFormatText}
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      a: ({ href, children }) => {
+                        // Check if this is a citation link (contains a number in brackets)
+                        const citationMatch = children?.toString().match(/\[(\d+)\]/)
+                        if (citationMatch) {
+                          const citationIndex = parseInt(citationMatch[1]) - 1
+                          const citation = parsedAnswer?.citations[citationIndex]
+                          if (citation) {
                             return (
-                              <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
+                              <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  handleCitationButtonClick(citation)
+                                }}
+                                className={styles.citationLink}
+                              >
                                 {children}
                               </a>
                             )
                           }
-                        }}
-                      />
-                    </div>
-                  )}
+                        }
+                        // Regular external links
+                        return (
+                          <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
+                            {children}
+                          </a>
+                        )
+                      }
+                    }}
+                  />
+                </div>
+              )}
                 </Stack.Item>
                 <Stack.Item className={styles.answerHeader}>
                   {FEEDBACK_ENABLED && answer.message_id !== undefined && (
