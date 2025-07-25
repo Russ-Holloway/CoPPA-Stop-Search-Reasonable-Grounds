@@ -2,29 +2,31 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 8.1285px;
-  gap: 5.42px;
+  padding: 24px; /* Increased to match citation panel */
+  gap: 12px; /* Increased from 5.42px */
   background: #ffffff;
   box-shadow:
-    0px 1px 2px rgba(0, 0, 0, 0.14),
-    0px 0px 2px rgba(0, 0, 0, 0.12);
-  border-radius: 5.419px;
+    0px 4px 8px rgba(0, 0, 0, 0.14),
+    0px 0px 4px rgba(0, 0, 0, 0.12);
+  border-radius: 8px; /* Increased from 5.419px */
+  min-height: 500px; /* Increased minimum height to match citation panel */
+  height: fit-content;
 }
 
 .answerText {
   font-style: normal;
   font-weight: 400;
-  font-size: 16px; /* Increased from 14px */
-  line-height: 24px; /* Increased from 20px */
+  font-size: 18px; /* Increased from 16px */
+  line-height: 28px; /* Increased from 24px */
   color: #323130;
   flex: none;
   order: 1;
   align-self: stretch;
   flex-grow: 0;
-  margin: 15px; /* Increased from 11px */
+  margin: 20px; /* Increased from 15px */
   white-space: normal;
   word-wrap: break-word;
-  max-width: 900px; /* Increased from 800px */
+  max-width: 1000px; /* Increased from 900px */
   overflow-x: auto;
 }
 
@@ -268,28 +270,32 @@ sup {
 /* Citation panel styles */
 .mainAnswerLayout {
   display: flex;
-  gap: 24px; /* Increased from 16px for more spacing */
+  gap: 32px; /* Increased from 24px for more spacing */
   width: 100%;
+  min-height: 600px; /* Increased minimum height for better visibility */
 }
 
 .answerColumn {
-  flex: 1;
+  flex: 1 1 50%; /* Equal flex basis of 50% for both columns */
   min-width: 0; /* Allows flex item to shrink below content size */
+  max-width: 50%; /* Ensure it doesn't exceed 50% */
 }
 
 .externalCitationColumn {
-  flex: 0 0 500px; /* Fixed width of 500px (increased from 400px), doesn't grow or shrink */
-  max-width: 500px;
+  flex: 1 1 50%; /* Equal flex basis of 50% - same as answer column */
+  min-width: 0; /* Allows flex item to shrink below content size */
+  max-width: 50%; /* Ensure it doesn't exceed 50% */
 }
 
 .externalCitationPanel {
   background: #ffffff;
   border: 1px solid #e1e5e9;
-  border-radius: 6px;
-  padding: 20px; /* Increased from 16px */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  min-height: 300px; /* Added minimum height for better visibility */
+  border-radius: 8px; /* Same as answer container */
+  padding: 24px; /* Same as answer container */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Enhanced shadow to match answer container */
+  min-height: 500px; /* Same as answer container */
   height: fit-content;
+  font-size: 16px; /* Added larger font size */
 }
 
 .citationHeader {
@@ -335,6 +341,21 @@ sup {
   border-radius: 0 !important;
   text-decoration: none !important;
   cursor: default !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Override any link styles that might affect citations */
+.answerText .citationInlineText,
+.answerText span.citationInlineText {
+  color: #323130 !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  cursor: default !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: normal !important;
 }
 
 :global(.dark-mode) .externalCitationPanel {
