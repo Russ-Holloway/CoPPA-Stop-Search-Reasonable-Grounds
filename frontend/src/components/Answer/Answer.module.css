@@ -2,32 +2,37 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 24px; /* Increased to match citation panel */
-  gap: 12px; /* Increased from 5.42px */
+  padding: 40px !important; /* Force larger padding */
+  gap: 20px !important; /* Increased gap */
   background: #ffffff;
   box-shadow:
     0px 4px 8px rgba(0, 0, 0, 0.14),
     0px 0px 4px rgba(0, 0, 0, 0.12);
-  border-radius: 8px; /* Increased from 5.419px */
-  min-height: 500px; /* Increased minimum height to match citation panel */
-  height: fit-content;
+  border-radius: 12px !important; /* Larger border radius */
+  min-height: 70vh !important; /* Force 70% of viewport height */
+  height: auto !important;
+  width: 100% !important; /* Force full width of its container */
+  max-width: none !important; /* Remove any max-width constraints */
 }
 
 .answerText {
   font-style: normal;
   font-weight: 400;
-  font-size: 18px; /* Increased from 16px */
-  line-height: 28px; /* Increased from 24px */
+  font-size: 20px !important; /* Much larger font */
+  line-height: 32px !important; /* Much larger line height */
   color: #323130;
   flex: none;
   order: 1;
   align-self: stretch;
   flex-grow: 0;
-  margin: 20px; /* Increased from 15px */
+  margin: 0 !important; /* Remove margins to use full space */
+  padding: 20px !important; /* Add padding instead */
   white-space: normal;
   word-wrap: break-word;
-  max-width: 1000px; /* Increased from 900px */
+  max-width: none !important; /* Remove max-width constraint */
+  width: 100% !important; /* Force full width */
   overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .answerText p {
@@ -271,31 +276,50 @@ sup {
 .mainAnswerLayout {
   display: flex;
   gap: 32px; /* Increased from 24px for more spacing */
-  width: 100%;
-  min-height: 600px; /* Increased minimum height for better visibility */
+  width: 100vw !important; /* Use full viewport width */
+  min-height: 80vh !important; /* Use 80% of viewport height for much larger layout */
+  padding: 20px !important; /* Add padding for better spacing */
+  box-sizing: border-box;
 }
 
 .answerColumn {
-  flex: 1 1 50%; /* Equal flex basis of 50% for both columns */
+  flex: 1 !important; /* Take full width when citation column is not shown */
   min-width: 0; /* Allows flex item to shrink below content size */
-  max-width: 50%; /* Ensure it doesn't exceed 50% */
+  width: 100% !important; /* Force full width when alone */
+}
+
+/* When citation column is present, both should be 50/50 */
+.mainAnswerLayout:has(.externalCitationColumn) .answerColumn {
+  flex: 1 1 50% !important; /* 50% when citation is shown */
+  max-width: 50% !important; /* Ensure it doesn't exceed 50% */
+  width: 50% !important;
 }
 
 .externalCitationColumn {
-  flex: 1 1 50%; /* Equal flex basis of 50% - same as answer column */
+  flex: 1 1 50% !important; /* Equal flex basis of 50% when shown */
   min-width: 0; /* Allows flex item to shrink below content size */
-  max-width: 50%; /* Ensure it doesn't exceed 50% */
+  max-width: 50% !important; /* Ensure it doesn't exceed 50% */
+  width: 50% !important;
+}
+
+/* BACKUP: In case :has() doesn't work, use this approach */
+.mainAnswerLayout .answerColumn:only-child {
+  flex: 1 !important;
+  width: 100% !important;
+  max-width: none !important;
 }
 
 .externalCitationPanel {
   background: #ffffff;
   border: 1px solid #e1e5e9;
-  border-radius: 8px; /* Same as answer container */
-  padding: 24px; /* Same as answer container */
+  border-radius: 12px !important; /* Match answer container */
+  padding: 40px !important; /* Match answer container */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Enhanced shadow to match answer container */
-  min-height: 500px; /* Same as answer container */
-  height: fit-content;
-  font-size: 16px; /* Added larger font size */
+  min-height: 70vh !important; /* Match answer container */
+  height: auto !important;
+  width: 100% !important; /* Force full width of its container */
+  font-size: 18px !important; /* Larger font size */
+  box-sizing: border-box;
 }
 
 .citationHeader {
@@ -332,6 +356,7 @@ sup {
   border: none;
 }
 
+/* FORCE OVERRIDE: Make citation inline text completely plain */
 .citationInlineText {
   display: inline !important;
   color: #323130 !important;
@@ -343,11 +368,15 @@ sup {
   cursor: default !important;
   border: none !important;
   box-shadow: none !important;
+  pointer-events: none !important; /* NUCLEAR: Disable all click events */
 }
 
-/* Override any link styles that might affect citations */
+/* NUCLEAR OVERRIDE: Force all citation elements to be plain text */
 .answerText .citationInlineText,
-.answerText span.citationInlineText {
+.answerText span.citationInlineText,
+.answerText a.citationInlineText,
+div.citationInlineText,
+span[class*="citation"] {
   color: #323130 !important;
   background-color: transparent !important;
   text-decoration: none !important;
@@ -356,6 +385,26 @@ sup {
   border: none !important;
   box-shadow: none !important;
   font-weight: normal !important;
+  pointer-events: none !important; /* NUCLEAR: Disable all click events */
+}
+
+/* NUCLEAR OVERRIDE: Override ANY link styling in answer text for citations */
+.answerText a[href*="#citation"],
+.answerText a[href*="citation"],
+.answerText a:has-text("[1]"),
+.answerText a:has-text("[2]"),
+.answerText a:has-text("[3]"),
+.answerText a:has-text("[4]"),
+.answerText a:has-text("[5]") {
+  color: #323130 !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  cursor: default !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: normal !important;
+  pointer-events: none !important; /* NUCLEAR: Disable all click events */
 }
 
 :global(.dark-mode) .externalCitationPanel {
