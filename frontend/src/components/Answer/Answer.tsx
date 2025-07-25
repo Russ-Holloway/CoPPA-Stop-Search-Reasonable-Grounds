@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useEffect, useMemo, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -8,7 +8,6 @@ import { ThumbDislike20Filled, ThumbLike20Filled } from '@fluentui/react-icons'
 import DOMPurify from 'dompurify'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
-import supersub from 'remark-supersub'
 import { AskResponse, Citation, Feedback, historyMessageFeedback } from '../../api'
 import { XSSAllowTags, XSSAllowAttributes } from '../../constants/sanatizeAllowables'
 import { AppStateContext } from '../../state/AppProvider'
@@ -242,18 +241,6 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
         </SyntaxHighlighter>
       )
     }
-  }
-
-  // Helper: Split answer into sentences and associate citations
-  const getSentencesWithCitations = () => {
-    // Use a regex to split into sentences (handles . ! ?)
-    const sentences = parsedAnswer?.markdownFormatText?.match(/[^.!?]+[.!?]+(\s|$)/g) || []
-    const citations = parsedAnswer?.citations || []
-    // If there are more sentences than citations, fill with undefined
-    return sentences.map((sentence, idx) => ({
-      sentence: sentence.trim(),
-      citation: citations[idx]
-    }))
   }
 
   const handleCitationButtonClick = (citation: Citation) => {
