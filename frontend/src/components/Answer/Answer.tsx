@@ -269,8 +269,9 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
         {parts.map((part, index) => {
           const citationMatch = part.match(/\[(\d+)\]/)
           if (citationMatch) {
-            const citationIndex = parseInt(citationMatch[1]) - 1
-            const citation = parsedAnswer?.citations[citationIndex]
+            const citationDisplayNumber = citationMatch[1]
+            // Find citation by reindex_id (display number) instead of array index
+            const citation = parsedAnswer?.citations.find(c => c.reindex_id === citationDisplayNumber)
             if (citation) {
               return (
                 <a
