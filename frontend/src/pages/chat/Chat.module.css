@@ -276,7 +276,8 @@
 
 .chatMessageGpt {
   margin-bottom: 16px;
-  max-width: 80%;
+  max-width: 100% !important; /* FIXED: Allow full width instead of 80% */
+  width: 100% !important; /* Force full width */
   display: flex;
   background: transparent;
   color: var(--text-primary);

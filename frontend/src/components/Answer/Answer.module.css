@@ -2,17 +2,18 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 40px !important; /* Force larger padding */
+  padding: 20px !important; /* Reduce padding */
   gap: 20px !important; /* Increased gap */
   background: #ffffff;
   box-shadow:
     0px 4px 8px rgba(0, 0, 0, 0.14),
     0px 0px 4px rgba(0, 0, 0, 0.12);
-  border-radius: 12px !important; /* Larger border radius */
+  border-radius: 8px !important; /* Smaller border radius */
   min-height: 70vh !important; /* Force 70% of viewport height */
   height: auto !important;
   width: 100% !important; /* Force full width of its container */
   max-width: none !important; /* Remove any max-width constraints */
+  margin: 0 !important; /* Remove any margins */
 }
 
 .answerText {
@@ -44,18 +45,58 @@
   margin-bottom: 0;
 }
 
-.answerText a {
-  color: #0078d4;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 2px 4px;
-  border-radius: 3px;
-  background-color: #f3f9ff;
+/* TRIPLE CHECK: NUCLEAR OVERRIDE - Block ALL possible link styling */
+.answerText a,
+.answerText a:link,
+.answerText a:visited,
+.answerText a:active,
+.answerText a:focus,
+.answerText a:hover,
+.answerText a[href],
+.answerText a[href*="#"],
+.answerText a[href*="citation"],
+.answerText a[href*="#citation"],
+.answerText a[class*="citation"],
+.answerText span[class*="citation"],
+.answerText *[class*="citation"],
+a.citationInlineText,
+span.citationInlineText,
+a[class*="citation"],
+span[class*="citation"] {
+  color: #323130 !important; /* Force all links in answer to be plain text color */
+  text-decoration: none !important;
+  font-weight: normal !important; /* Remove bold */
+  padding: 0 !important; /* Remove padding */
+  border-radius: 0 !important;
+  background-color: transparent !important; /* Remove blue background */
+  cursor: default !important; /* Remove pointer cursor */
+  pointer-events: none !important; /* Make completely unclickable */
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-shadow: none !important;
 }
 
-.answerText a:hover {
-  background-color: #e1f5fe;
-  text-decoration: underline;
+/* TRIPLE CHECK: NUCLEAR HOVER OVERRIDE - Block ALL possible hover effects */
+.answerText a:hover,
+.answerText a:focus,
+.answerText a:active,
+.answerText a[href]:hover,
+.answerText a[href]:focus,
+.answerText a[href]:active,
+.answerText a[class*="citation"]:hover,
+.answerText span[class*="citation"]:hover,
+a.citationInlineText:hover,
+span.citationInlineText:hover {
+  background-color: transparent !important; /* Force no hover effect */
+  text-decoration: none !important;
+  color: #323130 !important; /* Keep same color on hover */
+  cursor: default !important;
+  pointer-events: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-shadow: none !important;
 }
 
 .citationLink {
@@ -275,10 +316,11 @@ sup {
 /* Citation panel styles */
 .mainAnswerLayout {
   display: flex;
-  gap: 32px; /* Increased from 24px for more spacing */
-  width: 100vw !important; /* Use full viewport width */
+  gap: 20px !important; /* Reduce gap to fit better */
+  width: 100% !important; /* Use 100% instead of 100vw to respect parent container */
   min-height: 80vh !important; /* Use 80% of viewport height for much larger layout */
-  padding: 20px !important; /* Add padding for better spacing */
+  padding: 0 !important; /* Remove padding that's causing white space */
+  margin: 0 !important; /* Remove any margins */
   box-sizing: border-box;
 }
 
@@ -312,14 +354,15 @@ sup {
 .externalCitationPanel {
   background: #ffffff;
   border: 1px solid #e1e5e9;
-  border-radius: 12px !important; /* Match answer container */
-  padding: 40px !important; /* Match answer container */
+  border-radius: 8px !important; /* Match answer container */
+  padding: 20px !important; /* Match answer container */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Enhanced shadow to match answer container */
   min-height: 70vh !important; /* Match answer container */
   height: auto !important;
   width: 100% !important; /* Force full width of its container */
-  font-size: 18px !important; /* Larger font size */
+  font-size: 16px !important; /* Larger font size */
   box-sizing: border-box;
+  margin: 0 !important; /* Remove any margins */
 }
 
 .citationHeader {
@@ -422,6 +465,31 @@ span[class*="citation"] {
 
 :global(.dark-mode) .citationContent {
   color: #cccccc;
+}
+
+/* GLOBAL NUCLEAR OVERRIDE: Block blue link styling anywhere in answer components */
+:global(.answerText a),
+:global(.answerText a:link),
+:global(.answerText a:visited), 
+:global(.answerText a:hover),
+:global(.answerText a:active),
+:global(.answerText a:focus),
+:global(.answerContainer a),
+:global(.answerContainer a:link),
+:global(.answerContainer a:visited),
+:global(.answerContainer a:hover),
+:global(.answerContainer a:active),
+:global(.answerContainer a:focus) {
+  color: #323130 !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  cursor: default !important;
+  pointer-events: none !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  font-weight: normal !important;
 }
 
 :global(.dark-mode) .citationInlineText {
