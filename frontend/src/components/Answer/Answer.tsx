@@ -346,10 +346,9 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                             // Check if this is a citation link (contains a number in brackets)
                             const citationMatch = children?.toString().match(/\[(\d+)\]/)
                             if (citationMatch) {
-                              // Return plain text for citations - COMPLETELY remove link functionality
+                              // Return PLAIN SPAN - absolutely no link functionality
                               return (
                                 <span
-                                  className={styles.citationInlineText}
                                   style={{
                                     color: '#323130',
                                     backgroundColor: 'transparent',
@@ -365,7 +364,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                                 </span>
                               )
                             }
-                            // Regular external links
+                            // Regular external links (NOT citations)
                             return (
                               <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
                                 {children}
