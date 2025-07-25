@@ -52,11 +52,19 @@ export function parseAnswer(answer: AskResponse): ParsedAnswer {
     }
 
     const citation = cloneDeep(answer.citations[Number(citationIndex) - 1]) as Citation
-    if (!filteredCitations.find(c => c.id === citationIndex) && citation) {
-      answerText = answerText.replaceAll(link, `[${++citationReindex}](#citation-${citationReindex})`)
-      citation.id = citationIndex // original doc index to de-dupe
-      citation.reindex_id = citationReindex.toString() // reindex from 1 for display
-      filteredCitations.push(citation)
+    if (citation) {
+      // Check if we already have this citation
+      const existingCitation = filteredCitations.find(c => c.id === citationIndex)
+      if (!existingCitation) {
+        // Add new citation
+        citation.id = citationIndex // original doc index to de-dupe
+        citation.reindex_id = (++citationReindex).toString() // reindex from 1 for display
+        filteredCitations.push(citation)
+        answerText = answerText.replaceAll(link, `[${citationReindex}]`)
+      } else {
+        // Use existing citation number
+        answerText = answerText.replaceAll(link, `[${existingCitation.reindex_id}]`)
+      }
     }
   })
 

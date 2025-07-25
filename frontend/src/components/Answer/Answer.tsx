@@ -248,6 +248,65 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
     onCitationClicked(citation)
   }
 
+  // Helper function to render text with clickable citations
+  const renderTextWithCitations = (text: string) => {
+    if (!parsedAnswer?.citations.length) {
+      return (
+        <ReactMarkdown
+          linkTarget="_blank"
+          children={text}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+        />
+      )
+    }
+
+    // Split text by citation pattern [1], [2], etc.
+    const parts = text.split(/(\[\d+\])/)
+    
+    return (
+      <div>
+        {parts.map((part, index) => {
+          const citationMatch = part.match(/\[(\d+)\]/)
+          if (citationMatch) {
+            const citationIndex = parseInt(citationMatch[1]) - 1
+            const citation = parsedAnswer?.citations[citationIndex]
+            if (citation) {
+              return (
+                <a
+                  key={index}
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault()
+                    onCitationClicked(citation)
+                  }}
+                  className={styles.citationLink}>
+                  {part}
+                </a>
+              )
+            }
+          }
+          // Regular text - render with ReactMarkdown for other formatting
+          if (part.trim()) {
+            return (
+              <ReactMarkdown
+                key={index}
+                linkTarget="_blank"
+                children={part}
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={{
+                  p: ({ children }) => <span>{children}</span> // Inline rendering
+                }}
+              />
+            )
+          }
+          return part
+        })}
+      </div>
+    )
+  }
+
   return (
     <>
       <Stack className={styles.answerContainer} tabIndex={0}>
@@ -257,42 +316,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
               {/* Render answer with proper markdown formatting */}
               {parsedAnswer && parsedAnswer.markdownFormatText && (
                 <div className={styles.answerText}>
-                  <ReactMarkdown
-                    linkTarget="_blank"
-                    children={parsedAnswer.markdownFormatText}
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                      a: ({ href, children }) => {
-                        // Check if this is a citation link (contains a number in brackets)
-                        const citationMatch = children?.toString().match(/\[(\d+)\]/)
-                        if (citationMatch) {
-                          const citationIndex = parseInt(citationMatch[1]) - 1
-                          const citation = parsedAnswer?.citations[citationIndex]
-                          if (citation) {
-                            return (
-                              <a
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  onCitationClicked(citation)
-                                }}
-                                className={styles.citationLink}
-                              >
-                                {children}
-                              </a>
-                            )
-                          }
-                        }
-                        // Regular external links
-                        return (
-                          <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
-                            {children}
-                          </a>
-                        )
-                      }
-                    }}
-                  />
+                  {renderTextWithCitations(parsedAnswer.markdownFormatText)}
                 </div>
               )}
             </Stack.Item>
@@ -330,7 +354,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
         {parsedAnswer?.generated_chart !== null && (
           <Stack className={styles.answerContainer}>
             <Stack.Item grow>
-              <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} />
+              <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} alt="Generated chart" />
             </Stack.Item>
           </Stack>
         )}
