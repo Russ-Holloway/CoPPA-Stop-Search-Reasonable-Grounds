@@ -2,37 +2,30 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 20px !important; /* Reduce padding */
-  gap: 20px !important; /* Increased gap */
+  padding: 20px;
+  gap: 12px;
   background: #ffffff;
   box-shadow:
     0px 4px 8px rgba(0, 0, 0, 0.14),
     0px 0px 4px rgba(0, 0, 0, 0.12);
-  border-radius: 8px !important; /* Smaller border radius */
-  min-height: 70vh !important; /* Force 70% of viewport height */
-  height: auto !important;
-  width: 100% !important; /* Force full width of its container */
-  max-width: none !important; /* Remove any max-width constraints */
-  margin: 0 !important; /* Remove any margins */
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .answerText {
   font-style: normal;
   font-weight: 400;
-  font-size: 20px !important; /* Much larger font */
-  line-height: 32px !important; /* Much larger line height */
+  font-size: 14px;
+  line-height: 20px;
   color: #323130;
   flex: none;
   order: 1;
   align-self: stretch;
   flex-grow: 0;
-  margin: 0 !important; /* Remove margins to use full space */
-  padding: 20px !important; /* Add padding instead */
   white-space: normal;
   word-wrap: break-word;
-  max-width: none !important; /* Remove max-width constraint */
-  width: 100% !important; /* Force full width */
-  overflow-x: auto;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -316,53 +309,48 @@ sup {
 /* Citation panel styles */
 .mainAnswerLayout {
   display: flex;
-  gap: 20px !important; /* Reduce gap to fit better */
-  width: 100% !important; /* Use 100% instead of 100vw to respect parent container */
-  min-height: 80vh !important; /* Use 80% of viewport height for much larger layout */
-  padding: 0 !important; /* Remove padding that's causing white space */
-  margin: 0 !important; /* Remove any margins */
+  gap: 20px;
+  width: 100%;
   box-sizing: border-box;
 }
 
 .answerColumn {
-  flex: 1 !important; /* Take full width when citation column is not shown */
-  min-width: 0; /* Allows flex item to shrink below content size */
-  width: 100% !important; /* Force full width when alone */
+  flex: 1;
+  min-width: 0;
+  width: 100%;
 }
 
 /* When citation column is present, both should be 50/50 */
 .mainAnswerLayout:has(.externalCitationColumn) .answerColumn {
-  flex: 1 1 50% !important; /* 50% when citation is shown */
-  max-width: 50% !important; /* Ensure it doesn't exceed 50% */
-  width: 50% !important;
+  flex: 1 1 50%;
+  max-width: 50%;
+  width: 50%;
 }
 
 .externalCitationColumn {
-  flex: 1 1 50% !important; /* Equal flex basis of 50% when shown */
-  min-width: 0; /* Allows flex item to shrink below content size */
-  max-width: 50% !important; /* Ensure it doesn't exceed 50% */
-  width: 50% !important;
+  flex: 1 1 50%;
+  min-width: 0;
+  max-width: 50%;
+  width: 50%;
 }
 
 /* BACKUP: In case :has() doesn't work, use this approach */
 .mainAnswerLayout .answerColumn:only-child {
-  flex: 1 !important;
-  width: 100% !important;
-  max-width: none !important;
+  flex: 1;
+  width: 100%;
+  max-width: none;
 }
 
 .externalCitationPanel {
   background: #ffffff;
   border: 1px solid #e1e5e9;
-  border-radius: 8px !important; /* Match answer container */
-  padding: 20px !important; /* Match answer container */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Enhanced shadow to match answer container */
-  min-height: 70vh !important; /* Match answer container */
-  height: auto !important;
-  width: 100% !important; /* Force full width of its container */
-  font-size: 16px !important; /* Larger font size */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  height: auto;
+  width: 100%;
+  font-size: 14px;
   box-sizing: border-box;
-  margin: 0 !important; /* Remove any margins */
 }
 
 .citationHeader {
