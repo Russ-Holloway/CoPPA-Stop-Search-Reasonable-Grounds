@@ -15,6 +15,47 @@
   gap: 20px;
 }
 
+/* When no citation panel is present, chat container takes full width */
+.chatRoot:not(:has(.citationPanel)) .chatContainer {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 !important;
+}
+
+/* When no citation panel is present, message stream takes full width */
+.chatRoot:not(:has(.citationPanel)) .chatMessageStream {
+  max-width: 100% !important;
+  width: 100% !important;
+  flex: 1 !important;
+}
+
+/* When no citation panel is present, GPT messages take full width */
+.chatRoot:not(:has(.citationPanel)) .chatMessageGpt {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Triple enforce full width for all message content when no citation */
+.chatRoot:not(:has(.citationPanel)) .chatMessageGpt > * {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Force all answer content to full width when no citation */
+.chatRoot:not(:has(.citationPanel)) .chatMessageGpt div,
+.chatRoot:not(:has(.citationPanel)) .chatMessageGpt p,
+.chatRoot:not(:has(.citationPanel)) .chatMessageGpt span {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Override any flex restrictions when no citation */
+.chatRoot:not(:has(.citationPanel)) {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+}
+
 .clearChatSidebar {
   position: fixed;
   left: 15px;
@@ -159,8 +200,8 @@
 }
 
 .inputFullWidth {
-  width: 90%;
-  max-width: 1400px;
+  width: 95% !important;
+  max-width: 1600px !important;
   margin: 0 auto;
 }
 
@@ -221,7 +262,7 @@
 
 .chatMessageStream {
   flex-grow: 1;
-  max-width: 1028px;
+  max-width: 1600px;
   width: 100%;
   overflow-y: auto;
   padding: 24px;
@@ -230,6 +271,14 @@
   margin-top: 0;
   background: transparent;
   color: var(--text-primary);
+}
+
+/* ABSOLUTE FULL WIDTH OVERRIDE when no citation */
+.chatRoot:not(:has(.citationPanel)) .chatMessageStream {
+  max-width: 100% !important;
+  width: 100% !important;
+  flex: 1 !important;
+  padding: 24px 40px !important;
 }
 
 /* Ensure all child elements inherit dark mode styling */
@@ -276,11 +325,18 @@
 
 .chatMessageGpt {
   margin-bottom: 16px;
-  max-width: 100% !important; /* FIXED: Allow full width instead of 80% */
-  width: 100% !important; /* Force full width */
+  max-width: 95%;
+  width: 95%;
   display: flex;
   background: transparent;
   color: var(--text-primary);
+}
+
+/* FORCE FULL WIDTH when no citation - ABSOLUTE OVERRIDE */
+.chatRoot:not(:has(.citationPanel)) .chatMessageGpt {
+  max-width: 100% !important;
+  width: 100% !important;
+  flex: 1 !important;
 }
 
 /* Style the GPT message content */
@@ -327,8 +383,8 @@
 .chatInput {
   flex: 0 0 auto;
   padding: 24px;
-  width: 100%;
-  max-width: 1200px;
+  width: 100% !important;
+  max-width: 1600px !important;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
