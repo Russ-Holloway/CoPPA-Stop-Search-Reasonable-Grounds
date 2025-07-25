@@ -273,18 +273,13 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
   const renderTextWithCitations = (text: string) => {
     if (!parsedAnswer?.citations.length) {
       return (
-        <ReactMarkdown
-          linkTarget="_blank"
-          children={text}
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw]}
-        />
+        <ReactMarkdown linkTarget="_blank" children={text} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} />
       )
     }
 
     // Split text by citation pattern with spaces: " [1] ", " [2] ", etc.
     const parts = text.split(/(\s*\[\d+\]\s*)/)
-    
+
     return (
       <div>
         {parts.map((part, index) => {
@@ -338,47 +333,47 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             <Stack.Item>
               <Stack horizontal grow>
                 <Stack.Item grow>
-              {/* Render answer with proper markdown formatting */}
-              {parsedAnswer && parsedAnswer.markdownFormatText && (
-                <div className={styles.answerText}>
-                  <ReactMarkdown
-                    linkTarget="_blank"
-                    children={parsedAnswer.markdownFormatText}
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                      a: ({ href, children }) => {
-                        // Check if this is a citation link (contains a number in brackets)
-                        const citationMatch = children?.toString().match(/\[(\d+)\]/)
-                        if (citationMatch) {
-                          const citationIndex = parseInt(citationMatch[1]) - 1
-                          const citation = parsedAnswer?.citations[citationIndex]
-                          if (citation) {
+                  {/* Render answer with proper markdown formatting */}
+                  {parsedAnswer && parsedAnswer.markdownFormatText && (
+                    <div className={styles.answerText}>
+                      <ReactMarkdown
+                        linkTarget="_blank"
+                        children={parsedAnswer.markdownFormatText}
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                          a: ({ href, children }) => {
+                            // Check if this is a citation link (contains a number in brackets)
+                            const citationMatch = children?.toString().match(/\[(\d+)\]/)
+                            if (citationMatch) {
+                              const citationDisplayNumber = citationMatch[1]
+                              // Find citation by reindex_id (display number) instead of array index
+                              const citation = parsedAnswer?.citations.find(c => c.reindex_id === citationDisplayNumber)
+                              if (citation) {
+                                return (
+                                  <a
+                                    href="#"
+                                    onClick={e => {
+                                      e.preventDefault()
+                                      handleCitationButtonClick(citation)
+                                    }}
+                                    className={styles.citationLink}>
+                                    {children}
+                                  </a>
+                                )
+                              }
+                            }
+                            // Regular external links
                             return (
-                              <a
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  handleCitationButtonClick(citation)
-                                }}
-                                className={styles.citationLink}
-                              >
+                              <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
                                 {children}
                               </a>
                             )
                           }
-                        }
-                        // Regular external links
-                        return (
-                          <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
-                            {children}
-                          </a>
-                        )
-                      }
-                    }}
-                  />
-                </div>
-              )}
+                        }}
+                      />
+                    </div>
+                  )}
                 </Stack.Item>
                 <Stack.Item className={styles.answerHeader}>
                   {FEEDBACK_ENABLED && answer.message_id !== undefined && (
@@ -446,7 +441,11 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                         role="button">
                         <span>Show Intents</span>
                       </Text>
-                      <FontIcon className={styles.accordionIcon} onClick={handleChevronClick} iconName={'ChevronRight'} />
+                      <FontIcon
+                        className={styles.accordionIcon}
+                        onClick={handleChevronClick}
+                        iconName={'ChevronRight'}
+                      />
                     </Stack>
                   </Stack>
                 </Stack.Item>
@@ -476,14 +475,18 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             )}
           </Stack>
         </Stack.Item>
-        
+
         {/* External citation panel */}
         {showInlineCitation && activeCitation && (
           <Stack.Item className={styles.externalCitationColumn}>
             <Stack className={styles.externalCitationPanel}>
-              <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className={styles.citationHeader}>
+              <Stack
+                horizontal
+                horizontalAlign="space-between"
+                verticalAlign="center"
+                className={styles.citationHeader}>
                 <Text style={{ fontWeight: 600, fontSize: '14px' }}>Citation</Text>
-                <DefaultButton 
+                <DefaultButton
                   iconProps={{ iconName: 'Cancel' }}
                   onClick={() => {
                     setShowInlineCitation(false)
@@ -492,15 +495,18 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                   className={styles.citationCloseButton}
                 />
               </Stack>
-              <Text 
+              <Text
                 className={styles.citationTitle}
                 onClick={() => {
                   if (activeCitation.url && !activeCitation.url.includes('blob.core')) {
                     window.open(activeCitation.url, '_blank')
                   }
                 }}
-                title={activeCitation.url && !activeCitation.url.includes('blob.core') ? activeCitation.url : activeCitation.title ?? ''}
-              >
+                title={
+                  activeCitation.url && !activeCitation.url.includes('blob.core')
+                    ? activeCitation.url
+                    : activeCitation.title ?? ''
+                }>
                 {activeCitation.title}
               </Text>
               <div className={styles.citationContent}>
