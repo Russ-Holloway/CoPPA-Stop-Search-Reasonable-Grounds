@@ -346,22 +346,8 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                             // Check if this is a citation link (contains a number in brackets)
                             const citationMatch = children?.toString().match(/\[(\d+)\]/)
                             if (citationMatch) {
-                              const citationDisplayNumber = citationMatch[1]
-                              // Find citation by reindex_id (display number) instead of array index
-                              const citation = parsedAnswer?.citations.find(c => c.reindex_id === citationDisplayNumber)
-                              if (citation) {
-                                return (
-                                  <a
-                                    href="#"
-                                    onClick={e => {
-                                      e.preventDefault()
-                                      handleCitationButtonClick(citation)
-                                    }}
-                                    className={styles.citationLink}>
-                                    {children}
-                                  </a>
-                                )
-                              }
+                              // Return plain text for citations - not clickable
+                              return <span className={styles.citationInlineText}>{children}</span>
                             }
                             // Regular external links
                             return (
@@ -476,7 +462,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
           </Stack>
         </Stack.Item>
 
-        {/* External citation panel */}
+        {/* External citation panel - positioned beside answer with proper sizing */}
         {showInlineCitation && activeCitation && (
           <Stack.Item className={styles.externalCitationColumn}>
             <Stack className={styles.externalCitationPanel}>
@@ -521,6 +507,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
           </Stack.Item>
         )}
       </Stack>
+
       <Dialog
         onDismiss={() => {
           resetFeedbackDialog()

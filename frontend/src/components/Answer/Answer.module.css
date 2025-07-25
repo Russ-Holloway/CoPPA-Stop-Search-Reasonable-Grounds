@@ -264,3 +264,102 @@ sup {
     margin-bottom: 5px;
   }
 }
+
+/* Citation panel styles */
+.mainAnswerLayout {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.answerColumn {
+  flex: 1;
+  min-width: 0; /* Allows flex item to shrink below content size */
+}
+
+.externalCitationColumn {
+  flex: 0 0 400px; /* Fixed width of 400px, doesn't grow or shrink */
+  max-width: 400px;
+}
+
+.externalCitationPanel {
+  background: #ffffff;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+.citationHeader {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.citationTitle {
+  font-weight: 600;
+  font-size: 16px;
+  color: #323130;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.citationTitle:hover {
+  color: #0078d4;
+  text-decoration: underline;
+}
+
+.citationContent {
+  color: #605e5c;
+  line-height: 1.6;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.citationCloseButton {
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.citationInlineText {
+  display: inline;
+  color: #323130;
+  font-weight: normal;
+}
+
+:global(.dark-mode) .externalCitationPanel {
+  background: #2d2d30;
+  border-color: #3e3e42;
+}
+
+:global(.dark-mode) .citationHeader {
+  border-bottom-color: #3e3e42;
+}
+
+:global(.dark-mode) .citationTitle {
+  color: #ffffff;
+}
+
+:global(.dark-mode) .citationContent {
+  color: #cccccc;
+}
+
+:global(.dark-mode) .citationInlineText {
+  color: #ffffff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mainAnswerLayout {
+    flex-direction: column;
+  }
+  
+  .externalCitationColumn {
+    flex: none;
+    max-width: none;
+  }
+}
