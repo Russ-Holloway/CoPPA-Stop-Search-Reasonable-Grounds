@@ -264,8 +264,8 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                     rehypePlugins={[rehypeRaw]}
                     components={{
                       a: ({ href, children }) => {
-                        // Check if this is a citation link (contains a number in brackets)
-                        const citationMatch = children?.toString().match(/\[(\d+)\]/)
+                        // Check if this is a citation link using href pattern
+                        const citationMatch = href?.match(/#citation-(\d+)/)
                         if (citationMatch) {
                           const citationIndex = parseInt(citationMatch[1]) - 1
                           const citation = parsedAnswer?.citations[citationIndex]
