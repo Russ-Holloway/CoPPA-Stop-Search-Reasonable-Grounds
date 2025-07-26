@@ -121,7 +121,7 @@ const Layout = () => {
             <Link to="/" style={{ textDecoration: 'none' }}>
               <h1 className={styles.headerTitle}>CoPPA Stop & Search</h1>
               <p className={styles.headerSubtitle}>
-                CoPPA Stop & Search is specialized to assist supervisors with reasonable grounds assessment based on PACE Code A and College of Policing guidance
+                CoPPA Stop Search is configured to assist supervisors when reviewing reasonable grounds
               </p>
             </Link>
           </div>
