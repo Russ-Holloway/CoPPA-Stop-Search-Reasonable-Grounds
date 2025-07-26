@@ -45,7 +45,7 @@ class _UiSettings(BaseSettings):
     logo: Optional[str] = None
     chat_logo: Optional[str] = None
     chat_title: str = "Start assessing reasonable grounds for stop & search"
-    chat_description: str = "CoPPA Stop & Search is specialized to assist supervisors with reasonable grounds assessment based on PACE Code A and College of Policing guidance"
+    chat_description: str = "CoPPA Stop Search is configured to assist supervisors when reviewing reasonable grounds"
     subtitle: Optional[str] = None
     favicon: str = "/favicon.ico"
     show_share_button: bool = True
