@@ -18,6 +18,22 @@ This is a police stop and search application built with Python Flask backend and
 - Review all code changes for unnecessary complexity and refactor to simpler solutions
 - Prefer clear, self-documenting code over clever or overly abstracted solutions
 
+### Tool Usage Guidelines
+When helping with development tasks:
+- **Always explore the codebase first** using `file_search`, `semantic_search`, or `grep_search` before making changes
+- **Read existing files** to understand current patterns and architecture
+- **Check for existing implementations** before creating new components or functions
+- **Use `get_errors` tool** to identify and fix compilation or linting issues
+- **Test changes thoroughly** and verify functionality before completion
+
+### Project Structure Understanding
+- **Frontend**: React/TypeScript application in `frontend/` directory
+- **Backend**: Python Flask application in root and `backend/` directories  
+- **Infrastructure**: Azure deployment configs in `infra/` and `infrastructure/` directories
+- **Documentation**: Various `.md` files for setup, deployment, and guidelines
+- **Key files**: `app.py` (main Flask app), `requirements.txt`, `package.json`
+- **Search before creating**: Always check if similar functionality already exists
+
 ## CSS and Layout Best Practices
 
 ### CSS Architecture
@@ -134,6 +150,14 @@ frontend/src/
 
 ## Security Considerations
 
+### Data Protection and Privacy
+- **Never log or expose sensitive police data** in console outputs, error messages, or debugging
+- **Sanitize all user inputs** before processing or storing
+- **Use environment variables** for all sensitive configuration (API keys, database credentials)
+- **Implement proper data encryption** for sensitive data at rest and in transit
+- **Follow data minimization principles** - only collect and store necessary data
+- **Ensure secure session management** with proper timeout and invalidation
+
 ### CSS Security
 - Avoid user-generated content in CSS values
 - Sanitize any dynamic CSS content
@@ -144,6 +168,9 @@ frontend/src/
 - Never expose sensitive police data in client-side code
 - Use proper data validation on both frontend and backend
 - Implement proper error handling without exposing system details
+- **Use HTTPS for all data transmission**
+- **Implement proper authentication and authorization checks**
+- **Log security events appropriately** without exposing sensitive information
 
 ## Performance Guidelines
 
@@ -161,6 +188,13 @@ frontend/src/
 
 ## Testing Requirements
 
+### Code Quality Assurance
+- **Run existing tests** before making changes to ensure baseline functionality
+- **Write tests for new functionality** following existing test patterns
+- **Use appropriate testing frameworks** (Jest for frontend, pytest for backend)
+- **Test edge cases and error conditions** especially for data validation
+- **Mock external dependencies** in tests to ensure reliable, fast execution
+
 ### CSS Testing
 - Test layout changes across multiple browsers
 - Verify responsive design at different viewport sizes
@@ -173,6 +207,12 @@ frontend/src/
 - Test with high contrast mode enabled
 - Validate color contrast ratios
 
+### Backend Testing
+- **Test API endpoints** with various input combinations
+- **Verify database operations** don't compromise data integrity
+- **Test authentication and authorization** flows thoroughly
+- **Validate error handling** returns appropriate responses
+
 ## Change Implementation Strategy
 
 ### Code Simplicity Principles
@@ -183,6 +223,14 @@ frontend/src/
 - Eliminate duplicate code through simple, clear abstractions
 - Use standard patterns and conventions rather than custom solutions
 - Write code that can be easily understood by other developers
+
+### Implementation Workflow
+1. **Explore existing codebase** using search tools to understand current patterns
+2. **Identify reusable components** or patterns before creating new ones
+3. **Follow established conventions** found in existing code
+4. **Make minimal changes** that achieve the desired functionality
+5. **Test thoroughly** including edge cases and accessibility
+6. **Document decisions** when deviating from established patterns
 
 ### Making Layout Changes
 1. **Analyze current CSS**: Understand existing layout structure
