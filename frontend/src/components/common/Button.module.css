@@ -1,17 +1,50 @@
+/* Base button styling */
+.button {
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
 .shareButtonRoot {
-  width: 86px;
-  height: 32px;
-  border-radius: 4px;
-  background: radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0f6cbd 33.63%, #2d87c3 70.31%, #8dddd8 100%);
-  padding: 5px 12px;
+  background: #6366f1;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .shareButtonRoot:hover {
-  background: linear-gradient(135deg, #0f6cbd 0%, #2d87c3 51.04%, #8dddd8 100%);
+  background: #5855eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.shareButtonRoot:focus {
+  background: #5855eb;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .shareButtonRoot span {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   line-height: 20px;
   color: #ffffff;
@@ -23,62 +56,136 @@
 }
 
 .historyButtonRoot {
-  width: 180px;
-  border: 1px solid #d1d1d1;
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .historyButtonRoot:hover {
-  border: 1px solid #d1d1d1;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.historyButtonRoot:focus {
+  background: #f1f5f9;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .historyButtonRoot:active {
-  border: 1px solid #d1d1d1;
+  background: #e2e8f0;
+  border-color: #94a3b8;
 }
 
 .feedbackButtonRoot {
-  width: 180px;
-  border: 1px solid #d1d1d1;
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .feedbackButtonRoot:hover {
-  border: 1px solid #d1d1d1;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.feedbackButtonRoot:focus {
+  background: #f1f5f9;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .feedbackButtonRoot:active {
-  border: 1px solid #d1d1d1;
+  background: #e2e8f0;
+  border-color: #94a3b8;
 }
 
 .findOutMoreButtonRoot {
-  width: 180px;
-  border: 1px solid #d1d1d1;
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .findOutMoreButtonRoot:hover {
-  border: 1px solid #d1d1d1;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.findOutMoreButtonRoot:focus {
+  background: #f1f5f9;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .findOutMoreButtonRoot:active {
-  border: 1px solid #d1d1d1;
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .button,
+  .shareButtonRoot,
+  .historyButtonRoot,
+  .feedbackButtonRoot,
+  .findOutMoreButtonRoot {
+    padding: 10px 16px;
+    font-size: 14px;
+    min-height: 40px;
+  }
 }
 
 @media (max-width: 480px) {
-  .shareButtonRoot {
-    width: auto;
-    padding: 5px 8px;
-  }
-
-  .historyButtonRoot {
-    width: auto;
-    padding: 0 8px;
-  }
-
-  .feedbackButtonRoot {
-    width: auto;
-    padding: 0 8px;
-  }
-
+  .button,
+  .shareButtonRoot,
+  .historyButtonRoot,
+  .feedbackButtonRoot,
   .findOutMoreButtonRoot {
+    padding: 12px 16px;
+    font-size: 14px;
+    min-height: 44px;
     width: auto;
-    padding: 0 8px;
+  }
+  
+  .shareButtonRoot {
+    padding: 8px 12px;
+  }
+  
+  .historyButtonRoot,
+  .feedbackButtonRoot,
+  .findOutMoreButtonRoot {
+    padding: 8px 12px;
   }
 }

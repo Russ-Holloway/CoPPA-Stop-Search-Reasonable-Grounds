@@ -2,8 +2,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background: var(--bg-primary);
+  gap: 24px;
+  background: #fafbfc;
   min-height: calc(100vh - 100px);
   transition: background 0.3s ease;
 }
@@ -384,7 +384,7 @@
   flex: 0 0 auto;
   padding: 24px;
   width: 100% !important;
-  max-width: 1600px !important;
+  max-width: 800px !important;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -404,7 +404,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 1400px;
+  max-width: 800px;
   margin: 40px auto;
   padding: 20px;
 }
@@ -413,10 +413,10 @@
 .inputRow {
   display: flex;
   align-items: flex-end;
-  gap: 32px;
+  gap: 24px;
   width: 100%;
   justify-content: center;
-  max-width: 1400px;
+  max-width: 800px;
 }
 
 .sideControls {
@@ -789,10 +789,32 @@ a {
   font-style: italic;
 }
 
+@media (max-width: 768px) {
+  .container {
+    gap: 16px;
+  }
+  
+  .chatInput {
+    padding: 16px;
+    max-width: 95%;
+  }
+  
+  .chatInputCentered {
+    margin: 24px auto;
+    padding: 16px;
+  }
+  
+  .inputRow {
+    gap: 16px;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 480px) {
   .chatInput {
     width: 90%;
     max-width: 90%;
+    padding: 12px;
   }
 
   .newChatIcon {
@@ -823,5 +845,20 @@ a {
 
   .customTaglinePlaceholder {
     max-width: 90%;
+  }
+  
+  .chatInputCentered {
+    margin: 16px auto;
+    padding: 12px;
+  }
+  
+  .inputRow {
+    gap: 12px;
+    flex-direction: column;
+  }
+  
+  .sideControls {
+    min-width: auto;
+    align-self: stretch;
   }
 }
