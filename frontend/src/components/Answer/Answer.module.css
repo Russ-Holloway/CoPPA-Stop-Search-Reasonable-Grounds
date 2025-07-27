@@ -116,31 +116,59 @@
 }
 
 .answerText a {
-  color: #0078d4;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 2px 4px;
-  border-radius: 3px;
-  background-color: #f3f9ff;
+  color: inherit !important;
+  text-decoration: none !important;
+  font-weight: inherit !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  cursor: default !important;
 }
 
 .answerText a:hover {
-  background-color: #e1f5fe;
-  text-decoration: underline;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  cursor: default !important;
+}
+
+.answerText span {
+  color: inherit !important;
+  text-decoration: none !important;
+  font-weight: inherit !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  cursor: default !important;
+}
+
+/* Force all potential citation elements to be plain text */
+.answerText [data-citation],
+.answerText .citation,
+.answerText span[class*="citation"] {
+  color: inherit !important;
+  text-decoration: none !important;
+  font-weight: inherit !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  cursor: default !important;
+  pointer-events: none !important;
 }
 
 .citationLink {
-  color: #0078d4 !important;
+  color: inherit !important;
   text-decoration: none !important;
-  font-weight: 500 !important;
-  padding: 2px 4px !important;
-  border-radius: 3px !important;
-  background-color: #f3f9ff !important;
+  font-weight: inherit !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  cursor: default !important;
 }
 
 .citationLink:hover {
-  background-color: #e1f5fe !important;
-  text-decoration: underline !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  cursor: default !important;
 }
 
 .answerHeader {
