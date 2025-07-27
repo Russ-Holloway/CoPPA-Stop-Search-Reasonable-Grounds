@@ -16,6 +16,7 @@ import { AppStateContext } from '../../state/AppProvider'
 import { parseAnswer } from './AnswerParser'
 
 import styles from './Answer.module.css'
+import './AnswerOverrides.css'
 
 interface Props {
   answer: AskResponse
@@ -326,9 +327,9 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
 
   return (
     <>
-      <Stack horizontal className={styles.mainAnswerLayout}>
+      <div className={styles.mainAnswerLayout}>
         {/* Main answer container */}
-        <Stack.Item grow className={styles.answerColumn}>
+        <div className={styles.answerColumn}>
           <Stack className={styles.answerContainer} tabIndex={0}>
             <Stack.Item>
               <Stack horizontal grow>
@@ -475,11 +476,11 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
               </Stack>
             )}
           </Stack>
-        </Stack.Item>
+        </div>
 
         {/* External citation panel - positioned beside answer with proper sizing */}
         {showInlineCitation && activeCitation && (
-          <Stack.Item className={styles.externalCitationColumn}>
+          <div className={styles.externalCitationColumn}>
             <Stack className={styles.externalCitationPanel}>
               <Stack
                 horizontal
@@ -519,9 +520,9 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                 />
               </div>
             </Stack>
-          </Stack.Item>
+          </div>
         )}
-      </Stack>
+      </div>
 
       <Dialog
         onDismiss={() => {
