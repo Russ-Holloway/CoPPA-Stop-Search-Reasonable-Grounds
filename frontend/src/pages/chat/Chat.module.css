@@ -325,18 +325,20 @@
 
 .chatMessageGpt {
   margin-bottom: 16px;
-  max-width: 95%;
-  width: 95%;
+  max-width: 750px;
+  width: 100%;
   display: flex;
   background: transparent;
   color: var(--text-primary);
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* FORCE FULL WIDTH when no citation - ABSOLUTE OVERRIDE */
+/* FORCE REASONABLE WIDTH when no citation - BALANCED OVERRIDE */
 .chatRoot:not(:has(.citationPanel)) .chatMessageGpt {
-  max-width: 100% !important;
+  max-width: 750px !important;
   width: 100% !important;
-  flex: 1 !important;
+  margin: 0 auto 16px auto !important;
 }
 
 /* Style the GPT message content */
@@ -815,6 +817,11 @@ a {
     width: 90%;
     max-width: 90%;
     padding: 12px;
+  }
+
+  .chatMessageGpt {
+    max-width: 95%;
+    margin: 0 auto 16px auto;
   }
 
   .newChatIcon {
