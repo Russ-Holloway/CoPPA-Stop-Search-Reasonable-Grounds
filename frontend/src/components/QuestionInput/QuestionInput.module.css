@@ -1,6 +1,6 @@
 .questionInputContainer {
   height: auto;
-  min-height: 160px;
+  min-height: 120px;
   position: relative;
   margin: 0 auto;
   background: #ffffff;
@@ -9,7 +9,7 @@
   border: 1px solid #e2e8f0;
   overflow: hidden;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   transition: box-shadow 0.2s ease;
 }
 
@@ -35,7 +35,7 @@
   padding: 16px;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
   resize: vertical;
   transition: all 0.2s ease;
@@ -181,7 +181,7 @@
 
 @media (max-width: 768px) {
   .questionInputContainer {
-    min-height: 140px;
+    min-height: 100px;
     max-width: 95%;
     margin: 0 auto;
   }
@@ -208,7 +208,7 @@
 @media (max-width: 480px) {
   .questionInputContainer {
     margin: 0 auto;
-    min-height: 120px;
+    min-height: 90px;
     width: 95%;
     max-width: 95%;
   }
@@ -216,7 +216,7 @@
   .questionInputTextArea {
     font-size: 16px;
     line-height: 1.4;
-    min-height: 80px;
+    min-height: 60px;
     padding: 12px;
     width: calc(100% - 24px);
     margin: 12px;
