@@ -2,10 +2,6 @@
   box-sizing: border-box;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 /* CSS Custom Properties for Light and Dark themes */
 :root {
   /* Light theme variables */
@@ -151,4 +147,22 @@ html {
 /* Override FluentUI Stack components in dark mode to be transparent */
 .dark-mode .ms-Stack {
   background-color: transparent !important;
+}
+
+/* Global citation panel override - ensures our sizing takes effect */
+[class*="citationPanel"] {
+  flex: 0 0 900px !important;
+  max-width: 900px !important;
+  min-width: 850px !important;
+  width: 900px !important;
+}
+
+/* Responsive citation panel overrides */
+@media (max-width: 768px) {
+  [class*="citationPanel"] {
+    flex: 0 0 500px !important; /* Larger mobile citation panel */
+    max-width: 500px !important;
+    min-width: 450px !important;
+    width: 500px !important;
+  }
 }
