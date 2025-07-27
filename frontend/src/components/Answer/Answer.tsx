@@ -287,19 +287,9 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[rehypeRaw]}
                         components={{
-                          a: ({ href, children }) => {
-                            // Check if this is a citation link (contains a number in brackets)
-                            const citationMatch = children?.toString().match(/\[(\d+)\]/)
-                            if (citationMatch) {
-                              // Render citation numbers as plain text, not links
-                              return <span>{children}</span>
-                            }
-                            // Regular external links
-                            return (
-                              <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
-                                {children}
-                              </a>
-                            )
+                          a: ({ children }) => {
+                            // Render all links as plain text spans
+                            return <span>{children}</span>
                           }
                         }}
                       />
@@ -341,7 +331,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             {parsedAnswer?.generated_chart !== null && (
               <Stack className={styles.answerContainer}>
                 <Stack.Item grow>
-                  <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} />
+                  <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} alt="Generated chart" />
                 </Stack.Item>
               </Stack>
             )}
