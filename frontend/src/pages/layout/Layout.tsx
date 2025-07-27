@@ -47,7 +47,9 @@ const Layout = () => {
     const feedbackEmail = ui?.feedback_email
     if (feedbackEmail) {
       const subject = encodeURIComponent('CoPPA Stop & Search Feedback')
-      const body = encodeURIComponent('Hi,\n\nI would like to provide feedback about CoPPA Stop & Search:\n\n\n\nThank you.')
+      const body = encodeURIComponent(
+        'Hi,\n\nI would like to provide feedback about CoPPA Stop & Search:\n\n\n\nThank you.'
+      )
       const mailtoUrl = `mailto:${feedbackEmail}?subject=${subject}&body=${body}`
       window.open(mailtoUrl, '_blank')
     }

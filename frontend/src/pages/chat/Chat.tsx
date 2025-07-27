@@ -947,7 +947,7 @@ const Chat = () => {
               </Stack>
             )}
           </div>
-          
+
           {/* Citation Panel */}
           {messages && messages.length > 0 && isCitationPanelOpen && activeCitation && (
             <Stack.Item className={styles.citationPanel} tabIndex={0} role="tabpanel" aria-label="Citations Panel">
@@ -1051,7 +1051,7 @@ const Chat = () => {
             appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured && <ChatHistoryPanel />}
         </Stack>
       )}
-      
+
       <Dialog
         hidden={hideErrorDialog}
         onDismiss={handleErrorDialogClose}
