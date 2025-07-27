@@ -11,11 +11,11 @@
 .chatRoot {
   flex: 1;
   display: flex;
-  margin: 20px;
-  gap: 24px;
-  max-width: 98vw; /* Use 98% of viewport width for maximum space */
-  width: 98vw;
-  margin: 20px auto;
+  margin: 10px;
+  gap: 32px;
+  max-width: 96vw; /* Increase to 96% of viewport width for much larger boxes */
+  width: 96vw;
+  margin: 10px auto;
 }
 
 /* When no citation panel is present, chat container takes full width */
@@ -145,11 +145,11 @@
   transition: all 0.3s ease;
 }
 
-/* When citation panel is present, chat container takes 65% for much larger answer box */
+/* When citation panel is present, chat container takes 60% for much larger answer box */
 .chatRoot:has(.citationPanel) .chatContainer {
   flex: 3;
-  max-width: 65%;
-  width: 65%;
+  max-width: 60%;
+  width: 60%;
 }
 
 .chatEmptyState {
@@ -272,10 +272,10 @@
 
 .chatMessageStream {
   flex-grow: 1;
-  max-width: 800px;
+  max-width: 100%; /* Remove width restriction for much larger space */
   width: 100%;
   overflow-y: auto;
-  padding: 24px;
+  padding: 32px; /* Increased padding for larger container */
   display: flex;
   flex-direction: column;
   margin-top: 0;
@@ -335,7 +335,7 @@
 
 .chatMessageGpt {
   margin-bottom: 16px;
-  max-width: 750px;
+  max-width: 100%; /* Remove width restriction for much larger messages */
   width: 100%;
   display: flex;
   background: transparent;
@@ -344,9 +344,9 @@
   margin-right: auto;
 }
 
-/* FORCE REASONABLE WIDTH when no citation - BALANCED OVERRIDE */
+/* FORCE MAXIMUM WIDTH when no citation - EXPANDED OVERRIDE */
 .chatRoot:not(:has(.citationPanel)) .chatMessageGpt {
-  max-width: 750px !important;
+  max-width: 100% !important; /* Full width when no citation panel */
   width: 100% !important;
   margin: 0 auto 16px auto !important;
 }
@@ -376,7 +376,7 @@
   flex: none;
   order: 0;
   flex-grow: 0;
-  max-width: 800px;
+  max-width: 100%; /* REMOVED 800px restriction for larger layout */
   margin-bottom: 12px;
 }
 
@@ -396,7 +396,7 @@
   flex: 0 0 auto;
   padding: 24px;
   width: 100% !important;
-  max-width: 800px !important;
+  max-width: 100% !important; /* REMOVED 800px restriction for larger layout */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -416,7 +416,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 100%; /* REMOVED 800px restriction for larger layout */
   margin: 40px auto;
   padding: 20px;
 }
@@ -552,8 +552,8 @@
   order: 0;
   align-self: stretch;
   flex-grow: 1;
-  max-width: 35%; /* Increased to 35% for much larger citation box */
-  min-width: 600px; /* Increased minimum width for larger citation panel */
+  max-width: 40%; /* Increased to 40% for much larger citation box */
+  min-width: 700px; /* Increased minimum width significantly for larger citation panel */
   overflow-y: auto;
   max-height: calc(100vh - 100px);
   color: var(--text-primary);
@@ -927,14 +927,14 @@ a {
   
   .chatRoot:has(.citationPanel) .chatContainer {
     flex: 1.5;
-    max-width: 65%;
-    width: 65%;
+    max-width: 60%; /* Maintain larger answer box */
+    width: 60%;
   }
 
   .citationPanel {
     flex: 1;
-    max-width: 35%;
-    min-width: 250px;
+    max-width: 40%; /* Larger citation panel */
+    min-width: 350px; /* Increased minimum width */
   }
 }
 
