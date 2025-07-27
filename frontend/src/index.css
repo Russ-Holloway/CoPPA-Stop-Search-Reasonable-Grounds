@@ -5,7 +5,7 @@
 /* CSS Custom Properties for Light and Dark themes */
 :root {
   /* Light theme variables */
-  --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --bg-primary: linear-gradient(135deg, #f7fafc 0%, #c3cfe2 100%);
   --bg-secondary: #ffffff;
   --bg-tertiary: rgba(255, 255, 255, 0.8);
   --text-primary: #1f2937;
@@ -151,18 +151,18 @@ html {
 
 /* Global citation panel override - ensures our sizing takes effect */
 [class*='citationPanel'] {
-  flex: 0 0 900px !important;
-  max-width: 900px !important;
-  min-width: 850px !important;
-  width: 900px !important;
+  flex: 0 0 250px !important;
+  max-width: 250px !important;
+  min-width: 220px !important;
+  width: 250px !important;
 }
 
 /* Responsive citation panel overrides */
 @media (max-width: 768px) {
   [class*='citationPanel'] {
-    flex: 0 0 500px !important; /* Larger mobile citation panel */
-    max-width: 500px !important;
-    min-width: 450px !important;
-    width: 500px !important;
+    flex: 0 0 220px !important;
+    max-width: 220px !important;
+    min-width: 200px !important;
+    width: 220px !important;
   }
 }

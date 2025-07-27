@@ -278,7 +278,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             <Stack.Item>
               <Stack horizontal grow className={styles.answerMainContent}>
                 <Stack.Item grow className={styles.answerContentColumn}>
-                  {/* Render answer with proper markdown formatting */}
+                                    {/* Render answer with proper markdown formatting */}
                   {parsedAnswer && parsedAnswer.markdownFormatText && (
                     <div className={styles.answerText}>
                       <ReactMarkdown
@@ -288,7 +288,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                         rehypePlugins={[rehypeRaw]}
                         components={{
                           a: ({ children }) => {
-                            // Render all links as plain text spans
+                            // Force ALL links to render as plain text spans
                             return <span>{children}</span>
                           }
                         }}
