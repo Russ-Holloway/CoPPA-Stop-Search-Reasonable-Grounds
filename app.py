@@ -50,6 +50,15 @@ def require_cosmos_db(f):
     """Decorator to ensure CosmosDB is available before executing the function"""
     @wraps(f)
     async def decorated_function(*args, **kwargs):
+        # Check if chat history is disabled for development
+        disable_chat_history = os.getenv("DISABLE_CHAT_HISTORY", "").lower() == "true"
+        logging.info(f"DISABLE_CHAT_HISTORY check: {disable_chat_history} (env value: {os.getenv('DISABLE_CHAT_HISTORY', 'not set')})")
+        
+        if disable_chat_history:
+            # Skip CosmosDB requirement for development
+            logging.info("Bypassing CosmosDB requirement for development")
+            return await f(*args, **kwargs)
+            
         # Check if CosmosDB is available
         if not current_app.cosmos_conversation_client:
             return jsonify({
@@ -455,6 +464,92 @@ async def send_chat_request(request_body, request_headers):
 
 
 async def complete_chat_request(request_body, request_headers):
+    # Development mode: return mock response when OpenAI is not configured
+    if os.getenv("DISABLE_CHAT_HISTORY", "").lower() == "true":
+        logging.info("Development mode: returning mock response")
+        
+        # Extract user message for context
+        user_message = "test message"
+        if request_body.get("messages") and len(request_body["messages"]) > 0:
+            user_message = request_body["messages"][-1].get("content", "test message")
+        
+        # Create a simple mock object with the expected attributes
+        class MockChoice:
+            def __init__(self):
+                self.message = MockMessage()
+        
+        class MockMessage:
+            def __init__(self):
+                self.role = "assistant"
+                self.content = f"""Thank you for your query: "{user_message[:50]}..."
+
+**Assessment of Reasonable Grounds:**
+
+Based on PACE Code A and College of Policing guidance [1], here are the key considerations for supervisors:
+
+**For First Line Leaders:**
+- Review the officer's articulation of specific, objective facts
+- Ensure the grounds meet the "reasonable suspicion" threshold under s.1 PACE [2]
+- Check compliance with Code A requirements for recording and justification [1]
+- Reference: PACE Code A para 2.2-2.11, National Decision Model [3]
+
+**Feedback for the Officer:**
+*Developmental areas:*
+- Consider including more specific behavioral indicators
+- Strengthen the connection between observations and suspicion [2]
+- Ensure all relevant circumstances are documented [1]
+
+*Positive aspects:*
+- Good initial assessment of the situation
+- Appropriate consideration of available information [3]
+
+**Please Remember:** This AI Assistant is designed to offer help and advice so you can make more informed and effective decisions. It is not designed to make any decisions for you."""
+                
+                # Add context for citations
+                self.context = {
+                    "citations": [
+                        {
+                            "content": "The purpose of this Code is to provide guidance to police officers on the use of their powers of stop and search. Stop and search powers are an important tool in the prevention and detection of crime, but they must be used fairly, with respect, and only when necessary.",
+                            "id": "1",
+                            "title": "PACE Code A - Purpose and Scope",
+                            "filepath": "police_guidelines.md",
+                            "url": None,
+                            "metadata": None,
+                            "chunk_id": "0"
+                        },
+                        {
+                            "content": "Reasonable suspicion is the legal standard required before a police officer can stop and search a person or vehicle. It must be based on specific facts, information, and/or intelligence which are relevant to the likelihood of finding an article of a certain kind.",
+                            "id": "2",
+                            "title": "PACE Code A - Reasonable Suspicion",
+                            "filepath": "police_guidelines.md",
+                            "url": None,
+                            "metadata": None,
+                            "chunk_id": "1"
+                        },
+                        {
+                            "content": "The National Decision Model provides a framework for decision-making in policing. It emphasizes the importance of gathering information, assessing threat and risk, and considering powers and policy before taking action.",
+                            "id": "3",
+                            "title": "National Decision Model - Framework",
+                            "filepath": "investigation_procedures.md",
+                            "url": None,
+                            "metadata": None,
+                            "chunk_id": "2"
+                        }
+                    ]
+                }
+
+        class MockCompletion:
+            def __init__(self):
+                self.id = "chatcmpl-mock123"
+                self.model = "gpt-35-turbo-16k"
+                self.created = 1234567890
+                self.object = "chat.completion"
+                self.choices = [MockChoice()]
+        
+        mock_response = MockCompletion()
+        history_metadata = request_body.get("history_metadata", {})
+        return format_non_streaming_response(mock_response, history_metadata, "mock-request-id")
+    
     if app_settings.base_settings.use_promptflow:
         response = await promptflow_request(request_body)
         history_metadata = request_body.get("history_metadata", {})
