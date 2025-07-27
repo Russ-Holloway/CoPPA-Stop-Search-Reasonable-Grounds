@@ -364,9 +364,9 @@ sup {
 }
 
 .externalCitationColumn {
-  flex: 0 0 auto !important; /* Allow responsive flexing */
-  min-width: 700px !important; /* Match our larger citation panel */
-  /* Removed fixed width to allow responsive behavior */
+  flex: 0 0 900px !important; /* Match the larger citation panel from Chat.module.css */
+  min-width: 850px !important;
+  max-width: 900px !important;
 }
 
 /* BACKUP: In case :has() doesn't work, use this approach */
@@ -531,17 +531,16 @@ span[class*="citation"] {
     gap: 20px;
   }
   
-  .mainAnswerLayout:has(.externalCitationColumn) .answerColumn {
+  .answerColumn {
     flex: 1.5;
     max-width: 60%; /* Updated to match AnswerOverrides.css */
     width: 60%;
   }
 
   .externalCitationColumn {
-    flex: 1;
-    max-width: 40%; /* Updated to match AnswerOverrides.css */
-    width: 40%;
-    min-width: 350px !important; /* Updated to match AnswerOverrides.css */
+    flex: 0 0 500px !important;
+    max-width: 500px !important;
+    min-width: 450px !important;
   }
 }
 
@@ -578,6 +577,12 @@ span[class*="citation"] {
 @media (max-width: 480px) {
   .answerContainer {
     padding: 14px;
+  }
+
+  .externalCitationColumn {
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-width: auto;
   }
 }
 

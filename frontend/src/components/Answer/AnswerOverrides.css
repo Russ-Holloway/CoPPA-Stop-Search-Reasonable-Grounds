@@ -9,10 +9,10 @@
   }
 
   .externalCitationColumn {
-    flex: 1 !important;
-    max-width: 40% !important; /* Updated to match larger size */
-    width: 40% !important;
-    min-width: 350px !important; /* Increased minimum width */
+    flex: 0 0 500px !important;
+    max-width: 500px !important; /* Updated to match tablet size */
+    width: 500px !important;
+    min-width: 450px !important; /* Updated minimum width */
   }
 }
 
@@ -32,6 +32,14 @@
     flex: none !important;
     max-width: none !important;
     width: 100% !important;
+    min-width: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .externalCitationColumn {
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
     min-width: auto !important;
   }
 }

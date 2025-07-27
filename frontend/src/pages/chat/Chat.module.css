@@ -2,8 +2,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  background: #fafbfc;
+  gap: 20px;
+  background: var(--bg-primary);
   min-height: calc(100vh - 100px);
   transition: background 0.3s ease;
 }
@@ -11,11 +11,8 @@
 .chatRoot {
   flex: 1;
   display: flex;
-  margin: 10px;
-  gap: 32px;
-  max-width: 96vw; /* Increase to 96% of viewport width for much larger boxes */
-  width: 96vw;
-  margin: 10px auto;
+  margin: 20px;
+  gap: 20px;
 }
 
 /* When no citation panel is present, chat container takes full width */
@@ -211,7 +208,7 @@
 
 .inputFullWidth {
   width: 95% !important;
-  max-width: 800px !important;
+  max-width: 1200px !important; /* Allow wider input area */
   margin: 0 auto;
 }
 
@@ -271,21 +268,21 @@
 }
 
 .chatMessageStream {
-  flex-grow: 1;
-  max-width: 100%; /* Remove width restriction for much larger space */
-  width: 100%;
+  flex-grow: 1 !important;
+  max-width: 1600px !important; /* Even larger container for optimal space usage */
+  width: 100% !important;
   overflow-y: auto;
-  padding: 32px; /* Increased padding for larger container */
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  margin-top: 0;
+  margin: 0 auto;
   background: transparent;
   color: var(--text-primary);
 }
 
 /* ABSOLUTE FULL WIDTH OVERRIDE when no citation */
 .chatRoot:not(:has(.citationPanel)) .chatMessageStream {
-  max-width: 100% !important;
+  max-width: 1200px !important;
   width: 100% !important;
   flex: 1 !important;
   padding: 24px 40px !important;
@@ -335,20 +332,18 @@
 
 .chatMessageGpt {
   margin-bottom: 16px;
-  max-width: 100%; /* Remove width restriction for much larger messages */
-  width: 100%;
+  max-width: 1200px !important; /* Much larger for better space usage */
+  width: 100% !important;
   display: flex;
   background: transparent;
   color: var(--text-primary);
-  margin-left: auto;
-  margin-right: auto;
 }
 
-/* FORCE MAXIMUM WIDTH when no citation - EXPANDED OVERRIDE */
+/* FORCE FULL WIDTH when no citation - ABSOLUTE OVERRIDE */
 .chatRoot:not(:has(.citationPanel)) .chatMessageGpt {
-  max-width: 100% !important; /* Full width when no citation panel */
+  max-width: 1200px !important;
   width: 100% !important;
-  margin: 0 auto 16px auto !important;
+  flex: 1 !important;
 }
 
 /* Style the GPT message content */
@@ -396,7 +391,7 @@
   flex: 0 0 auto;
   padding: 24px;
   width: 100% !important;
-  max-width: 100% !important; /* REMOVED 800px restriction for larger layout */
+  max-width: 1200px !important; /* Allow wider input area */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -416,7 +411,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 100%; /* REMOVED 800px restriction for larger layout */
+  max-width: 1200px; /* Allow wider centered container */
   margin: 40px auto;
   padding: 20px;
 }
@@ -425,10 +420,10 @@
 .inputRow {
   display: flex;
   align-items: flex-end;
-  gap: 24px;
+  gap: 32px;
   width: 100%;
   justify-content: center;
-  max-width: 800px;
+  max-width: 1200px; /* Allow wider input row */
 }
 
 .sideControls {
@@ -538,31 +533,35 @@
 }
 
 .citationPanel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
-  gap: 12px;
-  background: var(--bg-secondary);
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 16px !important;
+  gap: 8px !important;
+  background: var(--bg-secondary) !important;
   box-shadow:
-    0px 2px 6px var(--shadow-light),
-    0px 0px 2px var(--shadow-light);
-  border-radius: 8px;
-  flex: 1;
-  order: 0;
-  align-self: stretch;
-  flex-grow: 1;
-  max-width: 40%; /* Increased to 40% for much larger citation box */
-  min-width: 700px; /* Increased minimum width significantly for larger citation panel */
-  overflow-y: auto;
-  max-height: calc(100vh - 100px);
-  color: var(--text-primary);
+    0px 2px 4px var(--shadow-light),
+    0px 0px 2px var(--shadow-light) !important;
+  border-radius: 8px !important;
+  flex: 0 0 900px !important; /* Significantly larger width for better citation reading */
+  order: 0 !important;
+  align-self: stretch !important;
+  max-width: 900px !important;
+  min-width: 850px !important;
+  overflow-y: scroll !important;
+  max-height: calc(100vh - 100px) !important;
+  color: var(--text-primary) !important;
   transition:
     background 0.3s ease,
-    color 0.3s ease;
-  position: sticky;
-  top: 20px;
-  height: fit-content;
+    color 0.3s ease !important;
+}
+
+/* Stronger override to ensure FluentUI Stack.Item doesn't interfere */
+:global(.ms-Stack-item).citationPanel {
+  flex: 0 0 900px !important;
+  max-width: 900px !important;
+  min-width: 850px !important;
+  width: 900px !important;
 }
 
 .citationPanelHeaderContainer {
@@ -939,25 +938,86 @@ a {
 }
 
 @media (max-width: 768px) {
-  .chatRoot {
+  .inputRow {
     flex-direction: column;
     gap: 16px;
-    margin: 16px;
-    max-width: 100%;
+    align-items: stretch;
   }
-  
-  .chatRoot:has(.citationPanel) .chatContainer {
-    flex: none;
-    max-width: none;
-    width: 100%;
-  }
-  
-  .citationPanel {
-    flex: none;
-    max-width: none;
-    width: 100%;
+
+  .sideControls {
+    flex-direction: row;
     min-width: auto;
-    position: static;
-    order: 2;
+    justify-content: center;
+  }
+
+  .controlsContainer {
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .darkModeToggleWrapper {
+    width: auto;
+  }
+
+  .citationPanel {
+    flex: 0 0 500px !important;
+    max-width: 500px !important;
+    min-width: 450px !important;
+    padding: 14px !important;
+    width: 500px !important;
+  }
+  
+  /* Stronger override for FluentUI on tablets */
+  :global(.ms-Stack-item).citationPanel {
+    flex: 0 0 500px !important;
+    max-width: 500px !important;
+    min-width: 450px !important;
+    width: 500px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .chatInput {
+    width: 90%;
+    max-width: 90%;
+  }
+
+  .newChatIcon {
+    left: 0px;
+  }
+
+  .clearChatBroom {
+    left: 0px;
+  }
+
+  .clearChatBroomNoCosmos {
+    left: 0px;
+  }
+
+  .chatEmptyStateTitle {
+    font-size: 36px;
+    line-height: 44px;
+  }
+
+  .citationPanel {
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-width: auto;
+    margin-top: 16px;
+  }
+
+  /* Stack citation panel below chat on mobile */
+  .chatRoot {
+    flex-direction: column;
+  }
+
+  .taglineInput {
+    font-size: 14px;
+    padding: 14px 18px;
+  }
+
+  .customTaglinePlaceholder {
+    max-width: 90%;
   }
 }
