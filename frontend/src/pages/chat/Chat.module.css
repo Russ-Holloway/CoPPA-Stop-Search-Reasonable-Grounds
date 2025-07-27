@@ -201,7 +201,7 @@
 
 .inputFullWidth {
   width: 95% !important;
-  max-width: 1600px !important;
+  max-width: 800px !important;
   margin: 0 auto;
 }
 
@@ -262,7 +262,7 @@
 
 .chatMessageStream {
   flex-grow: 1;
-  max-width: 1600px;
+  max-width: 800px;
   width: 100%;
   overflow-y: auto;
   padding: 24px;

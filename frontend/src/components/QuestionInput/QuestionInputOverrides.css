@@ -23,7 +23,7 @@
 .ms-Stack[class*="questionInputContainer"] .ms-TextField-field {
   width: 100% !important;
   max-width: none !important;
-  min-height: 200px !important;
+  min-height: 120px !important;
 }
 
 /* Alternative approach - target by component structure */
@@ -32,5 +32,5 @@ div[class*="questionInputContainer"] div[class*="questionInputTextArea"] .ms-Tex
 div[class*="questionInputContainer"] div[class*="questionInputTextArea"] .ms-TextField-field {
   width: 100% !important;
   max-width: none !important;
-  min-height: 200px !important;
+  min-height: 120px !important;
 }
