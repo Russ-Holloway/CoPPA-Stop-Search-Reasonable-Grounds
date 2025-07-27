@@ -16,7 +16,6 @@ import { AppStateContext } from '../../state/AppProvider'
 import { parseAnswer } from './AnswerParser'
 
 import styles from './Answer.module.css'
-import './AnswerOverrides.css'
 
 interface Props {
   answer: AskResponse
@@ -270,260 +269,157 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
     }
   }
 
-  // Helper function to render text with clickable citations
-  const renderTextWithCitations = (text: string) => {
-    if (!parsedAnswer?.citations.length) {
-      return (
-        <ReactMarkdown linkTarget="_blank" children={text} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} />
-      )
-    }
-
-    // Split text by citation pattern with spaces: " [1] ", " [2] ", etc.
-    const parts = text.split(/(\s*\[\d+\]\s*)/)
-
-    return (
-      <div>
-        {parts.map((part, index) => {
-          const citationMatch = part.match(/\s*\[(\d+)\]\s*/)
-          if (citationMatch) {
-            const citationDisplayNumber = citationMatch[1]
-            // Find citation by reindex_id (display number) instead of array index
-            const citation = parsedAnswer?.citations.find(c => c.reindex_id === citationDisplayNumber)
-            if (citation) {
-              return (
-                <a
-                  key={index}
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault()
-                    onCitationClicked(citation)
-                  }}
-                  className={styles.citationLink}>
-                  {part.trim()}
-                </a>
-              )
-            }
-          }
-          // Regular text - render with ReactMarkdown for other formatting
-          if (part.trim()) {
-            return (
-              <ReactMarkdown
-                key={index}
-                linkTarget="_blank"
-                children={part}
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                  p: ({ children }) => <span>{children}</span> // Inline rendering
-                }}
-              />
-            )
-          }
-          return part
-        })}
-      </div>
-    )
-  }
-
   return (
     <>
-      <div className={styles.mainAnswerLayout}>
+      <Stack horizontal className={styles.mainAnswerLayout}>
         {/* Main answer container */}
-        <div className={styles.answerColumn}>
+        <Stack.Item grow className={styles.answerColumn}>
           <Stack className={styles.answerContainer} tabIndex={0}>
-            <Stack.Item>
-              <Stack horizontal grow>
-                <Stack.Item grow>
-                  {/* Render answer with proper markdown formatting */}
-                  {parsedAnswer && parsedAnswer.markdownFormatText && (
-                    <div className={styles.answerText}>
-                      <ReactMarkdown
-                        linkTarget="_blank"
-                        children={parsedAnswer.markdownFormatText}
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw]}
-                        components={{
-                          a: ({ href, children }) => {
-                            // Check if this is a citation link (contains a number in brackets)
-                            const citationMatch = children?.toString().match(/\[(\d+)\]/)
-                            if (citationMatch) {
-                              // Return PLAIN SPAN - absolutely no link functionality
-                              return (
-                                <span
-                                  style={{
-                                    color: '#323130',
-                                    backgroundColor: 'transparent',
-                                    textDecoration: 'none',
-                                    cursor: 'default',
-                                    padding: '0',
-                                    border: 'none',
-                                    boxShadow: 'none',
-                                    fontWeight: 'normal',
-                                    pointerEvents: 'none'
-                                  }}>
-                                  {children}
-                                </span>
-                              )
-                            }
-                            // Regular external links (NOT citations)
+        <Stack.Item>
+          <Stack horizontal grow className={styles.answerMainContent}>
+            <Stack.Item grow className={styles.answerContentColumn}>
+              {/* Render answer with proper markdown formatting */}
+              {parsedAnswer && parsedAnswer.markdownFormatText && (
+                <div className={styles.answerText}>
+                  <ReactMarkdown
+                    linkTarget="_blank"
+                    children={parsedAnswer.markdownFormatText}
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      a: ({ href, children }) => {
+                        // Check if this is a citation link (contains a number in brackets)
+                        const citationMatch = children?.toString().match(/\[(\d+)\]/)
+                        if (citationMatch) {
+                          const citationIndex = parseInt(citationMatch[1]) - 1
+                          const citation = parsedAnswer?.citations[citationIndex]
+                          if (citation) {
                             return (
-                              <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
+                              <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  handleCitationButtonClick(citation)
+                                }}
+                                className={styles.citationLink}
+                              >
                                 {children}
                               </a>
                             )
                           }
-                        }}
-                      />
-                    </div>
-                  )}
-                </Stack.Item>
-                <Stack.Item className={styles.answerHeader}>
-                  {FEEDBACK_ENABLED && answer.message_id !== undefined && (
-                    <Stack horizontal horizontalAlign="space-between">
-                      <ThumbLike20Filled
-                        aria-hidden="false"
-                        aria-label="Like this response"
-                        onClick={() => onLikeResponseClicked()}
-                        style={
-                          feedbackState === Feedback.Positive ||
-                          appStateContext?.state.feedbackState[answer.message_id] === Feedback.Positive
-                            ? { color: 'darkgreen', cursor: 'pointer' }
-                            : { color: 'slategray', cursor: 'pointer' }
                         }
-                      />
-                      <ThumbDislike20Filled
-                        aria-hidden="false"
-                        aria-label="Dislike this response"
-                        onClick={() => onDislikeResponseClicked()}
-                        style={
-                          feedbackState !== Feedback.Positive &&
-                          feedbackState !== Feedback.Neutral &&
-                          feedbackState !== undefined
-                            ? { color: 'darkred', cursor: 'pointer' }
-                            : { color: 'slategray', cursor: 'pointer' }
-                        }
-                      />
-                    </Stack>
-                  )}
-                </Stack.Item>
+                        // Regular external links
+                        return (
+                          <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
+                            {children}
+                          </a>
+                        )
+                      }
+                    }}
+                  />
+                </div>
+              )}
+              
+              {/* Feedback buttons positioned at bottom of answer content */}
+              {FEEDBACK_ENABLED && answer.message_id !== undefined && (
+                <Stack horizontal horizontalAlign="start" className={styles.feedbackContainer}>
+                  <ThumbLike20Filled
+                    aria-hidden="false"
+                    aria-label="Like this response"
+                    onClick={() => onLikeResponseClicked()}
+                    style={
+                      feedbackState === Feedback.Positive ||
+                      appStateContext?.state.feedbackState[answer.message_id] === Feedback.Positive
+                        ? { color: 'darkgreen', cursor: 'pointer' }
+                        : { color: 'slategray', cursor: 'pointer' }
+                    }
+                  />
+                  <ThumbDislike20Filled
+                    aria-hidden="false"
+                    aria-label="Dislike this response"
+                    onClick={() => onDislikeResponseClicked()}
+                    style={
+                      feedbackState !== Feedback.Positive &&
+                      feedbackState !== Feedback.Neutral &&
+                      feedbackState !== undefined
+                        ? { color: 'darkred', cursor: 'pointer' }
+                        : { color: 'slategray', cursor: 'pointer' }
+                    }
+                  />
+                </Stack>
+              )}
+            </Stack.Item>
+            
+
+          </Stack>
+        </Stack.Item>
+        
+        {parsedAnswer?.generated_chart !== null && (
+          <Stack className={styles.answerContainer}>
+            <Stack.Item grow>
+              <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} />
+            </Stack.Item>
+          </Stack>
+        )}
+        
+        <Stack horizontal className={styles.answerFooter}>
+          {!!parsedAnswer?.citations.length && (
+            <Stack.Item>
+              <Text
+                onClick={toggleIsRefAccordionOpen}
+                className={styles.referencesText}
+                tabIndex={0}
+                role="button"
+                aria-label="Open references">
+                {parsedAnswer.citations.length} references
+              </Text>
+            </Stack.Item>
+          )}
+          <Stack.Item className={styles.answerDisclaimerContainer}>
+            <span className={styles.answerDisclaimer}>AI-generated content may be incorrect</span>
+          </Stack.Item>
+          {!!answer.exec_results?.length && (
+            <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
+              <Stack style={{ width: '100%' }}>
+                <Stack horizontal horizontalAlign="start" verticalAlign="center">
+                  <Text
+                    className={styles.accordionTitle}
+                    onClick={() => onExectResultClicked(answer.message_id ?? '')}
+                    aria-label="Open Intents"
+                    tabIndex={0}
+                    role="button">
+                    <span>Show Intents</span>
+                  </Text>
+                  <FontIcon className={styles.accordionIcon} onClick={handleChevronClick} iconName={'ChevronRight'} />
+                </Stack>
               </Stack>
             </Stack.Item>
-            {parsedAnswer?.generated_chart !== null && (
-              <Stack className={styles.answerContainer}>
-                <Stack.Item grow>
-                  <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} alt="Generated chart" />
-                </Stack.Item>
-              </Stack>
-            )}
-            <Stack horizontal className={styles.answerFooter}>
-              {!!parsedAnswer?.citations.length && (
-                <Stack.Item>
-                  <Text
-                    onClick={toggleIsRefAccordionOpen}
-                    className={styles.referencesText}
-                    tabIndex={0}
-                    role="button"
-                    aria-label="Open references">
-                    {parsedAnswer.citations.length} references
-                  </Text>
-                </Stack.Item>
-              )}
-              <Stack.Item className={styles.answerDisclaimerContainer}>
-                <span className={styles.answerDisclaimer}>AI-generated content may be incorrect</span>
-              </Stack.Item>
-              {!!answer.exec_results?.length && (
-                <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
-                  <Stack style={{ width: '100%' }}>
-                    <Stack horizontal horizontalAlign="start" verticalAlign="center">
-                      <Text
-                        className={styles.accordionTitle}
-                        onClick={() => onExectResultClicked(answer.message_id ?? '')}
-                        aria-label="Open Intents"
-                        tabIndex={0}
-                        role="button">
-                        <span>Show Intents</span>
-                      </Text>
-                      <FontIcon
-                        className={styles.accordionIcon}
-                        onClick={handleChevronClick}
-                        iconName={'ChevronRight'}
-                      />
-                    </Stack>
-                  </Stack>
-                </Stack.Item>
-              )}
-            </Stack>
-            {/* Citation buttons that appear when references are clicked */}
-            {chevronIsExpanded && (
-              <Stack horizontal wrap tokens={{ childrenGap: 8 }} style={{ marginTop: '12px' }}>
-                {parsedAnswer?.citations.map((citation, idx) => (
-                  <DefaultButton
-                    key={idx}
-                    onClick={() => handleCitationButtonClick(citation)}
-                    style={{
-                      padding: '6px 12px',
-                      minWidth: 'auto',
-                      marginRight: '8px',
-                      marginBottom: '8px',
-                      backgroundColor: activeCitation?.id === citation.id && showInlineCitation ? '#005a9e' : '#0078d4',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px'
-                    }}>
-                    {idx + 1}
-                  </DefaultButton>
-                ))}
-              </Stack>
-            )}
+          )}
+        </Stack>
+        
+        {/* Citation buttons that appear when references are clicked */}
+        {chevronIsExpanded && (
+          <Stack horizontal wrap tokens={{ childrenGap: 8 }} style={{ marginTop: '12px' }}>
+            {parsedAnswer?.citations.map((citation, idx) => (
+              <DefaultButton
+                key={idx}
+                onClick={() => handleCitationButtonClick(citation)}
+                style={{
+                  padding: '6px 12px',
+                  minWidth: 'auto',
+                  marginRight: '8px',
+                  marginBottom: '8px',
+                  backgroundColor: activeCitation?.id === citation.id && showInlineCitation ? '#005a9e' : '#0078d4',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px'
+                }}>
+                {idx + 1}
+              </DefaultButton>
+            ))}
           </Stack>
-        </div>
-
-        {/* External citation panel - positioned beside answer with proper sizing */}
-        {showInlineCitation && activeCitation && (
-          <div className={styles.externalCitationColumn}>
-            <Stack className={styles.externalCitationPanel}>
-              <Stack
-                horizontal
-                horizontalAlign="space-between"
-                verticalAlign="center"
-                className={styles.citationHeader}>
-                <Text style={{ fontWeight: 600, fontSize: '14px' }}>Citation</Text>
-                <DefaultButton
-                  iconProps={{ iconName: 'Cancel' }}
-                  onClick={() => {
-                    setShowInlineCitation(false)
-                    setActiveCitation(null)
-                  }}
-                  className={styles.citationCloseButton}
-                />
-              </Stack>
-              <Text
-                className={styles.citationTitle}
-                onClick={() => {
-                  if (activeCitation.url && !activeCitation.url.includes('blob.core')) {
-                    window.open(activeCitation.url, '_blank')
-                  }
-                }}
-                title={
-                  activeCitation.url && !activeCitation.url.includes('blob.core')
-                    ? activeCitation.url
-                    : activeCitation.title ?? ''
-                }>
-                {activeCitation.title}
-              </Text>
-              <div className={styles.citationContent}>
-                <ReactMarkdown
-                  linkTarget="_blank"
-                  children={DOMPurify.sanitize(activeCitation.content, { ALLOWED_TAGS: XSSAllowTags })}
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeRaw]}
-                />
-              </div>
-            </Stack>
-          </div>
         )}
-      </div>
-
+      </Stack>
       <Dialog
         onDismiss={() => {
           resetFeedbackDialog()
@@ -562,6 +458,46 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
           </DefaultButton>
         </Stack>
       </Dialog>
+        </Stack.Item>
+        
+        {/* External citation panel - positioned as sibling to answer column */}
+        {showInlineCitation && activeCitation && (
+          <Stack.Item className={styles.externalCitationColumn}>
+            <Stack className={styles.externalCitationPanel}>
+              <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className={styles.citationHeader}>
+                <Text style={{ fontWeight: 600, fontSize: '14px' }}>Citation</Text>
+                <DefaultButton 
+                  iconProps={{ iconName: 'Cancel' }}
+                  onClick={() => {
+                    setShowInlineCitation(false)
+                    setActiveCitation(null)
+                  }}
+                  className={styles.citationCloseButton}
+                />
+              </Stack>
+              <Text 
+                className={styles.citationTitle}
+                onClick={() => {
+                  if (activeCitation.url && !activeCitation.url.includes('blob.core')) {
+                    window.open(activeCitation.url, '_blank')
+                  }
+                }}
+                title={activeCitation.url && !activeCitation.url.includes('blob.core') ? activeCitation.url : activeCitation.title ?? ''}
+              >
+                {activeCitation.title}
+              </Text>
+              <div className={styles.citationContent}>
+                <ReactMarkdown
+                  linkTarget="_blank"
+                  children={DOMPurify.sanitize(activeCitation.content, { ALLOWED_TAGS: XSSAllowTags })}
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeRaw]}
+                />
+              </div>
+            </Stack>
+          </Stack.Item>
+        )}
+      </Stack>
     </>
   )
 }

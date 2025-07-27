@@ -1,0 +1,429 @@
+.answerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8.1285px;
+  gap: 5.42px;
+  background: #ffffff;
+  box-shadow:
+    0px 1px 2px rgba(0, 0, 0, 0.14),
+    0px 0px 2px rgba(0, 0, 0, 0.12);
+  border-radius: 5.419px;
+}
+
+.answerMainContent {
+  width: 100%;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.answerContentColumn {
+  min-width: 0; /* Allow text to wrap */
+  flex: 1;
+}
+
+/* Main layout container for side-by-side design */
+.mainAnswerLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.answerColumn {
+  flex: 1 1 0; /* Take remaining space after citation panel */
+  min-width: 0; /* Allow content to shrink if needed */
+}
+
+.externalCitationColumn {
+  flex: 0 0 250px; /* Smaller fixed width for citation panel */
+  max-width: 250px;
+  min-width: 220px;
+}
+
+.externalCitationPanel {
+  background: #f8f9fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  padding: 10px;
+  position: sticky;
+  top: 20px; /* Sticky positioning */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+:global(.dark-mode) .sideBySideCitationPanel {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.citationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.citationTitle {
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #0078d4;
+  cursor: pointer;
+}
+
+:global(.dark-mode) .citationTitle {
+  color: #60a5fa;
+}
+
+.citationContent {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.feedbackContainer {
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.answerText {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #323130;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 11px;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: none; /* Remove width constraint for better space usage */
+  overflow-x: auto;
+}
+
+.answerText p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.answerText p:last-child {
+  margin-bottom: 0;
+}
+
+.answerText a {
+  color: #0078d4;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: #f3f9ff;
+}
+
+.answerText a:hover {
+  background-color: #e1f5fe;
+  text-decoration: underline;
+}
+
+.citationLink {
+  color: #0078d4 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  background-color: #f3f9ff !important;
+}
+
+.citationLink:hover {
+  background-color: #e1f5fe !important;
+  text-decoration: underline !important;
+}
+
+.answerHeader {
+  position: relative;
+}
+
+.answerFooter {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.answerDisclaimerContainer {
+  justify-content: center;
+  display: flex;
+}
+
+.answerDisclaimer {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #707070;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+.citationWrapper {
+  margin-top: 8;
+  display: flex;
+  flex-flow: wrap column;
+  max-height: 150px;
+  gap: 4px;
+}
+
+.citationContainer {
+  margin-left: 10px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+
+  color: #115ea3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 6px;
+  gap: 4px;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+}
+
+:global(.dark-mode) .citationContainer {
+  color: #ffffff;
+  border-color: #6b7280;
+}
+
+.citationContainer:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.citation {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  flex: none;
+  flex-grow: 0;
+  z-index: 2;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+  color: #424242;
+  cursor: pointer;
+}
+
+:global(.dark-mode) .citation {
+  color: #ffffff;
+  border-color: #6b7280;
+}
+
+.citation:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.accordionIcon {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  margin-top: 4px;
+  color: #616161;
+  font-size: 10px;
+}
+
+.accordionIcon:hover {
+  cursor: pointer;
+}
+
+.accordionTitle {
+  margin-right: 5px;
+  margin-left: 10px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  color: #616161;
+}
+
+.accordionTitle:hover {
+  cursor: pointer;
+}
+
+.clickableSup {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  flex: none;
+  order: 2;
+  flex-grow: 0;
+  z-index: 2;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+  color: #424242;
+  cursor: pointer;
+}
+
+:global(.dark-mode) .clickableSup {
+  color: #ffffff;
+  border-color: #6b7280;
+}
+
+.clickableSup:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+sup {
+  font-size: 10px;
+  line-height: 10px;
+}
+
+.referencesText {
+  cursor: pointer;
+  color: #0078d4;
+  text-decoration: underline;
+  margin-right: 8px;
+}
+
+:global(.dark-mode) .referencesText {
+  color: #60a5fa;
+}
+
+@media (max-width: 768px) {
+  .mainAnswerLayout {
+    gap: 12px;
+  }
+
+  .externalCitationColumn {
+    flex: 0 0 220px;
+    max-width: 220px;
+    min-width: 200px;
+  }
+
+  .externalCitationPanel {
+    padding: 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .answerFooter {
+    flex-direction: column-reverse;
+  }
+
+  .citationWrapper {
+    max-height: max-content;
+  }
+
+  .citationContainer {
+    margin-left: 0;
+  }
+
+  .answerDisclaimer {
+    margin-bottom: 5px;
+  }
+
+  /* Stack citation layout vertically on mobile */
+  .mainAnswerLayout {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .externalCitationColumn {
+    flex: none;
+    max-width: none;
+    min-width: auto;
+  }
+
+  .externalCitationPanel {
+    position: static;
+    max-height: 200px;
+  }
+}
+
+.inlineCitationPanel {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark-mode) .inlineCitationPanel {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.inlineCitationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.inlineCitationTitle {
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #0078d4;
+  cursor: pointer;
+}
+
+:global(.dark-mode) .inlineCitationTitle {
+  color: #60a5fa;
+}
+
+.inlineCitationContent {
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.citationButtonActive {
+  background-color: #005a9e !important;
+}
+
+.citationCloseButton {
+  min-width: auto !important;
+  padding: 4px 8px !important;
+  background-color: transparent !important;
+  border: none !important;
+}
