@@ -2,17 +2,17 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 16px;
-  gap: 12px;
+  padding: 20px;
+  gap: 16px;
   background: #ffffff;
   box-shadow:
     0px 2px 6px rgba(0, 0, 0, 0.08),
     0px 0px 2px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
   width: 100% !important;
-  max-width: 750px !important;
+  max-width: none !important;
   box-sizing: border-box;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .answerText {
@@ -321,8 +321,6 @@ sup {
 @media (max-width: 480px) {
   .answerContainer {
     padding: 12px;
-    max-width: 95% !important;
-    margin: 0 auto;
   }
 
   .answerFooter {
@@ -345,30 +343,33 @@ sup {
 /* Citation panel styles */
 .mainAnswerLayout {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
 .answerColumn {
-  flex: 1;
+  flex: 2;
   min-width: 0;
   width: 100% !important;
   max-width: none !important;
 }
 
-/* When citation column is present, both should be 50/50 */
+/* When citation column is present, answer takes 60% and citation takes 40% */
 .mainAnswerLayout:has(.externalCitationColumn) .answerColumn {
-  flex: 1 1 50%;
-  max-width: 50%;
-  width: 50%;
+  flex: 2;
+  max-width: 60%;
+  width: 60%;
 }
 
 .externalCitationColumn {
-  flex: 1 1 50%;
+  flex: 1;
   min-width: 0;
-  max-width: 50%;
-  width: 50%;
+  max-width: 40%;
+  width: 40%;
+  min-width: 300px;
 }
 
 /* BACKUP: In case :has() doesn't work, use this approach */
@@ -383,11 +384,13 @@ sup {
   border: 1px solid #e1e5e9;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-  height: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
   width: 100%;
   font-size: 14px;
   box-sizing: border-box;
+  position: sticky;
+  top: 20px;
 }
 
 .citationHeader {
@@ -522,20 +525,59 @@ span[class*="citation"] {
 }
 
 /* Responsive design */
+@media (max-width: 1024px) {
+  .mainAnswerLayout {
+    max-width: 100%;
+    gap: 20px;
+  }
+  
+  .mainAnswerLayout:has(.externalCitationColumn) .answerColumn {
+    flex: 1.5;
+    max-width: 65%;
+    width: 65%;
+  }
+
+  .externalCitationColumn {
+    flex: 1;
+    max-width: 35%;
+    width: 35%;
+    min-width: 250px;
+  }
+}
+
 @media (max-width: 768px) {
   .answerContainer {
-    padding: 14px;
-    max-width: 90% !important;
-    margin: 0 auto;
+    padding: 16px;
+    margin: 0;
   }
 
   .mainAnswerLayout {
     flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+  }
+  
+  .answerColumn {
+    flex: none;
+    max-width: none !important;
+    width: 100% !important;
   }
   
   .externalCitationColumn {
     flex: none;
     max-width: none;
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .externalCitationPanel {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .answerContainer {
+    padding: 14px;
   }
 }
 
