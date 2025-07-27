@@ -21,13 +21,13 @@
     flex-direction: column !important;
     gap: 16px !important;
   }
-  
+
   .answerColumn {
     flex: none !important;
     max-width: none !important;
     width: 100% !important;
   }
-  
+
   .externalCitationColumn {
     flex: none !important;
     max-width: none !important;

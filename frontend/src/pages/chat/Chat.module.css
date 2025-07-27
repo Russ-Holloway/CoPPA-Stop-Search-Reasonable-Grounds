@@ -808,17 +808,17 @@ a {
   .container {
     gap: 16px;
   }
-  
+
   .chatInput {
     padding: 16px;
     max-width: 95%;
   }
-  
+
   .chatInputCentered {
     margin: 24px auto;
     padding: 16px;
   }
-  
+
   .inputRow {
     gap: 16px;
     max-width: 100%;
@@ -866,7 +866,7 @@ a {
   .customTaglinePlaceholder {
     max-width: 90%;
   }
-  
+
   .chatInputCentered {
     margin: 16px auto;
     padding: 12px;
@@ -879,7 +879,7 @@ a {
     max-width: 100%;
     gap: 20px;
   }
-  
+
   .chatRoot:has(.citationPanel) .chatContainer {
     flex: 1.5;
     max-width: 65%;
@@ -900,13 +900,13 @@ a {
     margin: 16px;
     max-width: 100%;
   }
-  
+
   .chatRoot:has(.citationPanel) .chatContainer {
     flex: none;
     max-width: none;
     width: 100%;
   }
-  
+
   .citationPanel {
     flex: none;
     max-width: none;
@@ -923,7 +923,7 @@ a {
     max-width: 100%;
     gap: 20px;
   }
-  
+
   .chatRoot:has(.citationPanel) .chatContainer {
     flex: 1.5;
     max-width: 60%; /* Maintain larger answer box */
@@ -967,7 +967,7 @@ a {
     padding: 14px !important;
     width: 500px !important;
   }
-  
+
   /* Stronger override for FluentUI on tablets */
   :global(.ms-Stack-item).citationPanel {
     flex: 0 0 500px !important;

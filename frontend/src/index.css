@@ -150,7 +150,7 @@ html {
 }
 
 /* Global citation panel override - ensures our sizing takes effect */
-[class*="citationPanel"] {
+[class*='citationPanel'] {
   flex: 0 0 900px !important;
   max-width: 900px !important;
   min-width: 850px !important;
@@ -159,7 +159,7 @@ html {
 
 /* Responsive citation panel overrides */
 @media (max-width: 768px) {
-  [class*="citationPanel"] {
+  [class*='citationPanel'] {
     flex: 0 0 500px !important; /* Larger mobile citation panel */
     max-width: 500px !important;
     min-width: 450px !important;

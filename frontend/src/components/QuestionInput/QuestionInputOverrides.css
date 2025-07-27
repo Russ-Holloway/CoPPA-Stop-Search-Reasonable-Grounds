@@ -2,34 +2,34 @@
 /* This file uses regular CSS (not CSS Modules) to override FluentUI */
 
 /* Target the specific QuestionInput container and its children */
-.ms-Stack[class*="questionInputContainer"] {
+.ms-Stack[class*='questionInputContainer'] {
   width: 100% !important;
   max-width: none !important;
   margin: 0 auto !important;
 }
 
 /* Force all FluentUI TextField components inside QuestionInput to fill available space */
-.ms-Stack[class*="questionInputContainer"] .ms-TextField-wrapper {
+.ms-Stack[class*='questionInputContainer'] .ms-TextField-wrapper {
   width: 100% !important;
   max-width: none !important;
   flex: 1 !important;
 }
 
-.ms-Stack[class*="questionInputContainer"] .ms-TextField-fieldGroup {
+.ms-Stack[class*='questionInputContainer'] .ms-TextField-fieldGroup {
   width: 100% !important;
   max-width: none !important;
 }
 
-.ms-Stack[class*="questionInputContainer"] .ms-TextField-field {
+.ms-Stack[class*='questionInputContainer'] .ms-TextField-field {
   width: 100% !important;
   max-width: none !important;
   min-height: 120px !important;
 }
 
 /* Alternative approach - target by component structure */
-div[class*="questionInputContainer"] div[class*="questionInputTextArea"] .ms-TextField-wrapper,
-div[class*="questionInputContainer"] div[class*="questionInputTextArea"] .ms-TextField-fieldGroup,
-div[class*="questionInputContainer"] div[class*="questionInputTextArea"] .ms-TextField-field {
+div[class*='questionInputContainer'] div[class*='questionInputTextArea'] .ms-TextField-wrapper,
+div[class*='questionInputContainer'] div[class*='questionInputTextArea'] .ms-TextField-fieldGroup,
+div[class*='questionInputContainer'] div[class*='questionInputTextArea'] .ms-TextField-field {
   width: 100% !important;
   max-width: none !important;
   min-height: 120px !important;

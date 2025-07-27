@@ -275,198 +275,190 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
         {/* Main answer container */}
         <Stack.Item grow className={styles.answerColumn}>
           <Stack className={styles.answerContainer} tabIndex={0}>
-        <Stack.Item>
-          <Stack horizontal grow className={styles.answerMainContent}>
-            <Stack.Item grow className={styles.answerContentColumn}>
-              {/* Render answer with proper markdown formatting */}
-              {parsedAnswer && parsedAnswer.markdownFormatText && (
-                <div className={styles.answerText}>
-                  <ReactMarkdown
-                    linkTarget="_blank"
-                    children={parsedAnswer.markdownFormatText}
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                      a: ({ href, children }) => {
-                        // Check if this is a citation link (contains a number in brackets)
-                        const citationMatch = children?.toString().match(/\[(\d+)\]/)
-                        if (citationMatch) {
-                          const citationIndex = parseInt(citationMatch[1]) - 1
-                          const citation = parsedAnswer?.citations[citationIndex]
-                          if (citation) {
+            <Stack.Item>
+              <Stack horizontal grow className={styles.answerMainContent}>
+                <Stack.Item grow className={styles.answerContentColumn}>
+                  {/* Render answer with proper markdown formatting */}
+                  {parsedAnswer && parsedAnswer.markdownFormatText && (
+                    <div className={styles.answerText}>
+                      <ReactMarkdown
+                        linkTarget="_blank"
+                        children={parsedAnswer.markdownFormatText}
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                          a: ({ href, children }) => {
+                            // Check if this is a citation link (contains a number in brackets)
+                            const citationMatch = children?.toString().match(/\[(\d+)\]/)
+                            if (citationMatch) {
+                              // Render citation numbers as plain text, not links
+                              return <span>{children}</span>
+                            }
+                            // Regular external links
                             return (
-                              <a
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  handleCitationButtonClick(citation)
-                                }}
-                                className={styles.citationLink}
-                              >
+                              <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
                                 {children}
                               </a>
                             )
                           }
-                        }
-                        // Regular external links
-                        return (
-                          <a href={href} target="_blank" rel="noopener noreferrer" className={styles.citationLink}>
-                            {children}
-                          </a>
-                        )
-                      }
-                    }}
-                  />
-                </div>
-              )}
-              
-              {/* Feedback buttons positioned at bottom of answer content */}
-              {FEEDBACK_ENABLED && answer.message_id !== undefined && (
-                <Stack horizontal horizontalAlign="start" className={styles.feedbackContainer}>
-                  <ThumbLike20Filled
-                    aria-hidden="false"
-                    aria-label="Like this response"
-                    onClick={() => onLikeResponseClicked()}
-                    style={
-                      feedbackState === Feedback.Positive ||
-                      appStateContext?.state.feedbackState[answer.message_id] === Feedback.Positive
-                        ? { color: 'darkgreen', cursor: 'pointer' }
-                        : { color: 'slategray', cursor: 'pointer' }
-                    }
-                  />
-                  <ThumbDislike20Filled
-                    aria-hidden="false"
-                    aria-label="Dislike this response"
-                    onClick={() => onDislikeResponseClicked()}
-                    style={
-                      feedbackState !== Feedback.Positive &&
-                      feedbackState !== Feedback.Neutral &&
-                      feedbackState !== undefined
-                        ? { color: 'darkred', cursor: 'pointer' }
-                        : { color: 'slategray', cursor: 'pointer' }
-                    }
-                  />
-                </Stack>
-              )}
-            </Stack.Item>
-            
+                        }}
+                      />
+                    </div>
+                  )}
 
-          </Stack>
-        </Stack.Item>
-        
-        {parsedAnswer?.generated_chart !== null && (
-          <Stack className={styles.answerContainer}>
-            <Stack.Item grow>
-              <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} />
-            </Stack.Item>
-          </Stack>
-        )}
-        
-        <Stack horizontal className={styles.answerFooter}>
-          {!!parsedAnswer?.citations.length && (
-            <Stack.Item>
-              <Text
-                onClick={toggleIsRefAccordionOpen}
-                className={styles.referencesText}
-                tabIndex={0}
-                role="button"
-                aria-label="Open references">
-                {parsedAnswer.citations.length} references
-              </Text>
-            </Stack.Item>
-          )}
-          <Stack.Item className={styles.answerDisclaimerContainer}>
-            <span className={styles.answerDisclaimer}>AI-generated content may be incorrect</span>
-          </Stack.Item>
-          {!!answer.exec_results?.length && (
-            <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
-              <Stack style={{ width: '100%' }}>
-                <Stack horizontal horizontalAlign="start" verticalAlign="center">
-                  <Text
-                    className={styles.accordionTitle}
-                    onClick={() => onExectResultClicked(answer.message_id ?? '')}
-                    aria-label="Open Intents"
-                    tabIndex={0}
-                    role="button">
-                    <span>Show Intents</span>
-                  </Text>
-                  <FontIcon className={styles.accordionIcon} onClick={handleChevronClick} iconName={'ChevronRight'} />
-                </Stack>
+                  {/* Feedback buttons positioned at bottom of answer content */}
+                  {FEEDBACK_ENABLED && answer.message_id !== undefined && (
+                    <Stack horizontal horizontalAlign="start" className={styles.feedbackContainer}>
+                      <ThumbLike20Filled
+                        aria-hidden="false"
+                        aria-label="Like this response"
+                        onClick={() => onLikeResponseClicked()}
+                        style={
+                          feedbackState === Feedback.Positive ||
+                          appStateContext?.state.feedbackState[answer.message_id] === Feedback.Positive
+                            ? { color: 'darkgreen', cursor: 'pointer' }
+                            : { color: 'slategray', cursor: 'pointer' }
+                        }
+                      />
+                      <ThumbDislike20Filled
+                        aria-hidden="false"
+                        aria-label="Dislike this response"
+                        onClick={() => onDislikeResponseClicked()}
+                        style={
+                          feedbackState !== Feedback.Positive &&
+                          feedbackState !== Feedback.Neutral &&
+                          feedbackState !== undefined
+                            ? { color: 'darkred', cursor: 'pointer' }
+                            : { color: 'slategray', cursor: 'pointer' }
+                        }
+                      />
+                    </Stack>
+                  )}
+                </Stack.Item>
               </Stack>
             </Stack.Item>
-          )}
-        </Stack>
-        
-        {/* Citation buttons that appear when references are clicked */}
-        {chevronIsExpanded && (
-          <Stack horizontal wrap tokens={{ childrenGap: 8 }} style={{ marginTop: '12px' }}>
-            {parsedAnswer?.citations.map((citation, idx) => (
-              <DefaultButton
-                key={idx}
-                onClick={() => handleCitationButtonClick(citation)}
-                style={{
-                  padding: '6px 12px',
-                  minWidth: 'auto',
-                  marginRight: '8px',
-                  marginBottom: '8px',
-                  backgroundColor: activeCitation?.id === citation.id && showInlineCitation ? '#005a9e' : '#0078d4',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px'
-                }}>
-                {idx + 1}
-              </DefaultButton>
-            ))}
+
+            {parsedAnswer?.generated_chart !== null && (
+              <Stack className={styles.answerContainer}>
+                <Stack.Item grow>
+                  <img src={`data:image/png;base64, ${parsedAnswer?.generated_chart}`} />
+                </Stack.Item>
+              </Stack>
+            )}
+
+            <Stack horizontal className={styles.answerFooter}>
+              {!!parsedAnswer?.citations.length && (
+                <Stack.Item>
+                  <Text
+                    onClick={toggleIsRefAccordionOpen}
+                    className={styles.referencesText}
+                    tabIndex={0}
+                    role="button"
+                    aria-label="Open references">
+                    {parsedAnswer.citations.length} references
+                  </Text>
+                </Stack.Item>
+              )}
+              <Stack.Item className={styles.answerDisclaimerContainer}>
+                <span className={styles.answerDisclaimer}>AI-generated content may be incorrect</span>
+              </Stack.Item>
+              {!!answer.exec_results?.length && (
+                <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
+                  <Stack style={{ width: '100%' }}>
+                    <Stack horizontal horizontalAlign="start" verticalAlign="center">
+                      <Text
+                        className={styles.accordionTitle}
+                        onClick={() => onExectResultClicked(answer.message_id ?? '')}
+                        aria-label="Open Intents"
+                        tabIndex={0}
+                        role="button">
+                        <span>Show Intents</span>
+                      </Text>
+                      <FontIcon
+                        className={styles.accordionIcon}
+                        onClick={handleChevronClick}
+                        iconName={'ChevronRight'}
+                      />
+                    </Stack>
+                  </Stack>
+                </Stack.Item>
+              )}
+            </Stack>
+
+            {/* Citation buttons that appear when references are clicked */}
+            {chevronIsExpanded && (
+              <Stack horizontal wrap tokens={{ childrenGap: 8 }} style={{ marginTop: '12px' }}>
+                {parsedAnswer?.citations.map((citation, idx) => (
+                  <DefaultButton
+                    key={idx}
+                    onClick={() => handleCitationButtonClick(citation)}
+                    style={{
+                      padding: '6px 12px',
+                      minWidth: 'auto',
+                      marginRight: '8px',
+                      marginBottom: '8px',
+                      backgroundColor: activeCitation?.id === citation.id && showInlineCitation ? '#005a9e' : '#0078d4',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px'
+                    }}>
+                    {idx + 1}
+                  </DefaultButton>
+                ))}
+              </Stack>
+            )}
           </Stack>
-        )}
-      </Stack>
-      <Dialog
-        onDismiss={() => {
-          resetFeedbackDialog()
-          setFeedbackState(Feedback.Neutral)
-        }}
-        hidden={!isFeedbackDialogOpen}
-        styles={{
-          main: [
-            {
-              selectors: {
-                ['@media (min-width: 480px)']: {
-                  maxWidth: '600px',
-                  background: '#FFFFFF',
-                  boxShadow: '0px 14px 28.8px rgba(0, 0, 0, 0.24), 0px 0px 8px rgba(0, 0, 0, 0.2)',
-                  borderRadius: '8px',
-                  maxHeight: '600px',
-                  minHeight: '100px'
+          <Dialog
+            onDismiss={() => {
+              resetFeedbackDialog()
+              setFeedbackState(Feedback.Neutral)
+            }}
+            hidden={!isFeedbackDialogOpen}
+            styles={{
+              main: [
+                {
+                  selectors: {
+                    ['@media (min-width: 480px)']: {
+                      maxWidth: '600px',
+                      background: '#FFFFFF',
+                      boxShadow: '0px 14px 28.8px rgba(0, 0, 0, 0.24), 0px 0px 8px rgba(0, 0, 0, 0.2)',
+                      borderRadius: '8px',
+                      maxHeight: '600px',
+                      minHeight: '100px'
+                    }
+                  }
                 }
-              }
-            }
-          ]
-        }}
-        dialogContentProps={{
-          title: 'Submit Feedback',
-          showCloseButton: true
-        }}>
-        <Stack tokens={{ childrenGap: 4 }}>
-          <div>Your feedback will improve this experience.</div>
+              ]
+            }}
+            dialogContentProps={{
+              title: 'Submit Feedback',
+              showCloseButton: true
+            }}>
+            <Stack tokens={{ childrenGap: 4 }}>
+              <div>Your feedback will improve this experience.</div>
 
-          {!showReportInappropriateFeedback ? <UnhelpfulFeedbackContent /> : <ReportInappropriateFeedbackContent />}
+              {!showReportInappropriateFeedback ? <UnhelpfulFeedbackContent /> : <ReportInappropriateFeedbackContent />}
 
-          <div>By pressing submit, your feedback will be visible to the application owner.</div>
+              <div>By pressing submit, your feedback will be visible to the application owner.</div>
 
-          <DefaultButton disabled={negativeFeedbackList.length < 1} onClick={onSubmitNegativeFeedback}>
-            Submit
-          </DefaultButton>
-        </Stack>
-      </Dialog>
+              <DefaultButton disabled={negativeFeedbackList.length < 1} onClick={onSubmitNegativeFeedback}>
+                Submit
+              </DefaultButton>
+            </Stack>
+          </Dialog>
         </Stack.Item>
-        
+
         {/* External citation panel - positioned as sibling to answer column */}
         {showInlineCitation && activeCitation && (
           <Stack.Item className={styles.externalCitationColumn}>
             <Stack className={styles.externalCitationPanel}>
-              <Stack horizontal horizontalAlign="space-between" verticalAlign="center" className={styles.citationHeader}>
+              <Stack
+                horizontal
+                horizontalAlign="space-between"
+                verticalAlign="center"
+                className={styles.citationHeader}>
                 <Text style={{ fontWeight: 600, fontSize: '14px' }}>Citation</Text>
-                <DefaultButton 
+                <DefaultButton
                   iconProps={{ iconName: 'Cancel' }}
                   onClick={() => {
                     setShowInlineCitation(false)
@@ -475,15 +467,18 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                   className={styles.citationCloseButton}
                 />
               </Stack>
-              <Text 
+              <Text
                 className={styles.citationTitle}
                 onClick={() => {
                   if (activeCitation.url && !activeCitation.url.includes('blob.core')) {
                     window.open(activeCitation.url, '_blank')
                   }
                 }}
-                title={activeCitation.url && !activeCitation.url.includes('blob.core') ? activeCitation.url : activeCitation.title ?? ''}
-              >
+                title={
+                  activeCitation.url && !activeCitation.url.includes('blob.core')
+                    ? activeCitation.url
+                    : activeCitation.title ?? ''
+                }>
                 {activeCitation.title}
               </Text>
               <div className={styles.citationContent}>
