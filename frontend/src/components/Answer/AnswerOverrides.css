@@ -1,0 +1,37 @@
+/* Additional responsive support for Answer layout */
+
+/* Ensure proper responsive behavior for the Answer component */
+@media (max-width: 1024px) {
+  .answerColumn {
+    flex: 1.5 !important;
+    max-width: 65% !important;
+    width: 65% !important;
+  }
+
+  .externalCitationColumn {
+    flex: 1 !important;
+    max-width: 35% !important;
+    width: 35% !important;
+    min-width: 250px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainAnswerLayout {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .answerColumn {
+    flex: none !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  .externalCitationColumn {
+    flex: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    min-width: auto !important;
+  }
+}
