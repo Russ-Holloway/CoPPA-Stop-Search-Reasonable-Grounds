@@ -28,6 +28,8 @@ import {
   Conversation,
   historyGenerate,
   historyUpdate,
+  historyClear,
+  historyList,
   ChatHistoryLoadingState,
   CosmosDBStatus,
   ErrorMessage,
@@ -603,8 +605,26 @@ const Chat = () => {
     return tryGetRaiPrettyError(errorMessage)
   }
 
-  const newChat = () => {
+  const newChat = async () => {
     setProcessMessages(messageStatus.Processing)
+    
+    // If there's an active conversation with messages, finalize it
+    if (appStateContext?.state.currentChat && appStateContext.state.currentChat.messages.length > 0) {
+      try {
+        if (appStateContext.state.isCosmosDBAvailable?.cosmosDB) {
+          await historyClear(appStateContext.state.currentChat.id)
+          // Refresh chat history to show the finalized conversation
+          const response = await historyList(0, true)
+          if (response) {
+            appStateContext?.dispatch({ type: 'FETCH_CHAT_HISTORY', payload: response })
+          }
+        }
+      } catch (error) {
+        console.error('Error finalizing conversation:', error)
+      }
+    }
+    
+    // Clear the UI state
     setMessages([])
     setIsCitationPanelOpen(false)
     setIsIntentsPanelOpen(false)

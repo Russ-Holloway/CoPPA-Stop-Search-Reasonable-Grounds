@@ -1088,7 +1088,7 @@ async def delete_all_conversations_disabled():
 @bp.route("/history/clear", methods=["POST"])
 @require_cosmos_db
 async def finalize_conversation():
-    """Finalize current conversation and create a new one"""
+    """Finalize current conversation without creating a new one"""
     authenticated_user = get_authenticated_user_details(request_headers=request.headers)
     user_id = authenticated_user["user_principal_id"]
     
@@ -1105,15 +1105,8 @@ async def finalize_conversation():
         if not success:
             return jsonify({"error": message}), 400
         
-        # Create a new conversation for future messages
-        new_conversation = await current_app.cosmos_conversation_client.create_new_conversation(user_id)
-        
-        if not new_conversation:
-            return jsonify({"error": "Failed to create new conversation"}), 500
-        
         return jsonify({
-            "message": "Conversation finalized successfully",
-            "new_conversation_id": new_conversation["id"]
+            "message": "Conversation finalized successfully"
         })
         
     except Exception as e:
