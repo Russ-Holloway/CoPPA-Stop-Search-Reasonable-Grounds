@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citation Panel Width Improvements - Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        /* Simulate updated Chat Root with maximum width utilization */
+        .chatRoot {
+            flex: 1;
+            display: flex;
+            margin: 20px;
+            gap: 20px;
+            max-width: 98vw; /* Maximum screen utilization */
+            width: 98vw;
+            border: 3px solid #007acc;
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 600px;
+        }
+        
+        .chatContainer {
+            width: 100%;
+            max-width: 100%;
+            flex: 1;
+            border: 2px solid #28a745;
+            border-radius: 6px;
+            padding: 15px;
+            background: #f8fff8;
+        }
+        
+        /* Simulate Answer component layout with improved proportions */
+        .mainAnswerLayout {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            width: 100%;
+            max-width: none;
+            margin: 20px 0;
+        }
+        
+        .answerColumn {
+            flex: 3; /* 60% of available space */
+            min-width: 0;
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .externalCitationColumn {
+            flex: 2; /* 40% of available space */
+            max-width: 600px; /* INCREASED from 500px */
+            min-width: 500px; /* INCREASED from 400px */
+            background: #fff3cd;
+            border: 2px solid #f39c12;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .citation-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+        }
+        
+        .answer-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 20px 0;
+            color: #155724;
+            font-weight: 600;
+        }
+        
+        .improvement {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+            color: #856404;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .before-box {
+            border: 2px solid #dc3545;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .after-box {
+            border: 2px solid #28a745;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        /* Show improvement dimensions */
+        .dimension-label {
+            background: #007acc;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Citation Panel Width Improvements - Enhanced Solution</h1>
+        
+        <div class="status">
+            ✅ <strong>ENHANCED SOLUTION IMPLEMENTED:</strong> Citation panel is now significantly wider with maximum screen utilization
+        </div>
+        
+        <h2>🔧 Key Improvements Made</h2>
+        <div class="improvement">
+            <h3>📏 Increased Citation Panel Dimensions</h3>
+            <ul>
+                <li><strong>Maximum Width:</strong> 600px (increased from 500px)</li>
+                <li><strong>Minimum Width:</strong> 500px (increased from 400px)</li>
+                <li><strong>Maintains 60% Answer / 40% Citation proportions</strong></li>
+            </ul>
+        </div>
+        
+        <div class="improvement">
+            <h3>📺 Enhanced Screen Utilization</h3>
+            <ul>
+                <li><strong>Chat Root Width:</strong> 98vw (increased from 95vw)</li>
+                <li><strong>Chat Container:</strong> Uses full available width when no global citation panel</li>
+                <li><strong>Responsive:</strong> Improved tablet and mobile breakpoints</li>
+            </ul>
+        </div>
+        
+        <h2>📊 Enhanced Citation Panel Layout</h2>
+        
+        <div class="chatRoot">
+            <div class="chatContainer">
+                <div class="mainAnswerLayout">
+                    <div class="answerColumn">
+                        <h3>📝 Answer Section (60% width)</h3>
+                        <div class="answer-content">
+                            <p>This is the answer section that maintains 60% of the available space while allowing the citation panel to be significantly wider than before.</p>
+                            <p><strong>Answer Panel Benefits:</strong></p>
+                            <ul>
+                                <li>✅ Maintains 60% proportional space</li>
+                                <li>✅ Benefits from overall increased container width</li>
+                                <li>✅ More readable due to larger overall layout</li>
+                                <li>✅ Responsive design preserved</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="externalCitationColumn">
+                        <h3>📚 Enhanced Citation Panel (40% width)</h3>
+                        <div class="citation-content">
+                            <p><strong>🎉 THIS CITATION PANEL IS NOW MUCH WIDER!</strong></p>
+                            <p><strong>Enhanced Citation Panel Features:</strong></p>
+                            <ul>
+                                <li>✅ <span class="dimension-label">600px MAX</span> (increased from 500px)</li>
+                                <li>✅ <span class="dimension-label">500px MIN</span> (increased from 400px)</li>
+                                <li>✅ Benefits from 98vw chat root width</li>
+                                <li>✅ Better typography: 14px font, 1.5 line-height</li>
+                                <li>✅ Increased padding: 16px for better readability</li>
+                                <li>✅ Responsive design for all screen sizes</li>
+                            </ul>
+                            <p>The citation content now has substantially more space, making it much easier to read longer citations and documents.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>🔄 Before vs After Comparison</h2>
+        <div class="comparison">
+            <div class="before-box">
+                <h3>❌ Before (Previous State)</h3>
+                <ul>
+                    <li>Citation max-width: 500px</li>
+                    <li>Citation min-width: 400px</li>
+                    <li>Chat root: 95vw width</li>
+                    <li>Constrained by parent containers</li>
+                    <li>Tablet min-width: 350px</li>
+                </ul>
+            </div>
+            
+            <div class="after-box">
+                <h3>✅ After (Enhanced Solution)</h3>
+                <ul>
+                    <li>Citation max-width: <strong>600px</strong> 🎯</li>
+                    <li>Citation min-width: <strong>500px</strong> 🎯</li>
+                    <li>Chat root: <strong>98vw width</strong> 🎯</li>
+                    <li>Maximum screen utilization</li>
+                    <li>Tablet min-width: <strong>400px</strong> 🎯</li>
+                </ul>
+            </div>
+        </div>
+        
+        <h2>🔧 Technical Changes Summary</h2>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3>Files Modified:</h3>
+            <ol>
+                <li><code>Chat.module.css</code> - Increased chat root to 98vw for maximum width utilization</li>
+                <li><code>Answer.module.css</code> - Enhanced citation panel dimensions (600px max, 500px min)</li>
+                <li><code>Answer_clean.module.css</code> - Applied identical improvements</li>
+                <li><code>index.css</code> - Updated global overrides to match new dimensions</li>
+            </ol>
+            
+            <h3>Key CSS Changes:</h3>
+            <ul>
+                <li><code>.chatRoot { max-width: 98vw; width: 98vw; }</code> - Maximum screen utilization</li>
+                <li><code>.externalCitationColumn { max-width: 600px; min-width: 500px; }</code> - Wider citation panel</li>
+                <li>Updated responsive breakpoints for consistent experience</li>
+                <li>Enhanced global overrides in index.css</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #d4edda; border-radius: 8px;">
+            <p style="color: #155724; font-size: 18px; margin: 0; font-weight: 600;">
+                🎉 Enhanced Solution: Citation panel is now significantly wider with maximum screen utilization!
+            </p>
+            <p style="color: #155724; margin: 10px 0 0 0;">
+                The combination of increased container width and larger citation dimensions provides substantially more reading space.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
