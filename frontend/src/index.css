@@ -149,20 +149,27 @@ html {
   background-color: transparent !important;
 }
 
-/* Global citation panel override - ensures our sizing takes effect */
-[class*='citationPanel'] {
-  flex: 0 0 250px !important;
-  max-width: 250px !important;
-  min-width: 220px !important;
-  width: 250px !important;
+/* Global citation panel override - ensures our larger sizing takes effect */
+[class*='externalCitationColumn'] {
+  flex: 2 !important; /* Use proportional layout: 40% of space */
+  max-width: 500px !important;
+  min-width: 400px !important;
 }
 
 /* Responsive citation panel overrides */
+@media (max-width: 1024px) {
+  [class*='externalCitationColumn'] {
+    flex: 2 !important; /* Maintain proportional layout */
+    max-width: 450px !important;
+    min-width: 350px !important;
+  }
+}
+
 @media (max-width: 768px) {
-  [class*='citationPanel'] {
-    flex: 0 0 220px !important;
-    max-width: 220px !important;
-    min-width: 200px !important;
-    width: 220px !important;
+  [class*='externalCitationColumn'] {
+    flex: none !important;
+    max-width: none !important;
+    min-width: auto !important;
+    width: 100% !important;
   }
 }

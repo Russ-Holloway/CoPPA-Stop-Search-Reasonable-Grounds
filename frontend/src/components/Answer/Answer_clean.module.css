@@ -26,33 +26,34 @@
 .mainAnswerLayout {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: none; /* Remove width constraint to allow full expansion */
 }
 
 .answerColumn {
-  flex: 1 1 0; /* Take remaining space after citation panel */
+  flex: 3; /* 60% of available space (3 out of 5 parts) */
   min-width: 0; /* Allow content to shrink if needed */
 }
 
 .externalCitationColumn {
-  flex: 0 0 250px; /* Smaller fixed width for citation panel */
-  max-width: 250px;
-  min-width: 220px;
+  flex: 2; /* 40% of available space (2 out of 5 parts) */
+  max-width: 500px; /* Increased from 250px for better readability */
+  min-width: 400px; /* Increased from 220px for better readability */
 }
 
 .externalCitationPanel {
   background: #f8f9fa;
   border: 1px solid #e1e5e9;
   border-radius: 6px;
-  padding: 10px;
+  padding: 16px; /* Increased from 10px for better spacing */
   position: sticky;
   top: 20px; /* Sticky positioning */
   max-height: calc(100vh - 40px);
   overflow-y: auto;
-  font-size: 12px;
-  line-height: 1.3;
+  font-size: 14px; /* Increased from 12px for better readability */
+  line-height: 1.5; /* Increased from 1.3 for better readability */
+  width: 100%; /* Ensure it uses the full column width */
 }
 
 :global(.dark-mode) .sideBySideCitationPanel {
@@ -331,14 +332,14 @@ sup {
   }
 
   .externalCitationColumn {
-    flex: 0 0 220px;
-    max-width: 220px;
-    min-width: 200px;
+    flex: 2; /* Maintain proportional layout even on smaller screens */
+    max-width: 350px; /* Smaller for mobile-friendly tablets */
+    min-width: 300px;
   }
 
   .externalCitationPanel {
-    padding: 8px;
-    font-size: 11px;
+    padding: 12px; /* Increased from 8px for better touch targets */
+    font-size: 13px; /* Increased from 11px for better readability */
   }
 }
 
