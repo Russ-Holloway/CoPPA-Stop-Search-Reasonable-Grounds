@@ -3,16 +3,13 @@
 /* Ensure proper responsive behavior for the Answer component */
 @media (max-width: 1024px) {
   .answerColumn {
-    flex: 1.5 !important;
-    max-width: 60% !important; /* Updated to match larger size */
-    width: 60% !important;
+    flex: 3 !important; /* Maintain 60% proportional layout */
   }
 
   .externalCitationColumn {
-    flex: 0 0 500px !important;
-    max-width: 500px !important; /* Updated to match tablet size */
-    width: 500px !important;
-    min-width: 450px !important; /* Updated minimum width */
+    flex: 2 !important; /* Maintain 40% proportional layout */
+    max-width: 450px !important; /* Slightly smaller for tablets */
+    min-width: 350px !important; /* Reduce minimum for tablets */
   }
 }
 
