@@ -13,6 +13,8 @@
   display: flex;
   margin: 20px;
   gap: 20px;
+  max-width: 98vw; /* Allow maximum screen utilization for Answer-level citations */
+  width: 98vw;
 }
 
 /* When no citation panel is present, chat container takes full width */
