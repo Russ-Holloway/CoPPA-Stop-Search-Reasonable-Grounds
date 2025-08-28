@@ -7,7 +7,7 @@ STORAGE_ACCOUNT="stcoppadeployment02"
 CONTAINER_NAME="coppa-deployment"
 RESOURCE_GROUP="rg-coppa-test-02"
 TEMPLATE_FILE="infrastructure/deployment.json"
-UI_DEFINITION_FILE="infrastructure/createUiDefinition-pds.json"
+UI_DEFINITION_FILE="infrastructure/createUiDefinition.json"
 
 echo "🚀 Uploading ARM template with CORS support..."
 echo "=================================================="

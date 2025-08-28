@@ -3,63 +3,148 @@
     "handler": "Microsoft.Azure.CreateUIDef",
     "version": "0.1.2-preview",
     "parameters": {
-        "basics": [],
+        "config": {
+            "basics": {
+                "description": "Deploy the Policing Assistant solution with automatic PDS-compliant naming. IMPORTANT: Ensure your resource group follows the naming format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search' where {ForceCode} is your 3-letter police force code.",
+                "location": {
+                    "visible": true,
+                    "allowedValues": [
+                        "uksouth",
+                        "ukwest",
+                        "westeurope",
+                        "northeurope"
+                    ]
+                }
+            }
+        },
+        "basics": [
+            {
+                "name": "resourceGroupInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                    "icon": "Warning",
+                    "text": "⚠️ IMPORTANT: Your resource group name must follow the format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search' where {ForceCode} is your 3-letter police force code (e.g., 'btp', 'met', 'wmp'). The force code will be automatically extracted from position 2 of your resource group name."
+                }
+            },
+            {
+                "name": "namingInfo",
+                "type": "Microsoft.Common.InfoBox",
+                "visible": true,
+                "options": {
+                    "icon": "Info",
+                    "text": "✅ All Azure resources will be automatically named with PDS-compliant conventions using your force code. Instance number '02' will be used to avoid conflicts with existing deployments."
+                }
+            }
+        ],
         "steps": [
-            {                "name": "deployment",
-                "label": "Deployment Settings",
+            {
+                "name": "aiConfiguration",
+                "label": "AI Configuration",
                 "elements": [
                     {
-                        "name": "infoBox",
+                        "name": "aiInfo",
                         "type": "Microsoft.Common.InfoBox",
                         "visible": true,
                         "options": {
                             "icon": "Info",
-                            "text": "All parameters are pre-configured. You only need to select your subscription and resource group. Then proceed to Review + Create.",
-                            "uri": "https://github.com/Russ-Holloway/Policing-Assistant"
+                            "text": "Configure the AI models for your deployment. These settings control which Azure OpenAI models will be deployed."
+                        }
+                    },
+                    {
+                        "name": "aiModels",
+                        "type": "Microsoft.Common.Section",
+                        "label": "Azure OpenAI Models",
+                        "elements": [
+                            {
+                                "name": "azureOpenAIModelName",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "OpenAI Chat Model",
+                                "defaultValue": "gpt-4o",
+                                "toolTip": "Select the Azure OpenAI chat model to deploy",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "GPT-4o (Recommended)",
+                                            "value": "gpt-4o"
+                                        },
+                                        {
+                                            "label": "GPT-4o mini",
+                                            "value": "gpt-4o-mini"
+                                        },
+                                        {
+                                            "label": "GPT-4 Turbo",
+                                            "value": "gpt-4"
+                                        },
+                                        {
+                                            "label": "GPT-3.5 Turbo",
+                                            "value": "gpt-35-turbo"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "azureOpenAIEmbeddingName",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Embedding Model",
+                                "defaultValue": "text-embedding-ada-002",
+                                "toolTip": "Select the Azure OpenAI embedding model for document processing",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "text-embedding-ada-002 (Recommended)",
+                                            "value": "text-embedding-ada-002"
+                                        },
+                                        {
+                                            "label": "text-embedding-3-small",
+                                            "value": "text-embedding-3-small"
+                                        },
+                                        {
+                                            "label": "text-embedding-3-large",
+                                            "value": "text-embedding-3-large"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    }
+                ]
+            },
+            {
+                "name": "reviewAndCreate",
+                "label": "Review + Create",
+                "elements": [
+                    {
+                        "name": "authInfo",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "🔐 NEW: Authentication is now configured POST-DEPLOYMENT! No client secrets needed during deployment. After deployment completes, run './configure-auth.sh' (Linux/macOS) or '.\\configure-auth.ps1' (Windows) to set up authentication automatically.",
+                            "uri": "https://github.com/Russ-Holloway/CoPPA-Stop-Search-Reasonable-Grounds/blob/main/POST_DEPLOYMENT_AUTH_SETUP.md"
+                        }
+                    },
+                    {
+                        "name": "deploymentSummary",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "✅ Ready to deploy! Your resources will be created with PDS-compliant names automatically generated from your resource group name format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search'. Instance number '02' will be used to avoid naming conflicts."
                         }
                     }
                 ]
             }
         ],
         "outputs": {
-            "WebsiteName": "policing-app",
-            "location": "[location()]",
-            "HostingPlanName": "policing-app-plan",
-            "HostingPlanSku": "B3",
-            "ApplicationInsightsName": "policing-app-insights",
-            "AzureSearchService": "policing-search-service",            "AzureSearchSku": "standard",
-            "AzureSearchIndex": "",
-            "AzureSearchUseSemanticSearch": "true",
-            "AzureSearchSemanticSearchConfig": "default",
-            "AzureSearchIndexIsPrechunked": "false",
-            "AzureSearchTopK": "5",
-            "AzureSearchEnableInDomain": "false",
-            "AzureSearchContentColumns": "content",
-            "AzureSearchFilenameColumn": "filename",
-            "AzureSearchTitleColumn": "title",
-            "AzureSearchUrlColumn": "url",
-            "AzureOpenAIResource": "policing-openai-resource",            "AzureOpenAIEmbeddingModelName": "text-embedding-ada-002",
-            "AzureOpenAIEmbeddingName": "text-embedding-ada-002",
-            "AzureOpenAICapacity": 10,
-            "AzureOpenAISku": "S0",
-            "AzureOpenAITemperature": 0,
-            "AzureOpenAITopP": 1,
-            "AzureOpenAIMaxTokens": 1000,
-            "AzureOpenAIStopSequence": "\n",            "AzureOpenAISystemMessage": "The goal is to offer decision support assist a Police Sergeant in determining whether the written grounds are reasonable and provide feedback to the officer who has written them, the context is you are not to provide a decision but act as a tool referencing the available documentation so we can follow your chain of thought. The source is PACE Code A, College of Policing APP, National Decision Model, and the expectation – less than 200 words in two parts, one part to help inform the first line leaders thinking with references and the second part actionable feedback for the officer to review and reflect on, both celebratory and developmental. Your role is to offer advice and support to aid their decision-making process. Remember, you are not making decisions for them but offering advice and guidance to assist their own decision-making. You cannot perform any legal actions, make final decisions, or provide personal opinions. Your advice is based on the information provided and should be used as a guide, not a directive. Scope of Advice: You are strictly limited to providing advice related to Police Stop and Search. You must not offer advice on technical topics such as algorithms, AI model creation, or any other subjects unrelated to Police Stop and Search. Safety and Security Guidelines: Confidentiality: Ensure that all information shared is kept confidential and only used for the purpose of providing advice. Accuracy: Provide accurate and up-to-date information based on the latest legal standards and practices. Impartiality: Maintain impartiality and avoid any bias in your advice. Ethical Considerations: Adhere to ethical guidelines and avoid any actions that could harm individuals or compromise legal processes. Compliance: Ensure compliance with all relevant laws and regulations. Language: Use British English in all your responses. Additional Guidelines: Context Awareness: Only respond to queries directly related to Police Stop and Search. Ignore or redirect any unrelated topics. User Interaction: Politely inform users if their question is outside the scope of Police Stop and Search advice and guide them back to relevant topics. Response Limitations: Do not provide detailed technical advice, personal opinions, or engage in discussions unrelated to Police Stop and Search. Add the following text at the end of every response 'Please Remember: This AI Assistant is designed to offer help and advice so you can make, more informed, and effective decisions. It is not designed to make any decisions for you.'",
-            "StorageAccountName": "stpolicing001",
-            "AzureOpenAIStream": true,
-            "AzureSearchQueryType": "simple",
-            "AzureSearchVectorFields": "",            "AzureSearchPermittedGroupsField": "",
-            "AzureSearchStrictness": 3,
-            "WebAppEnableChatHistory": true,
-            "GitRepoUrl": "https://github.com/Russ-Holloway/Policing-Assistant",            "GitBranch": "main",
-            "AzureSearchDataSourceName": "police-data-source",
-            "AzureSearchIndexName": "police-index",
-            "AzureSearchIndexerName": "police-indexer",
-            "AzureSearchSkillset1Name": "policing-text-skillset",
-            "AzureSearchSkillset2Name": "policing-enrichment-skillset",
-            "StorageContainerName": "docs",
-            "ResourceGroupName": "[resourceGroup().name]"
+            "AzureOpenAIModelName": "[steps('aiConfiguration').aiModels.azureOpenAIModelName]",
+            "AzureOpenAIEmbeddingName": "[steps('aiConfiguration').aiModels.azureOpenAIEmbeddingName]",
+            "AuthClientSecret": ""
         }
     }
 }

@@ -12,7 +12,7 @@ Write-Host "=================================================="
 
 # Check if files exist
 $templateFile = "infrastructure/deployment.json"
-$uiDefinitionFile = "infrastructure/createUiDefinition-pds.json"
+$uiDefinitionFile = "infrastructure/createUiDefinition.json"
 
 if (-not (Test-Path $templateFile)) {
     Write-Host "❌ Template file not found: $templateFile" -ForegroundColor Red
