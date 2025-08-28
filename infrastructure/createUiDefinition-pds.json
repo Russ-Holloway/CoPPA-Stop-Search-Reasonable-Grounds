@@ -120,6 +120,16 @@
                 "label": "Review + Create",
                 "elements": [
                     {
+                        "name": "authInfo",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "🔐 NEW: Authentication is now configured POST-DEPLOYMENT! No client secrets needed during deployment. After deployment completes, run './configure-auth.sh' (Linux/macOS) or '.\\configure-auth.ps1' (Windows) to set up authentication automatically.",
+                            "uri": "https://github.com/Russ-Holloway/CoPPA-Stop-Search-Reasonable-Grounds/blob/main/POST_DEPLOYMENT_AUTH_SETUP.md"
+                        }
+                    },
+                    {
                         "name": "deploymentSummary",
                         "type": "Microsoft.Common.InfoBox",
                         "visible": true,
@@ -133,7 +143,8 @@
         ],
         "outputs": {
             "AzureOpenAIModelName": "[steps('aiConfiguration').aiModels.azureOpenAIModelName]",
-            "AzureOpenAIEmbeddingName": "[steps('aiConfiguration').aiModels.azureOpenAIEmbeddingName]"
+            "AzureOpenAIEmbeddingName": "[steps('aiConfiguration').aiModels.azureOpenAIEmbeddingName]",
+            "AuthClientSecret": ""
         }
     }
 }

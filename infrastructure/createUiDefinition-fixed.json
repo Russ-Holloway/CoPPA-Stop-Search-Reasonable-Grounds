@@ -1,0 +1,93 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [],
+        "steps": [
+            {
+                "name": "deployment",
+                "label": "Deployment Configuration",
+                "elements": [
+                    {
+                        "name": "postDeploymentAuthInfo",
+                        "type": "Microsoft.Common.InfoBox",
+                        "visible": true,
+                        "options": {
+                            "icon": "Info",
+                            "text": "🎉 AUTHENTICATION SIMPLIFIED: No client secrets needed during deployment! Authentication will be configured automatically after deployment using post-deployment scripts. This eliminates the previous authentication errors during deployment.",
+                            "uri": "https://github.com/Russ-Holloway/CoPPA-Stop-Search-Reasonable-Grounds/blob/main/POST_DEPLOYMENT_AUTH_SETUP.md"
+                        }
+                    },
+                    {
+                        "name": "modelSelection",
+                        "type": "Microsoft.Common.Section",
+                        "label": "AI Model Configuration",
+                        "elements": [
+                            {
+                                "name": "azureOpenAIModelName",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Azure OpenAI Chat Model",
+                                "defaultValue": "gpt-4o",
+                                "toolTip": "Select the Azure OpenAI model for chat functionality",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "GPT-4o (Recommended)",
+                                            "value": "gpt-4o"
+                                        },
+                                        {
+                                            "label": "GPT-4o Mini",
+                                            "value": "gpt-4o-mini"
+                                        },
+                                        {
+                                            "label": "GPT-4 Turbo",
+                                            "value": "gpt-4-turbo"
+                                        },
+                                        {
+                                            "label": "GPT-3.5 Turbo 16K",
+                                            "value": "gpt-35-turbo-16k"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            },
+                            {
+                                "name": "azureOpenAIEmbeddingName",
+                                "type": "Microsoft.Common.DropDown",
+                                "label": "Azure OpenAI Embedding Model",
+                                "defaultValue": "text-embedding-ada-002",
+                                "toolTip": "Select the Azure OpenAI embedding model for document processing",
+                                "constraints": {
+                                    "allowedValues": [
+                                        {
+                                            "label": "text-embedding-ada-002 (Recommended)",
+                                            "value": "text-embedding-ada-002"
+                                        },
+                                        {
+                                            "label": "text-embedding-3-small",
+                                            "value": "text-embedding-3-small"
+                                        },
+                                        {
+                                            "label": "text-embedding-3-large",
+                                            "value": "text-embedding-3-large"
+                                        }
+                                    ],
+                                    "required": true
+                                },
+                                "visible": true
+                            }
+                        ],
+                        "visible": true
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "AzureOpenAIModelName": "[steps('deployment').modelSelection.azureOpenAIModelName]",
+            "AzureOpenAIEmbeddingName": "[steps('deployment').modelSelection.azureOpenAIEmbeddingName]",
+            "AuthClientSecret": ""
+        }
+    }
+}
