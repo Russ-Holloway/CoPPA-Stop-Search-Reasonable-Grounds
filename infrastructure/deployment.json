@@ -21,8 +21,9 @@
         },
         "AuthClientSecret": {
             "type": "securestring",
+            "defaultValue": "",
             "metadata": {
-                "description": "Azure AD App Registration client secret for authentication."
+                "description": "Azure AD App Registration client secret for authentication (optional - can be configured post-deployment)."
             }
         }
     },
@@ -226,7 +227,7 @@
                         },
                         {
                             "name": "AUTH_CLIENT_SECRET",
-                            "value": "[parameters('AuthClientSecret')]"
+                            "value": "[if(not(empty(parameters('AuthClientSecret'))), parameters('AuthClientSecret'), '')]"
                         },
                         {
                             "name": "UI_CHAT_TITLE",

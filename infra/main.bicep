@@ -48,10 +48,10 @@ param formRecognizerResourceGroupName string = ''
 param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = ''
 
-// Used for the Azure AD application
-param authClientId string
+// Used for the Azure AD application - now optional for post-deployment configuration
+param authClientId string = ''
 @secure()
-param authClientSecret string
+param authClientSecret string = ''
 
 // Used for Cosmos DB
 param cosmosAccountName string = ''

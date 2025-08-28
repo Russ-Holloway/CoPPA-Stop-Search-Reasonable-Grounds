@@ -24,9 +24,9 @@ param allowedOrigins array = []
 param alwaysOn bool = true
 param appCommandLine string = ''
 param appSettings object = {}
-param authClientId string
+param authClientId string = ''
 @secure()
-param authClientSecret string
+param authClientSecret string = ''
 param authIssuerUri string
 param clientAffinityEnabled bool = false
 param enableOryxBuild bool = contains(kind, 'linux')

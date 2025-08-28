@@ -39,10 +39,10 @@
       "value": "${AZURE_FORMRECOGNIZER_SKU_NAME}"
     },
     "authClientId": {
-      "value": "${AUTH_CLIENT_ID}"
+      "value": "${AUTH_CLIENT_ID=}"
     },
     "authClientSecret": {
-      "value": "${AUTH_CLIENT_SECRET}"
+      "value": "${AUTH_CLIENT_SECRET=}"
     }
   }
 }

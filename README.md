@@ -81,12 +81,25 @@ az webapp deployment source config-zip \
 **📖 Full Guide:** [Code Deployment Guide](docs/code-deployment-guide.md)
 
 #### Authentication Setup (Required)
-**🚀 Quick Setup:** Run the automated authentication script:
+**🚀 New: Post-Deployment Configuration**  
+Authentication is now configured *after* deployment, so you no longer need client secrets during the initial deployment!
+
+**Automated Setup (Recommended):**
+```bash
+# Linux/macOS
+./configure-auth.sh
+
+# Windows PowerShell  
+.\configure-auth.ps1
+```
+
+**Legacy Manual Setup:**
 ```powershell
 .\scripts\setup_azure_ad_auth.ps1 -WebAppName "your-web-app-name" -ResourceGroupName "your-resource-group"
 ```
 
 **📋 Quick Reference:** [Azure AD Quick Reference](AZURE_AD_QUICK_REFERENCE.md)  
+**📖 Post-Deployment Guide:** [Post-Deployment Authentication Setup](POST_DEPLOYMENT_AUTH_SETUP.md)  
 **📖 Full Guide:** [Azure AD Setup Guide](AZURE_AD_SETUP_GUIDE.md)
 
 #### Search Components Setup (Required)
@@ -239,9 +252,25 @@ After creating your `.env` file, use provided PowerShell or Bash commands to gen
 
 ## Authentication
 
-### Quick Setup (Recommended)
+### New: Post-Deployment Authentication Setup
 
-After your Azure deployment completes, use our automated setup script:
+Authentication is now configured **after deployment** to eliminate the need for client secrets during the initial "Deploy to Azure" process.
+
+**🚀 Quick Setup (Recommended):**
+
+```bash
+# Linux/macOS - Run after deployment
+./configure-auth.sh
+
+# Windows PowerShell - Run after deployment
+.\configure-auth.ps1
+```
+
+**📖 Complete Guide:** [Post-Deployment Authentication Setup](POST_DEPLOYMENT_AUTH_SETUP.md)
+
+### Legacy Setup (Alternative)
+
+If you prefer the previous approach or need manual configuration:
 
 ```powershell
 # Navigate to your project folder and run:
@@ -341,9 +370,21 @@ To make the "Deploy to Azure" button work:
 If you encounter issues during deployment, please try the following:
 
 ### Authentication Errors
-If you see authentication errors when using the one-click deployment button:
+**✅ RESOLVED:** Authentication errors during deployment have been fixed! 
+
+The deployment no longer requires authentication client secrets upfront. Instead:
+1. Click "Deploy to Azure" - no auth secrets needed!
+2. After deployment completes, run the post-deployment auth setup:
+   ```bash
+   ./configure-auth.sh  # Linux/macOS
+   # or
+   .\configure-auth.ps1  # Windows
+   ```
+
+**If you still see auth-related errors:**
 1. Make sure you're logged into Azure before clicking the button
 2. Check that your Azure account has the necessary permissions to deploy resources
+3. See the [Post-Deployment Authentication Setup](POST_DEPLOYMENT_AUTH_SETUP.md) guide for detailed troubleshooting
 
 ### Access Denied Errors
 If you encounter access denied errors when accessing the template:
