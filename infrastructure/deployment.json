@@ -24,7 +24,7 @@
         "ForceCode": "[split(resourceGroup().name, '-')[1]]",
         "EnvironmentSuffix": "prod",
         "ServiceSuffix": "coppa",
-        "InstanceNumber": "02",
+        "InstanceNumber": "03",
         "HostingPlanName": "[concat('asp-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "HostingPlanSku": "B3",
         "WebsiteName": "[concat('app-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",

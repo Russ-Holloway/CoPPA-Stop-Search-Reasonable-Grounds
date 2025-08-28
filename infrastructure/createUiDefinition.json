@@ -33,7 +33,7 @@
                 "visible": true,
                 "options": {
                     "icon": "Info",
-                    "text": "✅ All Azure resources will be automatically named with PDS-compliant conventions using your force code. Instance number '02' will be used to avoid conflicts with existing deployments."
+                    "text": "✅ All Azure resources will be automatically named with PDS-compliant conventions using your force code. Instance number '03' will be used for this test deployment."
                 }
             }
         ],
@@ -135,7 +135,7 @@
                         "visible": true,
                         "options": {
                             "icon": "Info",
-                            "text": "✅ Ready to deploy! Your resources will be created with PDS-compliant names automatically generated from your resource group name format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search'. Instance number '02' will be used to avoid naming conflicts."
+                            "text": "✅ Ready to deploy! Your resources will be created with PDS-compliant names automatically generated from your resource group name format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search'. Instance number '03' will be used for this test deployment."
                         }
                     }
                 ]
