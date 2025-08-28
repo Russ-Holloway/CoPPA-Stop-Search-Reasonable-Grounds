@@ -96,20 +96,17 @@ UI_SAS=$(az storage blob generate-sas \
 if [ $? -eq 0 ]; then
     echo "✅ SAS tokens generated successfully"
     echo ""
-    echo "🔗 Template URLs:"
-    echo "=================================================="
-    echo "Template URL:"
-    echo "https://$STORAGE_ACCOUNT.blob.core.windows.net/$CONTAINER_NAME/deployment.json?$TEMPLATE_SAS"
-    echo ""
-    echo "UI Definition URL:"
-    echo "https://$STORAGE_ACCOUNT.blob.core.windows.net/$CONTAINER_NAME/createUiDefinition.json?$UI_SAS"
-    echo ""
-    echo "🎯 Azure Portal Deploy Button URL:"
-    echo "https://portal.azure.com/#create/Microsoft.Template/uri/$(echo "https://$STORAGE_ACCOUNT.blob.core.windows.net/$CONTAINER_NAME/deployment.json?$TEMPLATE_SAS" | python3 -c "import urllib.parse; print(urllib.parse.quote(input()))")"
-else
-    echo "❌ Failed to generate SAS tokens"
-    exit 1
-fi
+echo ""
+echo "🔗 Template URLs:"
+echo "=================================================="
+echo "Template URL (Public):"
+echo "https://$STORAGE_ACCOUNT.blob.core.windows.net/$CONTAINER_NAME/deployment.json"
+echo ""
+echo "UI Definition URL (Public):"
+echo "https://$STORAGE_ACCOUNT.blob.core.windows.net/$CONTAINER_NAME/createUiDefinition.json"
+echo ""
+echo "🎯 Deploy to Azure Button URL (Public - No SAS needed):"
+echo "[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2F$STORAGE_ACCOUNT.blob.core.windows.net%2F$CONTAINER_NAME%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2F$STORAGE_ACCOUNT.blob.core.windows.net%2F$CONTAINER_NAME%2FcreateUiDefinition.json)"
 
 echo ""
 echo "🎉 Upload completed successfully!"

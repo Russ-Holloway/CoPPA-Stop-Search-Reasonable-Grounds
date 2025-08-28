@@ -24,7 +24,7 @@ All resources created by this deployment follow the PDS naming strategy:
 3. Review the auto-generated resource names
 4. Deploy the solution
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3Fst%3D2025-07-23%26se%3D2026-07-23%26sp%3Drlpt%26spr%3Dhttps%26sv%3D2022-11-02%26ss%3Db%26srt%3Dsco%26sig%3DT8GTdzBqPHDxODY%2FUHs7rlDPVFIgNOkHIi1pRAwtw4E%253D/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition-pds.json%3Fst%3D2025-07-23%26se%3D2026-07-23%26sp%3Drlpt%26spr%3Dhttps%26sv%3D2022-11-02%26ss%3Db%26srt%3Dsco%26sig%3DT8GTdzBqPHDxODY%2FUHs7rlDPVFIgNOkHIi1pRAwtw4E%253D)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition.json)
 
 ### Option 2: PowerShell Deployment
 ```powershell
