@@ -7,7 +7,7 @@ This folder contains the Azure deployment templates for the CoPPA Stop & Search 
 ### 📋 `deployment.json` (32KB)
 **Main ARM template** for Azure deployment
 - Contains all Azure resource definitions
-- Has optional `AuthClientSecret` parameter (can be empty for post-deployment auth setup)
+- **NO AuthClientSecret parameter** - authentication configured post-deployment only
 - Used by the "Deploy to Azure" button
 - **Upload to storage as:** `deployment.json`
 

@@ -143,8 +143,7 @@
         ],
         "outputs": {
             "AzureOpenAIModelName": "[steps('aiConfiguration').aiModels.azureOpenAIModelName]",
-            "AzureOpenAIEmbeddingName": "[steps('aiConfiguration').aiModels.azureOpenAIEmbeddingName]",
-            "AuthClientSecret": ""
+            "AzureOpenAIEmbeddingName": "[steps('aiConfiguration').aiModels.azureOpenAIEmbeddingName]"
         }
     }
 }

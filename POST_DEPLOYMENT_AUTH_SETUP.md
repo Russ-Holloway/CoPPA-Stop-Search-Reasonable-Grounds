@@ -27,7 +27,7 @@ The `azure.yaml` file now runs authentication setup in the `postprovision` hooks
 
 If you're using the "Deploy to Azure" button or manual ARM/Bicep deployment:
 
-1. **Deploy the template** - The auth client secret is now optional, so you can leave it empty or use a placeholder
+1. **Deploy the template** - NO authentication parameters required during deployment!
 2. **Run the post-deployment configuration script**:
 
    **Linux/macOS:**
