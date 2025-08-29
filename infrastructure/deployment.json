@@ -21,7 +21,7 @@
         }
     },
     "variables": {
-        "ForceCode": "[if(greater(length(split(resourceGroup().name, '-')), 1), split(resourceGroup().name, '-')[1], 'default')]",
+        "ForceCode": "[split(resourceGroup().name, '-')[1]]",
         "EnvironmentSuffix": "prod",
         "ServiceSuffix": "coppa",
         "InstanceNumber": "03",
@@ -39,8 +39,8 @@
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450')]",
-        "roleAssignmentId": "[guid(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName'), utcNow())]",
-        "storageRoleAssignmentId": "[guid(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName'), utcNow())]",
+        "roleAssignmentId": "[guid(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName'))]",
+        "storageRoleAssignmentId": "[guid(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName'))]",
         "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
         "AzureSearchDataSourceName": "[concat(variables('ForceCode'), '-search-ds-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
