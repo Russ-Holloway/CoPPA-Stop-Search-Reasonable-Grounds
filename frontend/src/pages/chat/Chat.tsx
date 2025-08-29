@@ -828,7 +828,7 @@ const Chat = () => {
                   <Stack className={`${styles.chatInputCentered} ${styles.inputFullWidth}`}>
                     <QuestionInput
                       clearOnSend
-                      placeholder="Type a new question..."
+                      placeholder="Paste Grounds Here"
                       disabled={isLoading}
                       onSend={(question, id) => {
                         appStateContext?.state.isCosmosDBAvailable?.cosmosDB
@@ -951,7 +951,7 @@ const Chat = () => {
                   <Stack.Item grow className={styles.inputArea}>
                     <QuestionInput
                       clearOnSend
-                      placeholder="Type a new question..."
+                      placeholder="Paste Grounds Here"
                       disabled={isLoading}
                       onSend={(question, id) => {
                         appStateContext?.state.isCosmosDBAvailable?.cosmosDB
