@@ -219,6 +219,14 @@
                             "value": "[variables('cosmosdb_container_name')]"
                         },
                         {
+                            "name": "AZURE_COSMOSDB_URI",
+                            "value": ""
+                        },
+                        {
+                            "name": "AZURE_COSMOSDB_ACCOUNT_KEY",
+                            "value": ""
+                        },
+                        {
                             "name": "UI_CHAT_TITLE",
                             "value": "CoPPA Stop and Search Assistant"
                         },
