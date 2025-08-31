@@ -252,7 +252,7 @@
                         },
                         {
                             "name": "UI_POLICE_FORCE_TAGLINE_2",
-                            "value": "Evidence-Based Stop and Search Guidance"
+                            "value": "Paste the reasonable grounds from a stop search record exactly as they are written and the CoPPA Assistant will provide operational guidance and feedback"
                         },
                         {
                             "name": "UI_FEEDBACK_EMAIL",
