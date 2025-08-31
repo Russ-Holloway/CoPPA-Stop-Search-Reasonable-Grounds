@@ -461,7 +461,7 @@
             },
             "sku": {
                 "name": "GlobalStandard",
-                "capacity": 5
+                "capacity": 1000
             }
         },
         {
@@ -481,7 +481,7 @@
             },
             "sku": {
                 "name": "GlobalStandard",
-                "capacity": 5
+                "capacity": 1000
             }
         },
         {
