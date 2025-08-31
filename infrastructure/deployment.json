@@ -232,7 +232,7 @@
                         },
                         {
                             "name": "UI_TITLE",
-                            "value": "CoPPA Stop and Search Decision Support"
+                                "value": "CoPPA Stop Search"
                         },
                         {
                             "name": "UI_FAVICON",
