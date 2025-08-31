@@ -34,7 +34,7 @@
         "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
         "AzureSearchSku": "standard",
         "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'), variables('InstanceNumber'))]",
-        "StorageContainerName": "docs",
+        "StorageContainerName": "ai-library",
         "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'), '-', substring(uniqueString(resourceGroup().id), 0, 8))]",
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
