@@ -1,0 +1,388 @@
+# =============================================================================
+# CoPPA Security Configuration
+# =============================================================================
+# This file defines security policies and configurations for the CoPPA application
+# following Police Data Security (PDS) requirements and industry best practices.
+
+# Security Scanner Configuration
+security:
+  # Scan categories to enable by default
+  default_categories:
+    - secrets
+    - dependencies
+    - infrastructure
+    - code
+    - compliance
+    - network
+    - data_protection
+  
+  # PDS compliance mode settings
+  pds_compliance:
+    enabled: true
+    data_classification_required: true
+    audit_logging_required: true
+    encryption_required: true
+    mfa_required: true
+  
+  # Severity thresholds
+  severity_levels:
+    secrets: "high"      # Any secret exposure is high severity
+    dependencies: "medium" # Medium and above for dependency vulnerabilities
+    infrastructure: "medium" # Medium and above for infrastructure issues
+    code: "medium"       # Medium and above for code vulnerabilities
+  
+  # Auto-fix settings
+  auto_fix:
+    enabled: false       # Disabled by default for safety
+    dependencies: false  # Auto-update vulnerable dependencies
+    code_formatting: true # Auto-fix formatting issues
+    git_hooks: true      # Install security git hooks
+
+# Secret Detection Patterns
+secrets:
+  # High-risk patterns that should never appear in code
+  critical_patterns:
+    - pattern: '(password|pwd)\s*[=:]\s*["\'][^"\']{8,}["\']'
+      severity: "critical"
+      description: "Hardcoded password"
+    - pattern: '(api[_-]?key|apikey)\s*[=:]\s*["\'][^"\']{20,}["\']'
+      severity: "critical"
+      description: "API key"
+    - pattern: '(secret|token)\s*[=:]\s*["\'][^"\']{16,}["\']'
+      severity: "critical"
+      description: "Secret token"
+    - pattern: 'AZURE_[A-Z_]*_(KEY|SECRET|TOKEN)'
+      severity: "critical"
+      description: "Azure credential"
+    - pattern: 'mongodb://[^\s"\']*:[^\s"\']*@'
+      severity: "high"
+      description: "MongoDB connection string with credentials"
+    - pattern: '(mysql|postgresql)://[^\s"\']*:[^\s"\']*@'
+      severity: "high"
+      description: "Database connection string with credentials"
+  
+  # PDS-specific patterns for police data
+  pds_patterns:
+    - pattern: '(police[_-]?force[_-]?code|warrant[_-]?number|case[_-]?reference)\s*[=:]\s*["\'][^"\']{5,}["\']'
+      severity: "critical"
+      description: "Police identifier exposure"
+    - pattern: '(officer[_-]?id|badge[_-]?number)\s*[=:]\s*["\'][^"\']{3,}["\']'
+      severity: "high"
+      description: "Officer identification"
+
+# Infrastructure Security Requirements
+infrastructure:
+  arm_templates:
+    # Required security configurations
+    required_settings:
+      - name: "HTTPS only storage"
+        check: "supportsHttpsTrafficOnly.*true"
+        severity: "high"
+      - name: "TLS 1.2+ minimum"
+        check: "minimumTlsVersion.*1\\.[2-9]|2\\.[0-9]"
+        severity: "high"
+      - name: "Key Vault integration"
+        check: "Microsoft\\.KeyVault"
+        severity: "medium"
+      - name: "Diagnostic settings"
+        check: "Microsoft\\.Insights/diagnosticSettings"
+        severity: "medium"
+    
+    # PDS compliance requirements
+    pds_requirements:
+      - name: "Data classification tags"
+        check: "DataClassification|data-classification"
+        severity: "high"
+        required: true
+      - name: "Audit logging"
+        check: "diagnosticSettings|Microsoft\\.Insights"
+        severity: "critical"
+        required: true
+      - name: "Encryption at rest"
+        check: "encryption"
+        severity: "critical"
+        required: true
+      - name: "Network restrictions"
+        check: "networkSecurityGroups|Microsoft\\.Network"
+        severity: "high"
+        required: false
+
+# Code Security Rules
+code_security:
+  python:
+    # Dangerous patterns to detect
+    dangerous_patterns:
+      - pattern: 'eval\\('
+        severity: "critical"
+        description: "Dangerous eval() usage"
+      - pattern: 'exec\\('
+        severity: "critical"
+        description: "Dangerous exec() usage"
+      - pattern: 'os\\.system\\('
+        severity: "high"
+        description: "Command injection risk"
+      - pattern: 'subprocess\\.call\\(.*shell=True'
+        severity: "high"
+        description: "Shell injection risk"
+      - pattern: 'pickle\\.loads?\\('
+        severity: "medium"
+        description: "Unsafe deserialization"
+    
+    # Good security practices to encourage
+    recommended_patterns:
+      - pattern: 'secrets\\.token_urlsafe|secrets\\.randbelow'
+        description: "Cryptographically secure random"
+      - pattern: 'hashlib\\.(sha256|sha512|pbkdf2_hmac)'
+        description: "Secure hashing"
+      - pattern: 'cryptography\\.'
+        description: "Proper cryptographic library usage"
+  
+  javascript:
+    # Dangerous patterns in JS/TS
+    dangerous_patterns:
+      - pattern: 'eval\\('
+        severity: "critical"
+        description: "Dangerous eval() usage"
+      - pattern: 'innerHTML\\s*='
+        severity: "medium"
+        description: "XSS vulnerability risk"
+      - pattern: 'document\\.write\\('
+        severity: "medium"
+        description: "XSS vulnerability risk"
+      - pattern: 'dangerouslySetInnerHTML'
+        severity: "medium"
+        description: "React XSS risk"
+
+# Dependency Security Configuration
+dependencies:
+  python:
+    # Critical packages that need special attention
+    critical_packages:
+      - "cryptography"
+      - "requests"
+      - "urllib3"
+      - "jinja2"
+      - "flask"
+      - "django"
+    
+    # Packages with known security issues to avoid
+    blocked_packages:
+      - "pickle"  # Use alternatives like json or msgpack
+      - "yaml"    # Use safe_load instead
+    
+    # Minimum versions for security
+    minimum_versions:
+      cryptography: "3.4.8"
+      requests: "2.25.1"
+      urllib3: "1.26.5"
+      jinja2: "2.11.3"
+  
+  nodejs:
+    # Critical packages for frontend security
+    critical_packages:
+      - "react"
+      - "react-dom"
+      - "@types/react"
+      - "typescript"
+      - "eslint"
+    
+    # Known vulnerable packages to watch
+    high_risk_patterns:
+      - "lodash"  # Often has prototype pollution issues
+      - "moment"  # Has been deprecated
+      - "request" # Deprecated, use axios or fetch
+
+# Network Security Configuration
+network:
+  # CORS configuration requirements
+  cors:
+    allowed_origins:
+      - "https://*.police.uk"
+      - "https://portal.azure.com"
+      - "https://ms.portal.azure.com"
+    
+    # Disallowed CORS patterns
+    blocked_patterns:
+      - "*"  # Never allow all origins
+      - "http://*"  # No HTTP origins in production
+  
+  # TLS requirements
+  tls:
+    minimum_version: "1.2"
+    required_protocols:
+      - "TLSv1.2"
+      - "TLSv1.3"
+    
+    # Cipher suites (modern, secure configurations)
+    allowed_ciphers:
+      - "ECDHE-RSA-AES256-GCM-SHA384"
+      - "ECDHE-RSA-AES128-GCM-SHA256"
+
+# Data Protection Configuration
+data_protection:
+  # Classification levels for police data
+  classification_levels:
+    - name: "PUBLIC"
+      color: "green"
+      restrictions: "None"
+    - name: "INTERNAL"
+      color: "yellow"
+      restrictions: "Police personnel only"
+    - name: "RESTRICTED"
+      color: "orange"
+      restrictions: "Authorized personnel only"
+    - name: "SECRET"
+      color: "red"
+      restrictions: "Specific clearance required"
+  
+  # Required encryption standards
+  encryption:
+    at_rest:
+      algorithm: "AES-256"
+      key_management: "Azure Key Vault"
+    in_transit:
+      protocol: "TLS 1.2+"
+      certificate_authority: "Trusted CA"
+  
+  # Data retention policies
+  retention:
+    logs:
+      audit_logs: "7 years"  # Legal requirement
+      access_logs: "2 years"
+      debug_logs: "90 days"
+    
+    application_data:
+      case_data: "According to case closure + 6 years"
+      user_sessions: "24 hours"
+      temporary_files: "7 days"
+
+# Compliance Frameworks
+compliance:
+  # Police Data Security (PDS) requirements
+  pds:
+    version: "2021"
+    mandatory_controls:
+      - "Data classification"
+      - "Encryption at rest and in transit"
+      - "Multi-factor authentication"
+      - "Audit logging"
+      - "Access controls"
+      - "Data retention policies"
+      - "Incident response procedures"
+  
+  # ISO 27001 alignment
+  iso27001:
+    enabled: true
+    focus_areas:
+      - "Information security management"
+      - "Risk assessment"
+      - "Asset management"
+      - "Access control"
+      - "Cryptography"
+      - "Operations security"
+      - "Communications security"
+      - "System acquisition"
+      - "Supplier relationships"
+      - "Incident management"
+      - "Business continuity"
+      - "Compliance"
+
+# Monitoring and Alerting
+monitoring:
+  # Security events to monitor
+  security_events:
+    - "Failed authentication attempts"
+    - "Privilege escalation"
+    - "Data access patterns"
+    - "Unusual network traffic"
+    - "Configuration changes"
+    - "Vulnerability scan results"
+  
+  # Alert thresholds
+  thresholds:
+    failed_logins: 5  # Alert after 5 failed login attempts
+    data_export: 1000  # Alert for large data exports (MB)
+    admin_actions: 1   # Alert on any admin action
+  
+  # Integration settings
+  integrations:
+    azure_security_center: true
+    azure_sentinel: true
+    log_analytics: true
+
+# Security Tools Configuration
+tools:
+  # Required security tools
+  required:
+    - name: "gitleaks"
+      purpose: "Secret detection"
+      version: ">=8.18.0"
+    - name: "trivy"
+      purpose: "Vulnerability scanning"
+      version: ">=0.45.0"
+    - name: "safety"
+      purpose: "Python dependency scanning"
+      version: ">=2.3.0"
+  
+  # Optional but recommended tools
+  recommended:
+    - name: "hadolint"
+      purpose: "Dockerfile security"
+    - name: "npm audit"
+      purpose: "Node.js dependency scanning"
+    - name: "bandit"
+      purpose: "Python static analysis"
+
+# Incident Response
+incident_response:
+  # Security incident classification
+  severity_levels:
+    critical: "Data breach, system compromise"
+    high: "Significant security risk"
+    medium: "Moderate security concern"
+    low: "Minor security issue"
+  
+  # Response procedures
+  procedures:
+    critical:
+      - "Immediate containment"
+      - "Notify security team"
+      - "Preserve evidence"
+      - "Begin forensic analysis"
+    high:
+      - "Assess impact"
+      - "Notify relevant stakeholders"
+      - "Implement containment"
+    medium:
+      - "Document incident"
+      - "Schedule remediation"
+    low:
+      - "Log for tracking"
+      - "Include in next review"
+
+# Regular Security Tasks
+maintenance:
+  # Daily tasks
+  daily:
+    - "Review security alerts"
+    - "Monitor failed authentication attempts"
+    - "Check system health"
+  
+  # Weekly tasks
+  weekly:
+    - "Dependency vulnerability scan"
+    - "Security log review"
+    - "Access review"
+  
+  # Monthly tasks
+  monthly:
+    - "Comprehensive security scan"
+    - "Security configuration review"
+    - "Incident response testing"
+  
+  # Quarterly tasks
+  quarterly:
+    - "Security policy review"
+    - "Compliance assessment"
+    - "Security training updates"
+    - "Threat model review"
