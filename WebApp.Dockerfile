@@ -12,12 +12,12 @@ RUN NODE_OPTIONS=--max_old_space_size=8192 npm run build
   
 FROM python:3.11-alpine 
 RUN apk add --no-cache --virtual .build-deps \  
-    build-base \  
-    libffi-dev \  
-    openssl-dev \  
-    curl \  
+    build-base=0.5-r3 \  
+    libffi-dev=3.4.4-r2 \  
+    openssl-dev=3.1.4-r5 \  
+    curl=8.5.0-r0 \  
     && apk add --no-cache \  
-    libpq 
+    libpq=15.6-r0 
   
 COPY requirements.txt /usr/src/app/  
 RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt \  

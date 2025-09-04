@@ -1,10 +1,45 @@
 .venv
 frontend/node_modules
 .env
+.env.local
+.env.production
+.env.test
 # static
 .azure/
 __pycache__/
 .ipynb_checkpoints/
+
+# Security sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+secrets/
+.secrets/
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+dist/
+build/
+*.egg-info/
 
 # ARM Template Toolkit (downloaded tool)
 tools/arm-ttk/

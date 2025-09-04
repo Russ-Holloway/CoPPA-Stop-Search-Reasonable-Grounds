@@ -10,7 +10,7 @@
     "plugin:jsx-a11y/recommended",
     "prettier"
   ],
-  "plugins": ["@typescript-eslint", "import", "simple-import-sort", "prettier"],
+  "plugins": ["@typescript-eslint", "import", "simple-import-sort", "prettier", "security"],
   "env": {
     "browser": true,
     "jest": true
@@ -21,16 +21,9 @@
     "comma-dangle": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "no-debugger": "error",
-    "react/prop-types": 0,
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
-    "object-curly-newline": "off",
-    "object-curly-spacing": ["error", "always"],
-    "no-underscore-dangle": 0,
-    "jsx-a11y/click-events-have-key-events": 0,
-    "jsx-a11y/anchor-is-valid": 0,
-    "no-await-in-loop": 0,
-    "no-unused-expressions": ["error", { "allowShortCircuit": true, "allowTernary": true }],
-    "arrow-parens": ["error", "as-needed"],
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-script-url": "error",
     "no-unused-vars": "off", // Turn off the base rule and use @typescript-eslint/no-unused-vars
     "@typescript-eslint/no-unused-vars": [
       "error",
@@ -41,6 +34,16 @@
         "args": "after-used"
       }
     ],
+    "react/prop-types": 0,
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "object-curly-newline": "off",
+    "object-curly-spacing": ["error", "always"],
+    "no-underscore-dangle": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "no-await-in-loop": 0,
+    "no-unused-expressions": ["error", { "allowShortCircuit": true, "allowTernary": true }],
+    "arrow-parens": ["error", "as-needed"],
     "import/prefer-default-export": 0,
     "react/no-find-dom-node": 0,
     "no-shadow": 0,

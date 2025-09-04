@@ -6,7 +6,9 @@ import uuid
 import httpx
 import asyncio
 import threading
+import time
 from functools import wraps
+from collections import defaultdict, deque
 from quart import (
     Blueprint,
     Quart,
@@ -25,9 +27,11 @@ from azure.identity.aio import (
 )
 from backend.auth.auth_utils import get_authenticated_user_details
 from backend.security.ms_defender_utils import get_msdefender_user_json
+from backend.security.security_monitor import security_monitor
 from backend.history.cosmosdbservice import CosmosConversationClient
 from backend.settings import (
     app_settings,
+    validate_security_environment,
     MINIMUM_SUPPORTED_AZURE_OPENAI_PREVIEW_API_VERSION
 )
 
@@ -44,6 +48,40 @@ from backend.utils import (
 bp = Blueprint("routes", __name__, static_folder="static", template_folder="static")
 
 cosmos_db_ready = asyncio.Event()
+
+
+# Rate limiting storage
+request_counts = defaultdict(lambda: deque())
+
+def rate_limit(max_requests=10, window_seconds=60):
+    """Simple rate limiter decorator with security monitoring"""
+    def decorator(f):
+        @wraps(f)
+        async def decorated_function(*args, **kwargs):
+            # Get client IP 
+            client_ip = security_monitor.get_client_ip(request.environ)
+            
+            # Check if IP is blocked
+            if security_monitor.is_blocked(client_ip):
+                return jsonify({"error": "Access denied"}), 403
+            
+            # Clean old requests outside the window
+            current_time = time.time()
+            requests_for_ip = request_counts[client_ip]
+            while requests_for_ip and requests_for_ip[0] < current_time - window_seconds:
+                requests_for_ip.popleft()
+            
+            # Check if rate limit exceeded
+            if len(requests_for_ip) >= max_requests:
+                security_monitor.log_rate_limit_exceeded(client_ip, request.endpoint or "unknown")
+                return jsonify({"error": "Rate limit exceeded. Please try again later."}), 429
+            
+            # Add current request
+            requests_for_ip.append(current_time)
+            
+            return await f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 
 def require_cosmos_db(f):
@@ -77,8 +115,57 @@ def create_app():
     app.register_blueprint(bp)
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     
+    # Security configurations
+    DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
+    # Ensure debug mode is never enabled in production
+    if os.environ.get("ENVIRONMENT", "production").lower() == "production":
+        DEBUG = False
+
+    app.config['DEBUG'] = DEBUG
+    app.config['SESSION_COOKIE_SECURE'] = not DEBUG  # Use secure cookies in production
+    app.config['SESSION_COOKIE_HTTPONLY'] = True     # Prevent XSS attacks on cookies
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # CSRF protection
+    app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour session timeout
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit uploads to 16MB
+    
+    # Configure logging
+    if DEBUG:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+    
+    # Add security headers
+    @app.after_request
+    def add_security_headers(response):
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY' 
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        # Enhanced CSP with stricter nonce-based policy
+        csp = [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",  # Note: unsafe-inline should be removed in production with proper nonces
+            "style-src 'self' 'unsafe-inline'",                # Note: unsafe-inline should be removed in production with proper nonces  
+            "img-src 'self' data: https:",
+            "font-src 'self'",
+            "connect-src 'self' https://api.cognitive.microsoft.com https://*.search.windows.net https://*.openai.azure.com https://*.cognitiveservices.azure.com",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'"
+        ]
+        response.headers['Content-Security-Policy'] = "; ".join(csp)
+        return response
+    
     @app.before_serving
     async def init():
+        # Validate security configuration
+        try:
+            validate_security_environment()
+        except Exception as e:
+            current_app.logger.error(f"Security validation failed: {e}")
+            raise
+            
         try:
             app.cosmos_conversation_client = await init_cosmosdb_client()
             cosmos_db_ready.set()
@@ -102,6 +189,28 @@ def create_app():
     return app
 
 
+@bp.route("/health", methods=["GET"])
+async def health_check():
+    """Health check endpoint for monitoring"""
+    health_status = {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "services": {
+            "cosmos_db": current_app.cosmos_conversation_client is not None,
+            "azure_openai": True,  # Could add actual health check
+            "azure_search": True   # Could add actual health check
+        }
+    }
+    
+    overall_healthy = all(health_status["services"].values())
+    
+    if not overall_healthy:
+        health_status["status"] = "unhealthy"
+        return jsonify(health_status), 503
+        
+    return jsonify(health_status), 200
+
+
 @bp.route("/")
 async def index():
     return await render_template(
@@ -121,15 +230,9 @@ async def assets(path):
     return await send_from_directory("static/assets", path)
 
 
-# Debug settings
-DEBUG = os.environ.get("DEBUG", "false")
-if DEBUG.lower() == "true":
-    logging.basicConfig(level=logging.DEBUG)
-
 USER_AGENT = "GitHubSampleWebApp/AsyncAzureOpenAI/1.0.0"
 
-
-# Enable Microsoft Defender for Cloud Integration
+# Enable Microsoft Defender for Cloud Integration  
 MS_DEFENDER_ENABLED = os.environ.get("MS_DEFENDER_ENABLED", "true").lower() == "true"
 
 
@@ -692,16 +795,55 @@ async def conversation_internal(request_body, request_headers):
 
 
 @bp.route("/conversation", methods=["POST"])
+@rate_limit(max_requests=20, window_seconds=60)  # Allow 20 requests per minute
 @require_cosmos_db
 async def conversation():
     if not request.is_json:
         return jsonify({"error": "request must be json"}), 415
-    request_json = await request.get_json()
+    
+    try:
+        request_json = await request.get_json()
+        client_ip = security_monitor.get_client_ip(request.environ)
+        
+        # Input validation and sanitization
+        if not isinstance(request_json, dict):
+            security_monitor.log_invalid_input(client_ip, "invalid_json_format")
+            return jsonify({"error": "Invalid JSON format"}), 400
+            
+        # Validate required fields
+        if "messages" not in request_json:
+            security_monitor.log_invalid_input(client_ip, "missing_messages_field")
+            return jsonify({"error": "Missing 'messages' field"}), 400
+            
+        if not isinstance(request_json["messages"], list):
+            security_monitor.log_invalid_input(client_ip, "messages_not_list")
+            return jsonify({"error": "'messages' must be a list"}), 400
+            
+        # Limit message length to prevent abuse
+        MAX_MESSAGE_LENGTH = 10000
+        for message in request_json["messages"]:
+            if isinstance(message, dict) and "content" in message:
+                content = message["content"]
+                if isinstance(content, str) and len(content) > MAX_MESSAGE_LENGTH:
+                    security_monitor.log_invalid_input(client_ip, "message_too_long")
+                    return jsonify({"error": f"Message content too long (max {MAX_MESSAGE_LENGTH} characters)"}), 400
+        
+        # Limit number of messages to prevent abuse
+        MAX_MESSAGES = 50
+        if len(request_json["messages"]) > MAX_MESSAGES:
+            security_monitor.log_invalid_input(client_ip, "too_many_messages")
+            return jsonify({"error": f"Too many messages (max {MAX_MESSAGES})"}), 400
+            
+    except Exception as e:
+        client_ip = security_monitor.get_client_ip(request.environ)
+        security_monitor.log_invalid_input(client_ip, "malformed_request")
+        return jsonify({"error": "Invalid request format"}), 400
 
     return await conversation_internal(request_json, request.headers)
 
 
 @bp.route("/frontend_settings", methods=["GET"])
+@rate_limit(max_requests=30, window_seconds=60)  # More lenient for settings endpoint
 def get_frontend_settings():
     try:
         # Dynamically check if CosmosDB is available

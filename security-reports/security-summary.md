@@ -1,12 +1,12 @@
 # CoPPA Security Assessment Report
 
-**Generated:** 2025-09-04 09:44:30  
-**Mode:** PDS Compliance  
-**Scan Type:** Comprehensive Scan  
+**Generated:** 2025-09-04 10:19:08  
+**Mode:** Standard Security  
+**Scan Type:** Quick Scan  
 
 ## Executive Summary
 
-Total security issues found: **37**
+Total security issues found: **65**
 
 ## Categories Scanned
 
@@ -35,14 +35,13 @@ The following detailed reports have been generated:
 ## Security Recommendations
 
 ### Immediate Actions Required
-- Address the 37 security issues identified above
+- Address the 65 security issues identified above
 - Implement automated security scanning in CI/CD pipeline
 - Schedule regular security assessments
 
 ### PDS Compliance
-- Review PDS-specific findings carefully
-- Ensure data classification is properly implemented
-- Verify audit logging meets police requirements
+- Consider implementing PDS compliance checks
+- Review data handling procedures
 
 ### Long-term Security Strategy
 - Implement security-first development practices

@@ -16,7 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["vite/client", "jest", "mocha"],
-    "noUnusedLocals": false
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

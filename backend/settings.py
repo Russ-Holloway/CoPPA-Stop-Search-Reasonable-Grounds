@@ -33,6 +33,34 @@ DOTENV_PATH = os.environ.get(
 MINIMUM_SUPPORTED_AZURE_OPENAI_PREVIEW_API_VERSION = "2024-05-01-preview"
 
 
+def validate_security_environment():
+    """Validate critical security environment variables"""
+    required_vars = [
+        "AZURE_OPENAI_ENDPOINT",
+        "AZURE_SEARCH_SERVICE",
+        "AZURE_SEARCH_INDEX"
+    ]
+    
+    missing_vars = []
+    insecure_vars = []
+    
+    for var in required_vars:
+        value = os.environ.get(var)
+        if not value:
+            missing_vars.append(var)
+        elif var.endswith("_KEY") and (value == "test" or value == "dev" or len(value) < 16):
+            insecure_vars.append(var)
+    
+    if missing_vars:
+        logging.error(f"Missing required environment variables: {missing_vars}")
+        raise ValueError(f"Missing required environment variables: {missing_vars}")
+        
+    if insecure_vars:
+        logging.warning(f"Potentially insecure environment variables detected: {insecure_vars}")
+    
+    logging.info("Environment variable security validation passed")
+
+
 class _UiSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="UI_",
