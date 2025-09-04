@@ -21,6 +21,10 @@ secrets/
 .DS_Store
 Thumbs.db
 
+# Large security report files that shouldn't be committed
+security-reports/secrets-report.json
+security-reports/*-large.json
+
 # Sensitive data files - do not commit real data
 data/*.pdf
 data/*.doc
