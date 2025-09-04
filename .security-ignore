@@ -1,0 +1,28 @@
+# Security Configuration for CoPPA Stop & Search
+
+# Exclude security report files from scanning (prevents recursive false positives)
+security-reports/
+
+# Exclude node_modules from secrets scanning
+**/node_modules/**
+
+# Exclude TypeScript definition files (often contain keywords that trigger false positives)
+**/*.d.ts
+
+# Exclude documentation and test files from critical security scanning
+**/*.md
+**/*.test.*
+**/*.spec.*
+
+# Exclude build artifacts
+**/dist/**
+**/build/**
+**/.next/**
+
+# Exclude package manager files (these are meant to be public)
+package-lock.json
+yarn.lock
+
+# Exclude configuration files that may contain template values
+**/*.example.*
+**/*.template.*

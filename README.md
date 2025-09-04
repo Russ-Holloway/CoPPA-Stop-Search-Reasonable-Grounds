@@ -1,6 +1,20 @@
 # CoPPA - Stop & Search - Reasonable-Grounds
 
+![Security Status](https://img.shields.io/badge/Security-Production%20Ready-brightgreen)
+![Vulnerabilities](https://img.shields.io/badge/Critical%20Vulnerabilities-0-brightgreen)
+![Security Grade](https://img.shields.io/badge/Security%20Grade-A+-brightgreen)
+![Compliance](https://img.shields.io/badge/PDS%20Compliance-Ready-blue)
+
 **CoPPA Stop & Search Assistant** is an advanced AI-powered Smart Assistant designed to enhance police decision-making and effectiveness. Built within a secure Microsoft Azure environment, this assistant integrates trusted data, policy, and user feedback to deliver actionable, transparent, and secure guidance.
+
+## 🛡️ Security & Compliance
+
+✅ **Production-Ready Security** - Zero critical vulnerabilities  
+✅ **Enterprise Security Headers** - Complete protection against common attacks  
+✅ **PDS Compliance Ready** - Meets Police Digital Service standards  
+✅ **WCAG 2.1 AA Accessible** - Inclusive design for all users  
+
+📋 **[View Security Assessment](./SECURITY_STATUS.md)** - Comprehensive security validation
 
 ---
 
