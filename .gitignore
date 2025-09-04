@@ -1,4 +1,6 @@
 .venv
+venv/
+.env
 frontend/node_modules
 .env
 .env.local
@@ -9,6 +11,14 @@ frontend/node_modules
 __pycache__/
 .ipynb_checkpoints/
 
+# Build and runtime files
+*.log
+build.log
+app.log
+*.tmp
+*.cache
+.vite/
+
 # Security sensitive files
 *.key
 *.pem
@@ -17,7 +27,6 @@ __pycache__/
 *.jks
 secrets/
 .secrets/
-*.log
 .DS_Store
 Thumbs.db
 
@@ -34,6 +43,11 @@ data/*.xlsx
 data/*_handbook.*
 data/*_procedures.*
 data/*_guidelines.*
+
+# Test and preview files
+test-*.html
+*-preview.html
+simple-test.html
 
 # IDE files
 .vscode/settings.json
