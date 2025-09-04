@@ -1,5 +1,5 @@
 CoPPA ARM Template Validation Results
-Generated: Thu Sep  4 11:06:20 UTC 2025
+Generated: Thu Sep  4 11:24:50 UTC 2025
 PDS Mode: false
 Security Mode: false
 =================================
@@ -8,23 +8,23 @@ Security Mode: false
 
 [35mValidating infrastructure\deployment.json[0m
 [35m[0m[35m  JSONFiles Should Be Valid[0m
-[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (14 ms)[0m
-[35m[0m[35m[0m[32m[0mFail  : 0[0m
-[35m[0m[35m[0m[32m[0mPass  : 1[0m
+[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (16 ms)[0m
 [35m[0m[35m[0m[32m[0mTotal : 1[0m
+[35m[0m[35m[0m[32m[0mPass  : 1[0m
+[35m[0m[35m[0m[32m[0mFail  : 0[0m
 [35m[0m[35m[0m[32m[0m
 
 [35m  adminPassword Should Not Be A Literal[0m
-[35m[0m[32m    [+] adminPassword Should Not Be A Literal (173 ms)[0m
+[35m[0m[32m    [+] adminPassword Should Not Be A Literal (198 ms)[0m
 [35m  adminUsername Should Not Be A Literal[0m
-[35m[0m[32m    [+] adminUsername Should Not Be A Literal (155 ms)[0m
+[35m[0m[32m    [+] adminUsername Should Not Be A Literal (176 ms)[0m
 [35m  apiVersions Should Be Recent In Reference Functions[0m
-[35m[0m[1;33m    [?] apiVersions Should Be Recent In Reference Functions (76 ms)[0m
+[35m[0m[1;33m    [?] apiVersions Should Be Recent In Reference Functions (86 ms)[0m
 [35m[0m[1;33m[0m[1;33m        The apiVersion 2024-06-01-preview was not found for the resource type: [0m
 [35m[0m[1;33m[0m[1;33mMicrosoft.Search/searchServices[0m
 
 [35m  apiVersions Should Be Recent[0m
-[35m[0m[1;33m    [?] apiVersions Should Be Recent (117 ms)[0m
+[35m[0m[1;33m    [?] apiVersions Should Be Recent (141 ms)[0m
 [35m[0m[1;33m[0m[1;33m        The apiVersion 2023-12-01 was not found for the resource type: Microsof[0m
 [35m[0m[1;33m[0m[1;33mt.Web/serverfarms[0m
 [35m[0m[1;33m[0m[1;33m[0m[1;33m        The apiVersion 2023-12-01 was not found for the resource type: Microsof[0m
@@ -39,65 +39,65 @@ Security Mode: false
 [35m[0m[1;33m[0m[1;33m[0m[1;33m[0m[1;33m[0m[1;33m[0m[1;33m[0m[1;33mMicrosoft.Search/searchServices[0m
 
 [35m  artifacts parameter[0m
-[35m[0m[32m    [+] artifacts parameter (5 ms)[0m
+[35m[0m[32m    [+] artifacts parameter (6 ms)[0m
 [35m  CommandToExecute Must Use ProtectedSettings For Secrets[0m
-[35m[0m[32m    [+] CommandToExecute Must Use ProtectedSettings For Secrets (66 ms)[0m
+[35m[0m[32m    [+] CommandToExecute Must Use ProtectedSettings For Secrets (83 ms)[0m
 [35m  DependsOn Best Practices[0m
-[35m[0m[32m    [+] DependsOn Best Practices (62 ms)[0m
+[35m[0m[32m    [+] DependsOn Best Practices (78 ms)[0m
 [35m  Deployment Resources Must Not Be Debug[0m
-[35m[0m[32m    [+] Deployment Resources Must Not Be Debug (61 ms)[0m
+[35m[0m[32m    [+] Deployment Resources Must Not Be Debug (71 ms)[0m
 [35m  DeploymentTemplate Must Not Contain Hardcoded Uri[0m
-[35m[0m[32m    [+] DeploymentTemplate Must Not Contain Hardcoded Uri (27 ms)[0m
+[35m[0m[32m    [+] DeploymentTemplate Must Not Contain Hardcoded Uri (29 ms)[0m
 [35m  DeploymentTemplate Schema Is Correct[0m
 [35m[0m[32m    [+] DeploymentTemplate Schema Is Correct (2 ms)[0m
 [35m  Dynamic Variable References Should Not Use Concat[0m
 [35m[0m[32m    [+] Dynamic Variable References Should Not Use Concat (2 ms)[0m
 [35m  IDs Should Be Derived From ResourceIDs[0m
-[35m[0m[32m    [+] IDs Should Be Derived From ResourceIDs (88 ms)[0m
+[35m[0m[32m    [+] IDs Should Be Derived From ResourceIDs (100 ms)[0m
 [35m  Location Should Not Be Hardcoded[0m
-[35m[0m[32m    [+] Location Should Not Be Hardcoded (189 ms)[0m
+[35m[0m[32m    [+] Location Should Not Be Hardcoded (229 ms)[0m
 [35m  ManagedIdentityExtension must not be used[0m
-[35m[0m[32m    [+] ManagedIdentityExtension must not be used (2 ms)[0m
+[35m[0m[32m    [+] ManagedIdentityExtension must not be used (3 ms)[0m
 [35m  Min And Max Value Are Numbers[0m
-[35m[0m[32m    [+] Min And Max Value Are Numbers (3 ms)[0m
+[35m[0m[32m    [+] Min And Max Value Are Numbers (4 ms)[0m
 [35m  Outputs Must Not Contain Secrets[0m
-[35m[0m[32m    [+] Outputs Must Not Contain Secrets (5 ms)[0m
+[35m[0m[32m    [+] Outputs Must Not Contain Secrets (6 ms)[0m
 [35m  Parameter Types Should Be Consistent[0m
-[35m[0m[32m    [+] Parameter Types Should Be Consistent (73 ms)[0m
+[35m[0m[32m    [+] Parameter Types Should Be Consistent (96 ms)[0m
 [35m  Parameters Must Be Referenced[0m
-[35m[0m[32m    [+] Parameters Must Be Referenced (9 ms)[0m
+[35m[0m[32m    [+] Parameters Must Be Referenced (11 ms)[0m
 [35m  Password params must be secure[0m
-[35m[0m[32m    [+] Password params must be secure (3 ms)[0m
+[35m[0m[32m    [+] Password params must be secure (4 ms)[0m
 [35m  providers apiVersions Is Not Permitted[0m
-[35m[0m[32m    [+] providers apiVersions Is Not Permitted (1 ms)[0m
+[35m[0m[32m    [+] providers apiVersions Is Not Permitted (2 ms)[0m
 [35m  ResourceIds should not contain[0m
-[35m[0m[32m    [+] ResourceIds should not contain (4 ms)[0m
+[35m[0m[32m    [+] ResourceIds should not contain (5 ms)[0m
 [35m  Resources Should Have Location[0m
-[35m[0m[32m    [+] Resources Should Have Location (5 ms)[0m
+[35m[0m[32m    [+] Resources Should Have Location (6 ms)[0m
 [35m  Resources Should Not Be Ambiguous[0m
-[35m[0m[32m    [+] Resources Should Not Be Ambiguous (6 ms)[0m
+[35m[0m[32m    [+] Resources Should Not Be Ambiguous (7 ms)[0m
 [35m  Secure Params In Nested Deployments[0m
-[35m[0m[32m    [+] Secure Params In Nested Deployments (61 ms)[0m
+[35m[0m[32m    [+] Secure Params In Nested Deployments (77 ms)[0m
 [35m  Secure String Parameters Cannot Have Default[0m
-[35m[0m[32m    [+] Secure String Parameters Cannot Have Default (1 ms)[0m
+[35m[0m[32m    [+] Secure String Parameters Cannot Have Default (2 ms)[0m
 [35m  Template Should Not Contain Blanks[0m
-[35m[0m[1;31m    [-] Template Should Not Contain Blanks (212 ms)[0m
+[35m[0m[1;31m    [-] Template Should Not Contain Blanks (223 ms)[0m
 [35m[0m[1;31m[0m[1;31m        Empty property:  "" Line: 61, Column: 35[0m
 [35m[0m[1;31m[0m[1;31m[0m[1;31m        Empty property:  "" Line: 66, Column: 43[0m
 
 [35m  URIs Should Be Properly Constructed[0m
-[35m[0m[32m    [+] URIs Should Be Properly Constructed (71 ms)[0m
+[35m[0m[32m    [+] URIs Should Be Properly Constructed (86 ms)[0m
 [35m  Variables Must Be Referenced[0m
-[35m[0m[32m    [+] Variables Must Be Referenced (64 ms)[0m
+[35m[0m[32m    [+] Variables Must Be Referenced (80 ms)[0m
 [35m  Virtual Machines Should Not Be Preview[0m
-[35m[0m[32m    [+] Virtual Machines Should Not Be Preview (79 ms)[0m
+[35m[0m[32m    [+] Virtual Machines Should Not Be Preview (85 ms)[0m
 [35m  VM Images Should Use Latest Version[0m
 [35m[0m[32m    [+] VM Images Should Use Latest Version (1 ms)[0m
 [35m  VM Size Should Be A Parameter[0m
-[35m[0m[32m    [+] VM Size Should Be A Parameter (66 ms)[0m
-[35m[0m[32m[0mFail  : 1[0m
-[35m[0m[32m[0mPass  : 31[0m
+[35m[0m[32m    [+] VM Size Should Be A Parameter (84 ms)[0m
 [35m[0m[32m[0mTotal : 32[0m
+[35m[0m[32m[0mPass  : 31[0m
+[35m[0m[32m[0mFail  : 1[0m
 [35m[0m[32m[0m
 
 === Validation Results for infra/main.bicep ===
@@ -112,10 +112,10 @@ Security Mode: false
 
 [35mValidating infra\main.parameters.json[0m
 [35m[0m[35m  JSONFiles Should Be Valid[0m
-[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (20 ms)[0m
-[35m[0m[35m[0m[32m[0mFail  : 0[0m
+[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (21 ms)[0m
 [35m[0m[35m[0m[32m[0mTotal : 1[0m
 [35m[0m[35m[0m[32m[0mPass  : 1[0m
+[35m[0m[35m[0m[32m[0mFail  : 0[0m
 [35m[0m[35m[0m[32m[0m
 
 [35m  DeploymentParameters Should Have ContentVersion[0m
@@ -125,19 +125,19 @@ Security Mode: false
 [35m  DeploymentParameters Should Have Schema[0m
 [35m[0m[32m    [+] DeploymentParameters Should Have Schema (2 ms)[0m
 [35m  DeploymentParameters Should Have Value[0m
-[35m[0m[32m    [+] DeploymentParameters Should Have Value (12 ms)[0m
-[35m[0m[32m[0mFail  : 0[0m
+[35m[0m[32m    [+] DeploymentParameters Should Have Value (13 ms)[0m
 [35m[0m[32m[0mTotal : 5[0m
 [35m[0m[32m[0mPass  : 5[0m
+[35m[0m[32m[0mFail  : 0[0m
 [35m[0m[32m[0m
 
 === Validation Results for infra/abbreviations.json ===
 
 [35mValidating infra\abbreviations.json[0m
 [35m[0m[35m  JSONFiles Should Be Valid[0m
-[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (31 ms)[0m
-[35m[0m[35m[0m[32m[0mTotal : 1[0m
+[35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (30 ms)[0m
 [35m[0m[35m[0m[32m[0mFail  : 0[0m
+[35m[0m[35m[0m[32m[0mTotal : 1[0m
 [35m[0m[35m[0m[32m[0mPass  : 1[0m
 [35m[0m[35m[0m[32m[0m
 
@@ -146,17 +146,17 @@ Security Mode: false
 [35mValidating infrastructure\test_search_only.json[0m
 [35m[0m[35m  JSONFiles Should Be Valid[0m
 [35m[0m[35m[0m[32m    [+] JSONFiles Should Be Valid (17 ms)[0m
-[35m[0m[35m[0m[32m[0mPass  : 1[0m
 [35m[0m[35m[0m[32m[0mFail  : 0[0m
 [35m[0m[35m[0m[32m[0mTotal : 1[0m
+[35m[0m[35m[0m[32m[0mPass  : 1[0m
 [35m[0m[35m[0m[32m[0m
 
 [35m  adminPassword Should Not Be A Literal[0m
-[35m[0m[32m    [+] adminPassword Should Not Be A Literal (113 ms)[0m
+[35m[0m[32m    [+] adminPassword Should Not Be A Literal (98 ms)[0m
 [35m  adminUsername Should Not Be A Literal[0m
-[35m[0m[32m    [+] adminUsername Should Not Be A Literal (51 ms)[0m
+[35m[0m[32m    [+] adminUsername Should Not Be A Literal (48 ms)[0m
 [35m  apiVersions Should Be Recent In Reference Functions[0m
-[35m[0m[1;31m    [-] apiVersions Should Be Recent In Reference Functions (131 ms)[0m
+[35m[0m[1;31m    [-] apiVersions Should Be Recent In Reference Functions (125 ms)[0m
 [35m[0m[1;31m[0m[1;31m        Api versions must be the latest or under 2 years old (730 days) - API v[0m
 [35m[0m[1;31m[0m[1;31mersion used by:[0m
 [35m[0m[1;31m[0m[1;31m            listAdminKeys(resourceId('Microsoft.Search/searchServices', variabl[0m
@@ -183,7 +183,7 @@ Security Mode: false
 [35m[0m[1;31m[0m[1;31m[0m[1;31m[0m[1;31m[0m        2023-10-01-preview[0m
 
 [35m  apiVersions Should Be Recent[0m
-[35m[0m[1;31m    [-] apiVersions Should Be Recent (77 ms)[0m
+[35m[0m[1;31m    [-] apiVersions Should Be Recent (78 ms)[0m
 [35m[0m[1;31m[0m[1;31m        Api versions must be the latest or under 2 years old (730 days) - API v[0m
 [35m[0m[1;31m[0m[1;31mersion 2020-08-01 of Microsoft.Search/searchServices is 1860 days old Line: 23,[0m
 [35m[0m[1;31m[0m[1;31m Column: 14[0m
@@ -206,11 +206,11 @@ Security Mode: false
 [35m  artifacts parameter[0m
 [35m[0m[32m    [+] artifacts parameter (6 ms)[0m
 [35m  CommandToExecute Must Use ProtectedSettings For Secrets[0m
-[35m[0m[32m    [+] CommandToExecute Must Use ProtectedSettings For Secrets (29 ms)[0m
+[35m[0m[32m    [+] CommandToExecute Must Use ProtectedSettings For Secrets (28 ms)[0m
 [35m  DependsOn Best Practices[0m
-[35m[0m[32m    [+] DependsOn Best Practices (26 ms)[0m
+[35m[0m[32m    [+] DependsOn Best Practices (25 ms)[0m
 [35m  Deployment Resources Must Not Be Debug[0m
-[35m[0m[32m    [+] Deployment Resources Must Not Be Debug (26 ms)[0m
+[35m[0m[32m    [+] Deployment Resources Must Not Be Debug (25 ms)[0m
 [35m  DeploymentTemplate Must Not Contain Hardcoded Uri[0m
 [35m[0m[1;31m    [-] DeploymentTemplate Must Not Contain Hardcoded Uri (11 ms)[0m
 [35m[0m[1;31m[0m[1;31m        Found hardcoded reference to core.windows.net Line: 17, Column: 65[0m
@@ -220,9 +220,9 @@ Security Mode: false
 [35m  Dynamic Variable References Should Not Use Concat[0m
 [35m[0m[32m    [+] Dynamic Variable References Should Not Use Concat (2 ms)[0m
 [35m  IDs Should Be Derived From ResourceIDs[0m
-[35m[0m[32m    [+] IDs Should Be Derived From ResourceIDs (28 ms)[0m
+[35m[0m[32m    [+] IDs Should Be Derived From ResourceIDs (27 ms)[0m
 [35m  Location Should Not Be Hardcoded[0m
-[35m[0m[1;31m    [-] Location Should Not Be Hardcoded (125 ms)[0m
+[35m[0m[1;31m    [-] Location Should Not Be Hardcoded (101 ms)[0m
 [35m[0m[1;31m[0m[1;31m        test_search_only.json must use the location parameter, not resourceGrou[0m
 [35m[0m[1;31m[0m[1;31mp().location or deployment().location (except when used as a default value in t[0m
 [35m[0m[1;31m[0m[1;31mhe main template)[0m
@@ -245,41 +245,41 @@ Security Mode: false
 [35m  Outputs Must Not Contain Secrets[0m
 [35m[0m[32m    [+] Outputs Must Not Contain Secrets (11 ms)[0m
 [35m  Parameter Types Should Be Consistent[0m
-[35m[0m[32m    [+] Parameter Types Should Be Consistent (39 ms)[0m
+[35m[0m[32m    [+] Parameter Types Should Be Consistent (41 ms)[0m
 [35m  Parameters Must Be Referenced[0m
 [35m[0m[32m    [+] Parameters Must Be Referenced (8 ms)[0m
 [35m  Password params must be secure[0m
-[35m[0m[32m    [+] Password params must be secure (3 ms)[0m
+[35m[0m[32m    [+] Password params must be secure (2 ms)[0m
 [35m  providers apiVersions Is Not Permitted[0m
 [35m[0m[32m    [+] providers apiVersions Is Not Permitted (1 ms)[0m
 [35m  ResourceIds should not contain[0m
 [35m[0m[32m    [+] ResourceIds should not contain (5 ms)[0m
 [35m  Resources Should Have Location[0m
-[35m[0m[1;31m    [-] Resources Should Have Location (5 ms)[0m
+[35m[0m[1;31m    [-] Resources Should Have Location (4 ms)[0m
 [35m[0m[1;31m[0m[1;31m        Resource [variables('openAIResourceName')] Location must be an expressi[0m
 [35m[0m[1;31m[0m[1;31mon or 'global'[0m
 
 [35m  Resources Should Not Be Ambiguous[0m
-[35m[0m[32m    [+] Resources Should Not Be Ambiguous (6 ms)[0m
+[35m[0m[32m    [+] Resources Should Not Be Ambiguous (5 ms)[0m
 [35m  Secure Params In Nested Deployments[0m
-[35m[0m[32m    [+] Secure Params In Nested Deployments (24 ms)[0m
+[35m[0m[32m    [+] Secure Params In Nested Deployments (21 ms)[0m
 [35m  Secure String Parameters Cannot Have Default[0m
 [35m[0m[32m    [+] Secure String Parameters Cannot Have Default (2 ms)[0m
 [35m  Template Should Not Contain Blanks[0m
-[35m[0m[32m    [+] Template Should Not Contain Blanks (89 ms)[0m
+[35m[0m[32m    [+] Template Should Not Contain Blanks (80 ms)[0m
 [35m  URIs Should Be Properly Constructed[0m
-[35m[0m[32m    [+] URIs Should Be Properly Constructed (41 ms)[0m
+[35m[0m[32m    [+] URIs Should Be Properly Constructed (36 ms)[0m
 [35m  Variables Must Be Referenced[0m
-[35m[0m[32m    [+] Variables Must Be Referenced (17 ms)[0m
+[35m[0m[32m    [+] Variables Must Be Referenced (16 ms)[0m
 [35m  Virtual Machines Should Not Be Preview[0m
-[35m[0m[32m    [+] Virtual Machines Should Not Be Preview (30 ms)[0m
+[35m[0m[32m    [+] Virtual Machines Should Not Be Preview (27 ms)[0m
 [35m  VM Images Should Use Latest Version[0m
 [35m[0m[32m    [+] VM Images Should Use Latest Version (1 ms)[0m
 [35m  VM Size Should Be A Parameter[0m
-[35m[0m[32m    [+] VM Size Should Be A Parameter (29 ms)[0m
-[35m[0m[32m[0mPass  : 27[0m
+[35m[0m[32m    [+] VM Size Should Be A Parameter (26 ms)[0m
 [35m[0m[32m[0mFail  : 5[0m
 [35m[0m[32m[0mTotal : 32[0m
+[35m[0m[32m[0mPass  : 27[0m
 [35m[0m[32m[0m
 
 === Validation Results for infrastructure/createUiDefinition.json ===
@@ -293,21 +293,21 @@ Security Mode: false
 [35m[0m[35m[0m[32m[0m
 
 [35m  Allowed Values Should Actually Be Allowed[0m
-[35m[0m[1;33m    [?] Allowed Values Should Actually Be Allowed (3 ms)[0m
+[35m[0m[1;33m    [?] Allowed Values Should Actually Be Allowed (4 ms)[0m
 [35m[0m[1;33m[0m[1;33m        Skipped because MainTemplateParameters was missing[0m
 
 [35m  Controls In Outputs Must Exist[0m
-[35m[0m[32m    [+] Controls In Outputs Must Exist (20 ms)[0m
+[35m[0m[32m    [+] Controls In Outputs Must Exist (15 ms)[0m
 [35m  CreateUIDefinition Must Not Have Blanks[0m
 [35m[0m[32m    [+] CreateUIDefinition Must Not Have Blanks (8 ms)[0m
 [35m  CreateUIDefinition Should Have Schema[0m
 [35m[0m[32m    [+] CreateUIDefinition Should Have Schema (12 ms)[0m
 [35m  Credential Confirmation Should Not Be Hidden[0m
-[35m[0m[32m    [+] Credential Confirmation Should Not Be Hidden (125 ms)[0m
+[35m[0m[32m    [+] Credential Confirmation Should Not Be Hidden (117 ms)[0m
 [35m  Handler Must Be Correct[0m
-[35m[0m[32m    [+] Handler Must Be Correct (4 ms)[0m
+[35m[0m[32m    [+] Handler Must Be Correct (2 ms)[0m
 [35m  HideExisting Must Be Correctly Handled[0m
-[35m[0m[32m    [+] HideExisting Must Be Correctly Handled (72 ms)[0m
+[35m[0m[32m    [+] HideExisting Must Be Correctly Handled (73 ms)[0m
 [35m  Location Should Be In Outputs[0m
 [35m[0m[1;31m    [-] Location Should Be In Outputs (6 ms)[0m
 [35m[0m[1;31m[0m[1;31m        Location is missing from outputs[0m
@@ -325,17 +325,17 @@ Security Mode: false
 [35m[0m[1;33m[0m[1;33m        Skipped because MainTemplateParameters was missing[0m
 
 [35m  PasswordBoxes Must Have Min Length[0m
-[35m[0m[32m    [+] PasswordBoxes Must Have Min Length (26 ms)[0m
+[35m[0m[32m    [+] PasswordBoxes Must Have Min Length (18 ms)[0m
 [35m  Textboxes Are Well Formed[0m
-[35m[0m[32m    [+] Textboxes Are Well Formed (26 ms)[0m
+[35m[0m[32m    [+] Textboxes Are Well Formed (18 ms)[0m
 [35m  Tooltips Should Be Present[0m
-[35m[0m[32m    [+] Tooltips Should Be Present (46 ms)[0m
+[35m[0m[32m    [+] Tooltips Should Be Present (37 ms)[0m
 [35m  Usernames Should Not Have A Default[0m
-[35m[0m[32m    [+] Usernames Should Not Have A Default (24 ms)[0m
+[35m[0m[32m    [+] Usernames Should Not Have A Default (17 ms)[0m
 [35m  Validations Must Have Message[0m
-[35m[0m[32m    [+] Validations Must Have Message (25 ms)[0m
+[35m[0m[32m    [+] Validations Must Have Message (26 ms)[0m
 [35m  VMSizes Must Match Template[0m
-[35m[0m[1;33m    [?] VMSizes Must Match Template (1 ms)[0m
+[35m[0m[1;33m    [?] VMSizes Must Match Template (2 ms)[0m
 [35m[0m[1;33m[0m[1;33m        Skipped because MainTemplateParameters was missing[0m
 [35m[0m[1;33m[0m[1;33m[0m
 [35m[0m[1;33m[0m[1;33m[0mFail  : 1[0m

@@ -1,12 +1,12 @@
 # CoPPA Security Assessment Report
 
-**Generated:** 2025-09-04 11:07:01  
+**Generated:** 2025-09-04 11:25:36  
 **Mode:** Standard Security  
 **Scan Type:** Quick Scan  
 
 ## Executive Summary
 
-Total security issues found: **238**
+Total security issues found: **164**
 
 ## Categories Scanned
 
@@ -35,7 +35,7 @@ The following detailed reports have been generated:
 ## Security Recommendations
 
 ### Immediate Actions Required
-- Address the 238 security issues identified above
+- Address the 164 security issues identified above
 - Implement automated security scanning in CI/CD pipeline
 - Schedule regular security assessments
 
