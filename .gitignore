@@ -21,6 +21,16 @@ secrets/
 .DS_Store
 Thumbs.db
 
+# Sensitive data files - do not commit real data
+data/*.pdf
+data/*.doc
+data/*.docx
+data/*.xls
+data/*.xlsx
+data/*_handbook.*
+data/*_procedures.*
+data/*_guidelines.*
+
 # IDE files
 .vscode/settings.json
 .idea/
