@@ -1,0 +1,239 @@
+name: 🔒 CoPPA Security Monitoring
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Daily security scan at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    name: 🛡️ Comprehensive Security Assessment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Make security scripts executable
+        run: |
+          chmod +x ./tools/security-scan.sh
+          chmod +x ./tools/dependency-security.sh
+          chmod +x ./tools/validate-templates.sh
+
+      - name: Install security tools
+        run: |
+          # Install gitleaks
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_8.18.4_linux_x64.tar.gz | tar -xz
+          sudo mv gitleaks /usr/local/bin/
+          
+          # Install trivy
+          sudo apt-get update
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+          
+          # Install hadolint
+          wget -O hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+          chmod +x hadolint
+          sudo mv hadolint /usr/local/bin/
+          
+          # Install safety for Python
+          pip install safety
+
+      - name: Run comprehensive security scan
+        run: ./tools/security-scan.sh -p
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run dependency security check
+        run: ./tools/dependency-security.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate ARM templates
+        if: always()
+        run: ./tools/validate-templates.sh || true
+
+      - name: Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports-${{ github.run_number }}
+          path: security-reports/
+          retention-days: 30
+
+      - name: Create security summary
+        if: always()
+        run: |
+          echo "## 🔒 Security Assessment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "security-reports/security-summary.md" ]; then
+            echo "### Security Findings" >> $GITHUB_STEP_SUMMARY
+            cat security-reports/security-summary.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ✅ No security issues detected" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Quick Actions" >> $GITHUB_STEP_SUMMARY
+          echo "- Download detailed reports from workflow artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Review security-reports/ directory for specific findings" >> $GITHUB_STEP_SUMMARY
+          echo "- Address high/critical severity issues immediately" >> $GITHUB_STEP_SUMMARY
+
+  dependency-updates:
+    name: 📦 Dependency Security Updates
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Update Python dependencies
+        run: |
+          chmod +x ./tools/dependency-security.sh
+          ./tools/dependency-security.sh -f || true
+
+      - name: Update Node.js dependencies
+        working-directory: ./frontend
+        run: |
+          npm audit fix || true
+          npm update || true
+
+      - name: Create pull request for dependency updates
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: '🔒 Security: Update vulnerable dependencies'
+          title: '🔒 Automated Security Dependency Updates'
+          body: |
+            ## 🔒 Automated Security Updates
+            
+            This PR contains automated security updates for vulnerable dependencies:
+            
+            ### Changes Made
+            - Updated Python packages to latest secure versions
+            - Fixed Node.js security vulnerabilities via npm audit fix
+            - Updated outdated packages where possible
+            
+            ### Security Impact
+            - Addresses known security vulnerabilities
+            - Reduces attack surface
+            - Maintains PDS compliance requirements
+            
+            ### Testing Required
+            - [ ] Verify application functionality
+            - [ ] Run full test suite
+            - [ ] Check for breaking changes
+            - [ ] Validate Azure deployment
+            
+            **Auto-generated by Security Monitoring Workflow**
+          branch: security/automated-updates
+          delete-branch: true
+
+  infrastructure-security:
+    name: 🏗️ Infrastructure Security Validation
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'infra/') || contains(github.event.head_commit.modified, 'infrastructure/')
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install ARM TTK
+        shell: pwsh
+        run: |
+          Import-Module -Name Az.Accounts -Force
+          Install-Module -Name Az.Resources -Repository PSGallery -Force
+          git clone https://github.com/Azure/arm-ttk.git
+          
+      - name: Validate ARM templates
+        run: |
+          chmod +x ./tools/validate-templates.sh
+          ./tools/validate-templates.sh
+
+      - name: Upload validation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: infrastructure-validation-${{ github.run_number }}
+          path: security-reports/arm-ttk-results.json
+          retention-days: 15
+
+  pds-compliance:
+    name: 🚔 PDS Compliance Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run PDS-specific compliance checks
+        run: |
+          chmod +x ./tools/security-scan.sh
+          ./tools/security-scan.sh -p -c compliance
+
+      - name: Generate compliance report
+        run: |
+          echo "## 🚔 PDS Compliance Assessment" > pds-compliance-report.md
+          echo "" >> pds-compliance-report.md
+          echo "**Assessment Date:** $(date -u)" >> pds-compliance-report.md
+          echo "**Application:** CoPPA Stop & Search" >> pds-compliance-report.md
+          echo "" >> pds-compliance-report.md
+          
+          if [ -f "security-reports/security-summary.md" ]; then
+            echo "### Compliance Findings" >> pds-compliance-report.md
+            grep -i "pds\|compliance\|police\|data" security-reports/security-summary.md >> pds-compliance-report.md || true
+          fi
+          
+          echo "" >> pds-compliance-report.md
+          echo "### Required Actions" >> pds-compliance-report.md
+          echo "- Review all HIGH/CRITICAL security findings" >> pds-compliance-report.md
+          echo "- Ensure data encryption is properly implemented" >> pds-compliance-report.md
+          echo "- Verify audit logging meets PDS requirements" >> pds-compliance-report.md
+          echo "- Confirm access controls are properly configured" >> pds-compliance-report.md
+
+      - name: Upload PDS compliance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pds-compliance-${{ github.run_number }}
+          path: pds-compliance-report.md
+          retention-days: 90

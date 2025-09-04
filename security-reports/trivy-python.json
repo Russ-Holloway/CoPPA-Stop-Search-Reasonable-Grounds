@@ -1,0 +1,13 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2025-09-04T09:45:02.885806648Z",
+  "ArtifactName": "/workspaces/CoPPA-Stop-Search-Reasonable-Grounds/requirements.txt",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "requirements.txt",
+      "Class": "lang-pkgs",
+      "Type": "pip"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+[{"code":"DL3018","column":1,"file":"/workspaces/CoPPA-Stop-Search-Reasonable-Grounds/WebApp.Dockerfile","level":"warning","line":14,"message":"Pin versions in apk add. Instead of `apk add <package>` use `apk add <package>=<version>`"}]
