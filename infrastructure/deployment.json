@@ -33,12 +33,12 @@
         "WebsiteName": "[concat('app-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "ApplicationInsightsName": "[concat('appi-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "LogAnalyticsWorkspaceName": "[concat('log-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
-        "AzureSearchService": "srch-btp-prod-copa-stop-search",
-        "AzureOpenAIResource": "cog-btp-prod-copa-stop-search",
+        "AzureSearchService": "[concat('srch-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
+        "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureSearchSku": "standard",
         "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'))]",
         "StorageContainerName": "ai-library-stop-search",
-        "cosmosdb_account_name": "db-app-btp-copa-stop-search",
+        "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-', variables('ServiceSuffix'))]",
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450')]",
@@ -206,7 +206,7 @@
                         },
                         {
                             "name": "AZURE_COSMOSDB_URI",
-                            "value": "https://db-app-btp-copa-stop-search.documents.azure.com:443/"
+                            "value": "[concat('https://', variables('cosmosdb_account_name'), '.documents.azure.com:443/')]"
                         },
                         {
                             "name": "AZURE_COSMOSDB_DATABASE",
