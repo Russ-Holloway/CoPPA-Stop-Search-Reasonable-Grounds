@@ -1,7 +1,7 @@
 {
-  "name": "coppa-validation-mcp-server",
+  "name": "copa-validation-mcp-server",
   "version": "1.0.0",
-  "description": "MCP server for validating CoPPA Azure deployment configurations and security best practices",
+  "description": "MCP server for validating CoPA Azure deployment configurations and security best practices",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -28,8 +28,8 @@
     "security",
     "deployment",
     "police",
-    "coppa"
+    "copa"
   ],
-  "author": "CoPPA Development Team",
+  "author": "CoPA Development Team",
   "license": "MIT"
 }

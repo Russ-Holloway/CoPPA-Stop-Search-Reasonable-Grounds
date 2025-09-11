@@ -7,7 +7,7 @@ import { readFileSync, existsSync, statSync } from "fs";
 import { join, relative } from "path";
 
 /**
- * CoPPA Deployment Validation MCP Server
+ * CoPA Deployment Validation MCP Server
  * 
  * This MCP server provides comprehensive validation tools for:
  * - Azure deployment.json configuration
@@ -16,9 +16,9 @@ import { join, relative } from "path";
  * - Police data handling compliance (PDS standards)
  */
 const server = new McpServer({
-  name: "coppa-validation-server",
+  name: "copa-validation-server",
   version: "1.0.0",
-  description: "Validates Azure deployment configurations and ensures security best practices for CoPPA applications"
+  description: "Validates Azure deployment configurations and ensures security best practices for CoPA applications"
 });
 
 // Define workspace root - assumes this server runs from tools/mcp-server

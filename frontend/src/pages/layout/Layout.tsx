@@ -46,9 +46,9 @@ const Layout = () => {
   const handleFeedbackClick = () => {
     const feedbackEmail = ui?.feedback_email
     if (feedbackEmail) {
-      const subject = encodeURIComponent('CoPPA Stop & Search Feedback')
+      const subject = encodeURIComponent('CoPA Stop & Search Feedback')
       const body = encodeURIComponent(
-        'Hi,\n\nI would like to provide feedback about CoPPA Stop & Search:\n\n\n\nThank you.'
+        'Hi,\n\nI would like to provide feedback about CoPA Stop & Search:\n\n\n\nThank you.'
       )
       const mailtoUrl = `mailto:${feedbackEmail}?subject=${subject}&body=${body}`
       window.open(mailtoUrl, '_blank')
@@ -121,9 +121,9 @@ const Layout = () => {
           </div>
           <div className={styles.headerCenterContent}>
             <Link to="/" style={{ textDecoration: 'none' }}>
-              <h1 className={styles.headerTitle}>CoPPA Stop & Search</h1>
+              <h1 className={styles.headerTitle}>CoPA Stop & Search</h1>
               <p className={styles.headerSubtitle}>
-                CoPPA Stop Search is configured to assist supervisors when reviewing reasonable grounds
+                CoPA Stop Search is configured to assist supervisors when reviewing reasonable grounds
               </p>
             </Link>
           </div>

@@ -10,7 +10,7 @@ const DarkModeContext = createContext<DarkModeContextType | undefined>(undefined
 export const DarkModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Check for saved theme preference or default to light mode
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('coppa-dark-mode')
+    const savedTheme = localStorage.getItem('copa-dark-mode')
     return savedTheme === 'true'
   })
 
@@ -20,10 +20,10 @@ export const DarkModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     if (isDarkMode) {
       root.classList.add('dark-mode')
-      localStorage.setItem('coppa-dark-mode', 'true')
+      localStorage.setItem('copa-dark-mode', 'true')
     } else {
       root.classList.remove('dark-mode')
-      localStorage.setItem('coppa-dark-mode', 'false')
+      localStorage.setItem('copa-dark-mode', 'false')
     }
   }, [isDarkMode])
 
