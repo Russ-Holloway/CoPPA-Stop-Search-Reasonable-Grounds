@@ -1,7 +1,7 @@
 # =============================================================================
-# CoPPA Security Configuration
+# CoPA Security Configuration
 # =============================================================================
-# This file defines security policies and configurations for the CoPPA application
+# This file defines security policies and configurations for the CoPA application
 # following Police Data Security (PDS) requirements and industry best practices.
 
 # Security Scanner Configuration

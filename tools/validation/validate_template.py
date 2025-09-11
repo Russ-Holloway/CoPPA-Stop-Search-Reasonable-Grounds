@@ -119,7 +119,7 @@ def validate_arm_template(template_path):
     return True
 
 if __name__ == "__main__":
-    template_path = "/workspaces/CoPPA-Stop-Search-Reasonable-Grounds/infrastructure/deployment.json"
+    template_path = "/workspaces/CoPA-Stop-Search-Reasonable-Grounds/infrastructure/deployment.json"
     
     if not Path(template_path).exists():
         print(f"❌ Template file not found: {template_path}")

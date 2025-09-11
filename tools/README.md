@@ -193,7 +193,7 @@ When run in PDS mode (`-p` flag), tools include enhanced checks for:
 
 ### Initial Security Setup
 ```bash
-# Complete security setup for CoPPA
+# Complete security setup for CoPA
 ./security-setup.sh -p
 ```
 

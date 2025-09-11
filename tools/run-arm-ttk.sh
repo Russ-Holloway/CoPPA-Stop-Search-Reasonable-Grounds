@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Simple ARM TTK runner for CoPPA templates
+# Simple ARM TTK runner for CoPA templates
 # Usage: ./tools/run-arm-ttk.sh [template-path]
 
 set -e

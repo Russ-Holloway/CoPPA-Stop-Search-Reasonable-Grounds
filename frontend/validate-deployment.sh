@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# CoPPA Deployment Validation Script
+# CoPA Deployment Validation Script
 # This script validates that the larger answer and citation box changes will work in deployment
 
-echo "🔍 CoPPA Layout Changes Deployment Validation"
+echo "🔍 CoPA Layout Changes Deployment Validation"
 echo "============================================="
 
 # Check if we're in the right directory

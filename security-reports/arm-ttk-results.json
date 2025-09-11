@@ -1,4 +1,4 @@
-CoPPA ARM Template Validation Results
+CoPA ARM Template Validation Results
 Generated: Thu Sep  4 11:50:39 UTC 2025
 PDS Mode: false
 Security Mode: false
@@ -101,12 +101,12 @@ Security Mode: false
 [35m[0m[32m[0m
 
 === Validation Results for infra/main.bicep ===
-[31;1mExpand-AzTemplate: [0m/workspaces/CoPPA-Stop-Search-Reasonable-Grounds/tools/arm-ttk/arm-ttk/Test-AzTemplate.ps1:721:32[0m
+[31;1mExpand-AzTemplate: [0m/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tools/arm-ttk/arm-ttk/Test-AzTemplate.ps1:721:32[0m
 [31;1m[0m[36;1mLine |[0m
 [31;1m[0m[36;1m[36;1m 721 | [0m …      $expandedTemplate =[36;1mExpand-AzTemplate -TemplatePath $templatePath[0m
 [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
 [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mNo azuredeploy.json or mainTemplate.json found beneath[0m
-[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1m/workspaces/CoPPA-Stop-Search-Reasonable-Grounds/infra[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m[31;1m[36;1m     | [31;1m/workspaces/CoPA-Stop-Search-Reasonable-Grounds/infra[0m
 
 === Validation Results for infra/main.parameters.json ===
 

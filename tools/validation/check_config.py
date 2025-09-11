@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Azure App Service Configuration Checker for CoPPA
+Azure App Service Configuration Checker for CoPA
 This script checks if all required environment variables are set.
 """
 
@@ -13,7 +13,7 @@ def check_configuration():
     errors = []
     warnings = []
     
-    print("🔍 Checking CoPPA Configuration...")
+    print("🔍 Checking CoPA Configuration...")
     print("=" * 50)
     
     # Required Azure OpenAI settings

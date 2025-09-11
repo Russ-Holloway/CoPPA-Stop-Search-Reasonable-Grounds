@@ -1,5 +1,5 @@
 /**
- * Accessibility Tests for CoPPA Stop & Search Application
+ * Accessibility Tests for CoPA Stop & Search Application
  *
  * This test suite validates WCAG 2.1 AA compliance for all major components
  * using axe-core automated accessibility testing.
