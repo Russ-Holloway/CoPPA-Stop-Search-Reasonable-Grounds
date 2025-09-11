@@ -1,4 +1,4 @@
-# CoPPA Stop & Search Application - Version History
+# CoPA Stop & Search Application - Version History
 
 ## Version 2.0.0 - Security & Compliance Release (2025-09-04)
 

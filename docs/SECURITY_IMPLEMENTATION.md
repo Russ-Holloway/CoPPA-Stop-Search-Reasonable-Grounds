@@ -1,8 +1,8 @@
-# 🔒 CoPPA Security Implementation Guide
+# 🔒 CoPA Security Implementation Guide
 
 ## Overview
 
-This document outlines the comprehensive security implementation for the CoPPA Stop & Search application, designed specifically for police data protection requirements and PDS compliance.
+This document outlines the comprehensive security implementation for the CoPA Stop & Search application, designed specifically for police data protection requirements and PDS compliance.
 
 ## 🛡️ Security Infrastructure
 

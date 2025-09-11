@@ -4,7 +4,7 @@
 Citations are not working because the backend requires proper environment variable configuration to connect to a search service that contains the source documents. The frontend code is correctly implemented, but without backend data source configuration, citations appear as plain text instead of clickable links.
 
 ## Root Cause
-The issue you experienced ("this was happening before in the main coppa web app and it was something to do with environment variables") is exactly what's happening here. Citations require:
+The issue you experienced ("this was happening before in the main copa web app and it was something to do with environment variables") is exactly what's happening here. Citations require:
 
 1. **Data Source Configuration**: A search service (Azure AI Search, CosmosDB, etc.) that contains indexed documents
 2. **Environment Variables**: Proper configuration to connect to the search service

@@ -1,6 +1,6 @@
 # PDS Naming Compliance and Deployment Validation Guide
 
-This guide explains how CoPPA ensures 100% compliance with the 58 PDS (Police Digital Service) naming policies enforced in Azure Government tenants.
+This guide explains how CoPA ensures 100% compliance with the 58 PDS (Police Digital Service) naming policies enforced in Azure Government tenants.
 
 ## 🎯 Overview
 

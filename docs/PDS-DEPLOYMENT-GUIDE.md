@@ -1,7 +1,7 @@
-# PDS Compliant CoPPA Deployment Guide
+# PDS Compliant CoPA Deployment Guide
 
 ## Overview
-This deployment guide provides instructions for deploying the CoPPA (College of Policing Assistant) solution in compliance with PDS (Police Digital Service) naming standards. The solution is designed to be used by all 44 UK police forces with consistent, policy-compliant resource naming.
+This deployment guide provides instructions for deploying the CoPA (College of Policing Assistant) solution in compliance with PDS (Police Digital Service) naming standards. The solution is designed to be used by all 44 UK police forces with consistent, policy-compliant resource naming.
 
 ## Prerequisites
 - Azure subscription with appropriate permissions
@@ -24,7 +24,7 @@ All resources created by this deployment follow the PDS naming strategy:
 3. Review the auto-generated resource names
 4. Deploy the solution
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2FcreateUiDefinition.json)
 
 ### Option 2: PowerShell Deployment
 ```powershell

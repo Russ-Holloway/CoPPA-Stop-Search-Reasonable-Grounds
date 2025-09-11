@@ -1,8 +1,8 @@
-# CoPPA Accessibility Audit Report
+# CoPA Accessibility Audit Report
 
 ## Executive Summary
 
-This comprehensive accessibility audit evaluates the CoPPA (Crime Prevention Partnership Application) against WCAG 2.1 AA guidelines. The application shows strong accessibility foundations with proper ARIA implementations, semantic HTML structure, and keyboard navigation support. Several areas for improvement have been identified to achieve full accessibility compliance.
+This comprehensive accessibility audit evaluates the CoPA (Crime Prevention Partnership Application) against WCAG 2.1 AA guidelines. The application shows strong accessibility foundations with proper ARIA implementations, semantic HTML structure, and keyboard navigation support. Several areas for improvement have been identified to achieve full accessibility compliance.
 
 ## Audit Scope
 
@@ -218,7 +218,7 @@ test('should not have accessibility violations', async () => {
 
 ## Conclusion
 
-The CoPPA application demonstrates strong accessibility foundations with comprehensive ARIA implementation and keyboard navigation support. With focused improvements on color contrast and error handling, the application will achieve full WCAG 2.1 AA compliance suitable for government and law enforcement use.
+The CoPA application demonstrates strong accessibility foundations with comprehensive ARIA implementation and keyboard navigation support. With focused improvements on color contrast and error handling, the application will achieve full WCAG 2.1 AA compliance suitable for government and law enforcement use.
 
 The development team has implemented accessibility best practices throughout the codebase, showing clear understanding of inclusive design principles. The identified issues are primarily cosmetic and can be addressed without major architectural changes.
 

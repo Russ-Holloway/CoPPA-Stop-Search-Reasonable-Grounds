@@ -1,6 +1,6 @@
 # 🛡️ PDS Deployment Checklist
 
-Use this checklist to ensure 100% compliance with all 58 PDS naming policies before deploying CoPPA to any Azure Government tenant.
+Use this checklist to ensure 100% compliance with all 58 PDS naming policies before deploying CoPA to any Azure Government tenant.
 
 ## 📋 Pre-Deployment Validation
 

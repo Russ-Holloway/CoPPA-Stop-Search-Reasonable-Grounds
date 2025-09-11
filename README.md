@@ -1,11 +1,11 @@
-# CoPPA Stop & Search Assistant
+# CoPA Stop & Search Assistant
 
 ![Version](https://img.shields.io/badge/Version-2.0.0-blue)
 ![Security Status](https://img.shields.io/badge/Security-Production%20Ready-brightgreen)
 ![Compliance](https://img.shields.io/badge/PDS%20Compliance-Ready-blue)
 ![Accessibility](https://img.shields.io/badge/WCAG%202.1%20AA-Compliant-green)
 
-**CoPPA Stop & Search Assistant v2.0.0** is an AI-powered decision support tool designed to enhance police effectiveness through intelligent guidance. Built on Microsoft Azure, it integrates trusted data sources and policies to deliver secure, accessible, and transparent assistance for law enforcement professionals.
+**CoPA Stop & Search Assistant v2.0.0** is an AI-powered decision support tool designed to enhance police effectiveness through intelligent guidance. Built on Microsoft Azure, it integrates trusted data sources and policies to deliver secure, accessible, and transparent assistance for law enforcement professionals.
 
 ## � Key Highlights
 
@@ -43,7 +43,7 @@
 - **WCAG 2.1 AA Accessibility:** Full accessibility compliance for inclusive access
 - **Security Standards:** Enterprise-grade security with Azure best practices
 
-[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition.json)
+[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2FcreateUiDefinition.json)
 
 **🎯 Simplified Deployment Process:**
 1. **Create Resource Group:** Use PDS naming like `rg-btp-prod-01`, `rg-met-prod-01`, etc.
@@ -160,7 +160,7 @@ This will create:
 
 4. **Transparency** - All responses include source references and citations for trust and accountability
 
-> **Human-in-the-Loop Design:** CoPPA augments but never replaces human decision-making, supporting officers across all key policing areas.
+> **Human-in-the-Loop Design:** CoPA augments but never replaces human decision-making, supporting officers across all key policing areas.
 
 ---
 
@@ -219,8 +219,8 @@ This will create:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/Russ-Holloway/CoPPA.git
-   cd CoPPA
+   git clone https://github.com/Russ-Holloway/CoPA.git
+   cd CoPA
    ```
 
 2. **Install Dependencies:**
@@ -333,7 +333,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 ## Important Notices
 
 ### Disclaimer
-CoPPA is an advisory tool based on curated data sources. Ultimate responsibility for decisions remains with the user. **Do not use as sole source for critical or time-sensitive decisions.**
+CoPA is an advisory tool based on curated data sources. Ultimate responsibility for decisions remains with the user. **Do not use as sole source for critical or time-sensitive decisions.**
 
 ### Trademarks
 This project may contain trademarks or logos for projects, products, or services. Use of Microsoft or third-party trademarks is subject to their respective policies.

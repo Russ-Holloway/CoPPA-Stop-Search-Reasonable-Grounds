@@ -1,6 +1,6 @@
 # Azure AD Authentication Setup Guide
 
-This guide helps you configure Azure Active Directory (Azure AD) authentication for your deployed CoPPA application, replicating the exact configuration shown in the reference Azure AD app registration.
+This guide helps you configure Azure Active Directory (Azure AD) authentication for your deployed CoPA application, replicating the exact configuration shown in the reference Azure AD app registration.
 
 ## Quick Setup (Automated)
 
@@ -162,7 +162,7 @@ Your Azure AD app registration should match this configuration:
 - **Enabled for users to sign-in:** Yes
 - **Assignment required:** Yes
 - **Visible to users:** Yes
-- **Notes:** "CoPPA Enterprise Application - Configured automatically"
+- **Notes:** "CoPA Enterprise Application - Configured automatically"
 
 ### Certificates & Secrets
 - **Client secret:** Active secret for App Service authentication
