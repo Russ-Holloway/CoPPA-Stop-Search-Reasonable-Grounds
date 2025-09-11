@@ -1,4 +1,4 @@
-# CoPPA Branch Synchronization Workflow
+# CoPA Branch Synchronization Workflow
 
 ## Repository Setup
 Your repository has branch protection rules that require pull requests for changes to the `main` branch. This is a **good practice** for maintaining code quality and change tracking.
@@ -33,7 +33,7 @@ git push origin dev-test
 When you're ready to sync your changes from `dev-test` to `main`:
 
 #### Option A: GitHub Web Interface (Recommended)
-1. Go to your GitHub repository: https://github.com/Russ-Holloway/CoPPA
+1. Go to your GitHub repository: https://github.com/Russ-Holloway/CoPA
 2. Click "Pull requests" tab
 3. Click "New pull request"
 4. Set:

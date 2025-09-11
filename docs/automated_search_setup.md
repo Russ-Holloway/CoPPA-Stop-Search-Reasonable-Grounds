@@ -1,6 +1,6 @@
 # Automated Search Component Setup
 
-CoPPA (College of Policing Assistant) includes fully automated setup for Azure Cognitive Search components. This document explains how this automation works and what happens during deployment.
+CoPA (College of Policing Assistant) includes fully automated setup for Azure Cognitive Search components. This document explains how this automation works and what happens during deployment.
 
 ## True One-Click Deployment
 
@@ -69,7 +69,7 @@ You can verify the automated setup worked by:
 1. Navigating to your Azure Cognitive Search service in the Azure Portal
 2. Checking that the index, indexer, data sources, and skillsets exist
 3. Viewing the indexer execution history to confirm documents were indexed
-4. Testing the search functionality in the CoPPA application
+4. Testing the search functionality in the CoPA application
 
 ## Troubleshooting
 

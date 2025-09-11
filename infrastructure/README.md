@@ -1,6 +1,6 @@
 # Infrastructure Files
 
-This folder contains the Azure deployment templates for the CoPPA Stop & Search application.
+This folder contains the Azure deployment templates for the CoPA Stop & Search application.
 
 ## Files
 
@@ -27,8 +27,8 @@ This folder contains the Azure deployment templates for the CoPPA Stop & Search 
 
 ### For Deploy to Azure Button
 Both `deployment.json` and `createUiDefinition.json` must be uploaded to:
-- **Storage Account:** `stcoppadeployment02`
-- **Container:** `coppa-deployment`
+- **Storage Account:** `stcopadeployment02`
+- **Container:** `copa-deployment`
 - **Names:** Keep the same names when uploading
 
 ### Upload Methods

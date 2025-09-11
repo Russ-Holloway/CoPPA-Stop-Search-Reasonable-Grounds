@@ -7,7 +7,7 @@
 
 ## Security Overview
 
-The CoPPA Stop & Search application has been comprehensively secured and is **production-ready** for handling sensitive police data.
+The CoPA Stop & Search application has been comprehensively secured and is **production-ready** for handling sensitive police data.
 
 ### ✅ Security Certifications
 

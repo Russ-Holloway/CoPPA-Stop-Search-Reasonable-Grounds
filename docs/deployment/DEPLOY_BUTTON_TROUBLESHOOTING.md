@@ -7,10 +7,10 @@ The Deploy to Azure button uses SAS tokens from July 23, 2025, which point to ca
 Open these in your browser to verify your updated files:
 
 **Deployment Template:**
-https://stcoppadeployment02.blob.core.windows.net/coppa-deployment/deployment.json
+https://stcopadeployment02.blob.core.windows.net/copa-deployment/deployment.json
 
 **UI Definition:**
-https://stcoppadeployment02.blob.core.windows.net/coppa-deployment/createUiDefinition.json
+https://stcopadeployment02.blob.core.windows.net/copa-deployment/createUiDefinition.json
 
 ## Expected Results
 If your files were uploaded correctly, you should see:
@@ -31,11 +31,11 @@ Run the upload script to generate fresh URLs:
 
 ### Solution 2: Temporary Public Access
 If you can make the storage container temporarily public:
-1. Storage Account → Containers → coppa-deployment → Change access level to "Blob"
+1. Storage Account → Containers → copa-deployment → Change access level to "Blob"
 2. Use this simple Deploy URL (no SAS needed):
 
 ```
-https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition.json
+https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2FcreateUiDefinition.json
 ```
 
 ### Solution 3: Manual SAS Generation

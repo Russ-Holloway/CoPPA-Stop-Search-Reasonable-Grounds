@@ -1,4 +1,4 @@
-# Security Configuration for CoPPA Stop & Search
+# Security Configuration for CoPA Stop & Search
 
 # Exclude security report files from scanning (prevents recursive false positives)
 security-reports/

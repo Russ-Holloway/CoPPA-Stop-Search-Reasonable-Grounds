@@ -69,11 +69,11 @@ class _UiSettings(BaseSettings):
         env_ignore_empty=True
     )
 
-    title: str = "CoPPA - Stop & Search - Reasonable-Grounds"
+    title: str = "CoPA - Stop & Search - Reasonable-Grounds"
     logo: Optional[str] = None
     chat_logo: Optional[str] = None
     chat_title: str = "Start assessing reasonable grounds for stop & search"
-    chat_description: str = "CoPPA Stop Search is configured to assist supervisors when reviewing reasonable grounds"
+    chat_description: str = "CoPA Stop Search is configured to assist supervisors when reviewing reasonable grounds"
     subtitle: Optional[str] = None
     favicon: str = "/favicon.ico"
     show_share_button: bool = True

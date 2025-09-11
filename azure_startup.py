@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Production startup script for CoPPA on Azure App Service
+Production startup script for CoPA on Azure App Service
 """
 import os
 import sys
@@ -31,7 +31,7 @@ def check_critical_vars():
 
 def main():
     """Main startup function"""
-    logger.info("Starting CoPPA application...")
+    logger.info("Starting CoPA application...")
     
     # Check configuration
     if not check_critical_vars():
@@ -45,7 +45,7 @@ def main():
         
         # For Azure App Service, the platform handles the server
         # This script just validates the app can be imported
-        logger.info("✅ CoPPA is ready to start")
+        logger.info("✅ CoPA is ready to start")
         
     except Exception as e:
         logger.error(f"Failed to import app: {str(e)}")

@@ -46,7 +46,7 @@ After the pipeline runs successfully:
 Update your README.md file with the following markdown, replacing `YOUR_URL_HERE` with the URL from Step 3:
 
 ```markdown
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FRuss-Holloway%2FCoPPA%2Fmain%2Finfrastructure%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FRuss-Holloway%2FCoPPA%2Fmain%2Finfrastructure%2FcreateUiDefinition-pds.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FRuss-Holloway%2FCoPA%2Fmain%2Finfrastructure%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FRuss-Holloway%2FCoPA%2Fmain%2Finfrastructure%2FcreateUiDefinition-pds.json)
 ```
 
 ## Troubleshooting

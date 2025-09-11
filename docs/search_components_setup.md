@@ -1,10 +1,10 @@
 # Azure Cognitive Search Setup Guide
 
-This guide explains how Azure Cognitive Search components are configured for the CoPPA application. Search components are **automatically set up during deployment**, but this guide provides information for troubleshooting or manual reconfiguration if needed.
+This guide explains how Azure Cognitive Search components are configured for the CoPA application. Search components are **automatically set up during deployment**, but this guide provides information for troubleshooting or manual reconfiguration if needed.
 
 ## Automated Setup Process
 
-When you deploy CoPPA using the "Deploy to Azure" button, the search components are automatically configured through:
+When you deploy CoPA using the "Deploy to Azure" button, the search components are automatically configured through:
 
 1. **ARM Template Deployment Script**: A PowerShell script runs during deployment to create and configure all search components
 2. **Application Startup Configuration**: Additional setup happens during the web app's first startup
@@ -36,7 +36,7 @@ If you need to manually set up or recreate the Azure Cognitive Search components
 
 ### Running the Script
 
-1. Navigate to the CoPPA repository root directory
+1. Navigate to the CoPA repository root directory
 2. Run the setup script:
 
 ```powershell
@@ -64,7 +64,7 @@ The script will:
 ### Example Usage
 
 ```powershell
-.\scripts\setup-search-components.ps1 -ResourceGroupName "coppa-rg" -SearchServiceName "coppa-search" -StorageAccountName "coppastorage123" -OpenAIServiceName "coppa-openai"
+.\scripts\setup-search-components.ps1 -ResourceGroupName "copa-rg" -SearchServiceName "copa-search" -StorageAccountName "copastorage123" -OpenAIServiceName "copa-openai"
 ```
 
 **Note:** This script is the same script used by the ARM template during deployment.
@@ -216,13 +216,13 @@ If you prefer to configure the components manually or need to customize the setu
 After running the PowerShell script:
 1. Check the script output for any error messages
 2. Verify in the Azure Portal that all resources were created successfully
-3. Test the search functionality in your CoPPA application
+3. Test the search functionality in your CoPA application
 
 ### For Manual Setup
 1. Once the indexer has finished running, go to your search service
 2. Select "Search explorer"
 3. Run a test query to verify your documents are being indexed properly
-4. Try the search functionality in your CoPPA application
+4. Try the search functionality in your CoPA application
 
 ## Adding More Documents
 
@@ -261,4 +261,4 @@ If you encounter issues with manual configuration:
 - [Azure Cognitive Search documentation](https://learn.microsoft.com/en-us/azure/search/)
 - [Azure OpenAI Service documentation](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/)
 - [Automated Search Setup Guide](./automated_search_setup.md)
-- [CoPPA Repository](../README.md)
+- [CoPA Repository](../README.md)

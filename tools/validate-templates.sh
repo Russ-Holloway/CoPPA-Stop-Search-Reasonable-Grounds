@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ARM Template Toolkit (TTK) Validation Script for CoPPA
+# ARM Template Toolkit (TTK) Validation Script for CoPA
 # This script validates Azure ARM templates and deployment files using Microsoft's official ARM TTK
 
 set -e
@@ -20,7 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ARM_TTK_DIR="$SCRIPT_DIR/arm-ttk"
 
-echo -e "${BLUE}🛡️  CoPPA ARM Template Validation${NC}"
+echo -e "${BLUE}🛡️  CoPA ARM Template Validation${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 
 # Function to print usage
@@ -326,7 +326,7 @@ main() {
     
     # Initialize output file
     if [ -n "$OUTPUT_FILE" ]; then
-        echo "CoPPA ARM Template Validation Results" > "$OUTPUT_FILE"
+        echo "CoPA ARM Template Validation Results" > "$OUTPUT_FILE"
         echo "Generated: $(date)" >> "$OUTPUT_FILE"
         echo "PDS Mode: $PDS_MODE" >> "$OUTPUT_FILE"
         echo "Security Mode: $SECURITY_MODE" >> "$OUTPUT_FILE"

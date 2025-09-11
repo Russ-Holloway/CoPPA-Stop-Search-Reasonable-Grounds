@@ -19,7 +19,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOOKS_DIR="$PROJECT_ROOT/.git/hooks"
 
-echo -e "${BLUE}🔒 Setting up Git security hooks for CoPPA...${NC}"
+echo -e "${BLUE}🔒 Setting up Git security hooks for CoPA...${NC}"
 echo ""
 
 # Ensure hooks directory exists
@@ -28,7 +28,7 @@ mkdir -p "$HOOKS_DIR"
 # Create pre-commit hook
 cat > "$HOOKS_DIR/pre-commit" << 'EOF'
 #!/bin/bash
-# Git pre-commit hook for CoPPA Security Checks
+# Git pre-commit hook for CoPA Security Checks
 
 set -e
 
@@ -72,7 +72,7 @@ EOF
 # Create pre-push hook
 cat > "$HOOKS_DIR/pre-push" << 'EOF'
 #!/bin/bash
-# Git pre-push hook for CoPPA Security Checks
+# Git pre-push hook for CoPA Security Checks
 
 set -e
 

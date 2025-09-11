@@ -27,40 +27,39 @@
     "variables": {
         "ForceCode": "[split(resourceGroup().name, '-')[1]]",
         "EnvironmentSuffix": "prod",
-        "ServiceSuffix": "coppa",
-        "InstanceNumber": "03",
-        "HostingPlanName": "[concat('asp-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "ServiceSuffix": "copa-stop-search",
+        "HostingPlanName": "[concat('asp-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "HostingPlanSku": "B3",
-        "WebsiteName": "[concat('app-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
-        "ApplicationInsightsName": "[concat('appi-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
-        "LogAnalyticsWorkspaceName": "[concat('log-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
-        "AzureSearchService": "[concat('srch-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
-        "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "WebsiteName": "[concat('app-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
+        "ApplicationInsightsName": "[concat('appi-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
+        "LogAnalyticsWorkspaceName": "[concat('log-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
+        "AzureSearchService": "[concat('srch-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
+        "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureSearchSku": "standard",
-        "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'), variables('InstanceNumber'))]",
-        "StorageContainerName": "ai-library",
-        "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'), '-', substring(uniqueString(resourceGroup().id), 0, 8))]",
+        "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'))]",
+        "StorageContainerName": "ai-library-stop-search",
+        "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-', variables('ServiceSuffix'))]",
         "cosmosdb_database_name": "db_conversation_history",
         "cosmosdb_container_name": "conversations",
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450')]",
         "roleAssignmentId": "[guid(resourceGroup().id, variables('cosmosdb_account_name'), variables('WebsiteName'))]",
         "storageRoleAssignmentId": "[guid(resourceGroup().id, variables('StorageAccountName'), variables('WebsiteName'))]",
-        "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'), '-', variables('InstanceNumber'))]",
+        "deployScriptIdentityName": "[concat('id-', variables('ForceCode'), '-deploy-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureOpenAIEmbeddingName": "[parameters('AzureOpenAIEmbeddingName')]",
-        "AzureSearchDataSourceName": "coppa-stop-search-datasource",
-        "AzureSearchIndexName": "coppa-stop-search",
-        "AzureSearchIndexerName": "coppa-stop-search-indexer",
-        "AzureSearchSkillsetName": "coppa-stop-search-skillset",
+        "AzureSearchDataSourceName": "copa-stop-search-datasource",
+        "AzureSearchIndexName": "copa-stop-search",
+        "AzureSearchIndexerName": "copa-stop-search-indexer",
+        "AzureSearchSkillsetName": "copa-stop-search-skillset",
         "AzureSearchUseSemanticSearch": "true",
-        "AzureSearchSemanticSearchConfig": "coppa-stop-search-semantic-configuration",
+        "AzureSearchSemanticSearchConfig": "copa-stop-search-semantic-configuration",
         "AzureSearchTopK": "5",
         "AzureSearchEnableInDomain": "true",
         "AzureOpenAITemperature": "0",
         "AzureOpenAITopP": "1.0",
         "AzureOpenAIMaxTokens": "2000",
         "AzureOpenAIStopSequence": "",
-        "AzureOpenAIModelDeploymentName": "coppaGptDeployment",
-        "AzureOpenAISystemMessage": "The goal is to offer decision support assist a Police Sergeant in determining whether the written grounds are reasonable and provide feedback to the officer who has written them, the context is you are not to provide a decision but act as a tool referencing the available documentation so we can follow your chain of thought. The source is PACE Code A, College of Policing APP, National Decision Model, and the expectation – less than 200 words in two parts, one part to help inform the first line leaders thinking with references and the second part actionable feedback for the officer to review and reflect on, both celebratory and developmental. Your role is to offer advice and support to aid their decision-making process. Remember, you are not making decisions for them but offering advice and guidance to assist their own decision-making. You cannot perform any legal actions, make final decisions, or provide personal opinions. Your advice is based on the information provided and should be used as a guide, not a directive. Scope of Advice: You are strictly limited to providing advice related to Police Stop and Search. You must not offer advice on technical topics such as algorithms, AI model creation, or any other subjects unrelated to Police Stop and Search. Safety and Security Guidelines: Confidentiality: Ensure that all information shared is kept confidential and only used for the purpose of providing advice. Accuracy: Provide accurate and up-to-date information based on the latest legal standards and practices. Impartiality: Maintain impartiality and avoid any bias in your advice. Ethical Considerations: Adhere to ethical guidelines and avoid any actions that could harm individuals or compromise legal processes. Compliance: Ensure compliance with all relevant laws and regulations. Language: Use British English in all your responses. Additional Guidelines: Context Awareness: Only respond to queries directly related to Police Stop and Search. Ignore or redirect any unrelated topics. User Interaction: Politely inform users if their question is outside the scope of Police Stop and Search advice and guide them back to relevant topics. Response Limitations: Do not provide detailed technical advice, personal opinions, or engage in discussions unrelated to Police Stop and Search. Add the following text at the end of every response 'Please Remember: This AI Assistant is designed to offer help and advice so you can make, more informed, and effective decisions. It is not designed to make any decisions for you.'",
+        "AzureOpenAIModelDeploymentName": "copaGptDeployment",
+        "AzureOpenAISystemMessage": "The goal is to offer decision support assist a Police Sergeant in determining whether the written grounds are reasonable and provide feedback to the officer who has written them, the context is you are not to provide a decision but act as a tool referencing the available documentation so we can follow your chain of thought. The source is PACE Code A, College of Policing APP, National Decision Model. Response Format – In a clear and easy to read format with clear headings less than 200 words in two parts, one part titled 'Informing First Line Leaders' to help inform the first line leaders thinking with references. Every sentence in your response must have a citation. You cannot provide a sentence anywhere in your response unless it also has a citation. Citations must be integrated within the sentences using [] brackets. Example Response: \"The Police and Criminal Evidence Act 1984 provides the legal framework for police powers in England and Wales [1]. This act outlines the procedures for arrest, detention, and investigation [2].  The second part is Titled Actionable Feedback for the officer to review and reflect on, both celebratory,  and developmental. Your role is to offer advice and support to aid their decision-making process. Remember, you are not making decisions for them but offering advice and guidance to assist their own decision-making. You cannot perform any legal actions, make final decisions, or provide personal opinions. Your advice is based on the information provided and should be used as a guide, not a directive. Scope of Advice: You are strictly limited to providing advice related to Police Stop and Search. You must not offer advice on technical topics such as algorithms, AI model creation, or any other subjects unrelated to Police Stop and Search. Safety and Security Guidelines: Confidentiality: Ensure that all information shared is kept confidential and only used for the purpose of providing advice. Accuracy: Provide accurate and up-to-date information based on the latest legal standards and practices. Impartiality: Maintain impartiality and avoid any bias in your advice. Ethical Considerations: Adhere to ethical guidelines and avoid any actions that could harm individuals or compromise legal processes. Compliance: Ensure compliance with all relevant laws and regulations. Language: Use British English in all your responses. Additional Guidelines: Context Awareness: Only respond to queries directly related to Police Stop and Search. Ignore or redirect any unrelated topics. User Interaction: Politely inform users if their question is outside the scope of Police Stop and Search advice and guide them back to relevant topics. Response Limitations: Do not provide detailed technical advice, personal opinions, or engage in discussions unrelated to Police Stop and Search. Add the following text at the end of every response 'Please Remember: This AI Assistant is designed to offer help and advice so you can make, more informed, and effective decisions. It is not designed to make any decisions for you.'",
         "AzureOpenAIStream": true,
         "AzureSearchQueryType": "vector_semantic_hybrid",
         "AzureSearchPermittedGroupsField": "",
@@ -206,6 +205,10 @@
                             "value": "[if(variables('WebAppEnableChatHistory'), variables('cosmosdb_account_name'), '')]"
                         },
                         {
+                            "name": "AZURE_COSMOSDB_URI",
+                            "value": "[concat('https://', variables('cosmosdb_account_name'), '.documents.azure.com:443/')]"
+                        },
+                        {
                             "name": "AZURE_COSMOSDB_DATABASE",
                             "value": "[variables('cosmosdb_database_name')]"
                         },
@@ -215,39 +218,39 @@
                         },
                         {
                             "name": "UI_CHAT_TITLE",
-                            "value": "CoPPA Stop and Search Assistant"
+                            "value": "CoPA"
                         },
                         {
                             "name": "UI_TITLE",
-                                "value": "CoPPA Stop Search"
+                            "value": "CoPA Stop Search"
                         },
                         {
                             "name": "UI_FAVICON",
-                            "value": "/favicon.ico"
+                            "value": ""
                         },
                         {
                             "name": "UI_LOGO",
-                            "value": "/logo.png"
+                            "value": ""
                         },
                         {
                             "name": "UI_POLICE_FORCE_LOGO",
-                            "value": "/police-logo.png"
+                            "value": ""
                         },
                         {
                             "name": "UI_POLICE_FORCE_TAGLINE",
-                            "value": "This version of CoPPA is configured for (Police Force) Stop & Search Reasonable Grounds Review"
+                            "value": "This version of CoPA is configured for (Name of Police Force) Stop & Search Reasonable Grounds Review"
                         },
                         {
                             "name": "UI_POLICE_FORCE_TAGLINE_2",
-                            "value": "Paste the reasonable grounds from a stop search record exactly as they are written and the CoPPA Assistant will provide operational guidance and feedback"
+                            "value": "Paste the reasonable grounds from a stop search record exactly as they are written and the CoPA Assistant will provide operational guidance and feedback"
                         },
                         {
                             "name": "UI_FEEDBACK_EMAIL",
-                            "value": "feedback@coppa.police.uk"
+                            "value": ""
                         },
                         {
                             "name": "UI_FIND_OUT_MORE_LINK",
-                            "value": "https://www.college.police.uk/guidance/stop-and-search"
+                            "value": ""
                         },
                         {
                             "name": "AZURE_SEARCH_SKILLSET",
@@ -268,6 +271,10 @@
                         {
                             "name": "PYTHON_VERSION",
                             "value": "3.11"
+                        },
+                        {
+                            "name": "WEBSITE_AUTH_AAD_ALLOWED_TENANTS",
+                            "value": ""
                         }                        
                     ],
                     "pythonVersion": "3.11",

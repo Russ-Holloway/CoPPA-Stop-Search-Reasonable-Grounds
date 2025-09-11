@@ -1,7 +1,7 @@
 # Police Force Customization Guide
 
 ## Overview
-CoPPA now supports environment variable-based customization for police force branding. This allows Azure administrators to easily update police force logos and taglines without modifying the application code.
+CoPA now supports environment variable-based customization for police force branding. This allows Azure administrators to easily update police force logos and taglines without modifying the application code.
 
 ## Environment Variables
 
@@ -19,7 +19,7 @@ CoPPA now supports environment variable-based customization for police force bra
 
 ## Admin-Only Visibility
 Both the police force logo and tagline are only visible to users with admin permissions. This ensures that:
-- Regular users see the standard CoPPA interface
+- Regular users see the standard CoPA interface
 - Administrators can see the customized police force branding
 - The interface remains consistent for most users while allowing force-specific customization
 

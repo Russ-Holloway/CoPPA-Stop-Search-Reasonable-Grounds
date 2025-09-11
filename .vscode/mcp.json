@@ -1,6 +1,6 @@
 {
   "servers": {
-    "coppa-validation-server": {
+    "copa-validation-server": {
       "type": "stdio",
       "command": "node",
       "args": ["tools/mcp-server/dist/index.js"]

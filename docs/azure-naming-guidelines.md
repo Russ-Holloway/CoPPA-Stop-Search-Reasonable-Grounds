@@ -1,7 +1,7 @@
 # PDS Compliant Azure Resource Naming Guidelines for UK Police Forces
 
 ## Overview
-This document provides PDS-compliant naming guidelines for Azure resources in the CoPPA deployment. These guidelines ensure consistency across all 44 UK police forces and compliance with the PDS (Police Digital Service) naming strategy.
+This document provides PDS-compliant naming guidelines for Azure resources in the CoPA deployment. These guidelines ensure consistency across all 44 UK police forces and compliance with the PDS (Police Digital Service) naming strategy.
 
 ## PDS Naming Convention Pattern
 

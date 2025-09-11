@@ -1,14 +1,14 @@
 # Manual Azure Portal Setup Guide
 
-## Setting up stcoppadeployment02 for CoPPA Deployment
+## Setting up stcopadeployment02 for CoPA Deployment
 
 Since Azure CLI authentication is restricted by CA policies, follow these manual steps in the Azure Portal.
 
 ### Step 1: Upload Files to Storage Account
 
-1. **Navigate to Azure Portal** → Storage Accounts → `stcoppadeployment02`
-2. **Go to Containers** → Create container named `coppa-deployment` with **Public access level: Blob**
-3. **Upload the following files** to the `coppa-deployment` container:
+1. **Navigate to Azure Portal** → Storage Accounts → `stcopadeployment02`
+2. **Go to Containers** → Create container named `copa-deployment` with **Public access level: Blob**
+3. **Upload the following files** to the `copa-deployment` container:
    - `infrastructure/deployment.json` → upload as `deployment.json`
    - `infrastructure/createUiDefinition-simple.json` → upload as `createUiDefinition-simple.json`
    - `infrastructure/createUiDefinition-pds.json` → upload as `createUiDefinition-pds.json`
@@ -43,7 +43,7 @@ Since Azure CLI authentication is restricted by CA policies, follow these manual
 Use this format to build your new URLs:
 
 #### Base URLs:
-- **Storage Base:** `https://stcoppadeployment02.blob.core.windows.net/coppa-deployment`
+- **Storage Base:** `https://stcopadeployment02.blob.core.windows.net/copa-deployment`
 - **Deployment JSON:** `{StorageBase}/deployment.json?{SAS_TOKEN}`
 - **Simple UI:** `{StorageBase}/createUiDefinition-simple.json?{SAS_TOKEN}`
 - **PDS UI:** `{StorageBase}/createUiDefinition-pds.json?{SAS_TOKEN}`
@@ -67,7 +67,7 @@ Replace the Deploy to Azure button URLs in:
 ### Example Final URL Structure:
 
 ```markdown
-[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2Fdeployment.json%3F{YOUR_ENCODED_SAS_TOKEN}/createUIDefinitionUri/https%3A%2F%2Fstcoppadeployment02.blob.core.windows.net%2Fcoppa-deployment%2FcreateUiDefinition-simple.json%3F{YOUR_ENCODED_SAS_TOKEN})
+[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2Fdeployment.json%3F{YOUR_ENCODED_SAS_TOKEN}/createUIDefinitionUri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2FcreateUiDefinition-simple.json%3F{YOUR_ENCODED_SAS_TOKEN})
 ```
 
 ### Step 7: Test the Deployment

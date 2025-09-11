@@ -1,6 +1,6 @@
-# CoPPA Tools Directory
+# CoPA Tools Directory
 
-This directory contains comprehensive security and validation tools for the CoPPA (Coppa Police Partnership Application) project.
+This directory contains comprehensive security and validation tools for the CoPA (College of Policing Assistant) project.
 
 ## �️ Security Tools Overview
 
@@ -193,7 +193,7 @@ When run in PDS mode (`-p` flag), tools include enhanced checks for:
 
 ### Initial Security Setup
 ```bash
-# Complete security setup for CoPPA
+# Complete security setup for CoPA
 ./security-setup.sh -p
 ```
 

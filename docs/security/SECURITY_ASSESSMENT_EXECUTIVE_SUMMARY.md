@@ -1,13 +1,13 @@
-# CoPPA Stop & Search - Security Assessment Executive Summary
+# CoPA Stop & Search - Security Assessment Executive Summary
 
 **Assessment Date:** September 4, 2025  
-**Application:** CoPPA Stop & Search Reasonable Grounds  
+**Application:** CoPA Stop & Search Reasonable Grounds  
 **Assessment Type:** Comprehensive Security Review  
 **Risk Level:** ✅ **LOW RISK - PRODUCTION READY**
 
 ## 🛡️ Executive Summary
 
-The CoPPA Stop & Search application has undergone comprehensive security hardening and demonstrates **enterprise-grade security** suitable for police data handling. While automated scans report 144 "issues," the vast majority are false positives and non-critical findings.
+The CoPA Stop & Search application has undergone comprehensive security hardening and demonstrates **enterprise-grade security** suitable for police data handling. While automated scans report 144 "issues," the vast majority are false positives and non-critical findings.
 
 ## 🎯 Actual Security Status
 
@@ -111,7 +111,7 @@ The 144 reported "issues" break down as follows:
 
 ## 🏆 Security Confidence Statement
 
-> **The CoPPA Stop & Search application implements comprehensive, enterprise-grade security controls appropriate for police data handling. The application follows security best practices, implements defense-in-depth strategies, and maintains a strong security posture suitable for production deployment.**
+> **The CoPA Stop & Search application implements comprehensive, enterprise-grade security controls appropriate for police data handling. The application follows security best practices, implements defense-in-depth strategies, and maintains a strong security posture suitable for production deployment.**
 
 ### Key Security Achievements
 - ✅ **Zero critical vulnerabilities**
@@ -133,4 +133,4 @@ The 144 reported "issues" break down as follows:
 
 ---
 
-*This assessment validates that the CoPPA Stop & Search application meets enterprise security standards and is suitable for handling sensitive police data in a production environment.*
+*This assessment validates that the CoPA Stop & Search application meets enterprise security standards and is suitable for handling sensitive police data in a production environment.*

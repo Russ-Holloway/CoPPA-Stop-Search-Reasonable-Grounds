@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Deployment script for Policing Assistant
-# This script will deploy all the necessary Azure resources for the Policing Assistant
+# Deployment script for College of Policing Assistant
+# This script will deploy all the necessary Azure resources for the College of Policing Assistant
 
 # Default values
-RESOURCE_GROUP="policing-assistant-rg"
+RESOURCE_GROUP="college-policing-assistant-rg"
 LOCATION="eastus"
 DEPLOYMENT_NAME="policing-assistant-deployment"
 WEBSITE_NAME="policing-assistant-$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"

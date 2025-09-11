@@ -5,7 +5,7 @@
     "parameters": {
         "config": {
             "basics": {
-                "description": "Deploy the Policing Assistant solution with automatic PDS-compliant naming. IMPORTANT: Ensure your resource group follows the naming format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search' where {ForceCode} is your 3-letter police force code.",
+                "description": "Deploy the College of Policing Assistant solution with automatic PDS-compliant naming. IMPORTANT: Ensure your resource group follows the naming format 'rg-{ForceCode}-uks-prod-ai-copa-stop-search' where {ForceCode} is your 3-letter police force code.",
                 "location": {
                     "visible": true,
                     "allowedValues": [
@@ -24,7 +24,7 @@
                 "visible": true,
                 "options": {
                     "icon": "Warning",
-                    "text": "⚠️ IMPORTANT: Your resource group name must follow the format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search' where {ForceCode} is your 3-letter police force code (e.g., 'btp', 'met', 'wmp'). The force code will be automatically extracted from position 2 of your resource group name."
+                    "text": "⚠️ IMPORTANT: Your resource group name must follow the format 'rg-{ForceCode}-uks-prod-ai-copa-stop-search' where {ForceCode} is your 3-letter police force code (e.g., 'btp', 'met', 'wmp'). The force code will be automatically extracted from position 2 of your resource group name."
                 }
             },
             {
@@ -135,7 +135,7 @@
                         "visible": true,
                         "options": {
                             "icon": "Info",
-                            "text": "✅ Ready to deploy! Your resources will be created with PDS-compliant names automatically generated from your resource group name format 'rg-{ForceCode}-uks-prod-ai-coppa-stop-search'. Instance number '03' will be used for this test deployment."
+                            "text": "✅ Ready to deploy! Your resources will be created with PDS-compliant names automatically generated from your resource group name format 'rg-{ForceCode}-uks-prod-ai-copa-stop-search'. Instance number '03' will be used for this test deployment."
                         }
                     }
                 ]

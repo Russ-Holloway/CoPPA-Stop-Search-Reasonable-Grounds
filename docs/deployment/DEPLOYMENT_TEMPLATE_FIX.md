@@ -59,7 +59,7 @@ This correctly extracts `rg-btp-prod-01` → `btp`
 
 **After:**
 ```json
-"cosmosdb_account_name": "[concat('db-app-', parameters('ForceCode'), '-coppa')]"
+"cosmosdb_account_name": "[concat('db-app-', parameters('ForceCode'), '-copa')]"
 ```
 
 **Fixed Values:**
@@ -213,7 +213,7 @@ This prevents deployment scripts from creating temporary storage accounts with n
 - **OpenAI Service**: `cog-btp-prod-01` ✅
 - **Application Insights**: `appi-btp-prod-01` ✅
 - **Log Analytics Workspace**: `log-btp-prod-01` ✅ (prevents auto-managed RG creation)
-- **Cosmos DB Account**: `db-app-btp-coppa` ✅
+- **Cosmos DB Account**: `db-app-btp-copa` ✅
 - **Cosmos Database**: `db_conversation_history` ✅ (consistent)
 - **Cosmos Container**: `conversations` ✅ (consistent)
 - **User Assigned Identity**: `id-btp-deploy-prod-01` ✅ (PDS compliant)

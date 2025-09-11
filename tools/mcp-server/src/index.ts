@@ -7,7 +7,7 @@ import { readFileSync, existsSync, statSync } from "fs";
 import { join, relative } from "path";
 
 /**
- * CoPPA Deployment Validation MCP Server
+ * CoPA Deployment Validation MCP Server
  * 
  * This MCP server provides comprehensive validation tools for:
  * - Azure deployment.json configuration
@@ -16,9 +16,9 @@ import { join, relative } from "path";
  * - Police data handling compliance (PDS standards)
  */
 const server = new McpServer({
-  name: "coppa-validation-server",
+  name: "copa-validation-server",
   version: "1.0.0",
-  description: "Validates Azure deployment configurations and ensures security best practices for CoPPA applications"
+  description: "Validates Azure deployment configurations and ensures security best practices for CoPA applications"
 });
 
 // Define workspace root - assumes this server runs from tools/mcp-server
@@ -782,7 +782,7 @@ server.registerTool(
         case 'executive':
           report = `# 📋 Executive Compliance Summary\n\n`;
           report += `**Report Generated**: ${timestamp.split('T')[0]}\n`;
-          report += `**System**: CoPPA Stop & Search Application\n\n`;
+          report += `**System**: CoPA Stop & Search Application\n\n`;
           
           report += `## 🎯 Key Findings\n\n`;
           report += `- ✅ **Security Framework**: Azure Well-Architected principles implemented\n`;
@@ -824,7 +824,7 @@ server.registerTool(
         default:
           report = `# 🔧 Technical Compliance Report\n\n`;
           report += `**Generated**: ${timestamp}\n`;
-          report += `**System**: CoPPA Stop & Search Reasonable Grounds Application\n`;
+          report += `**System**: CoPA Stop & Search Reasonable Grounds Application\n`;
           report += `**Environment**: Azure Cloud\n\n`;
           
           report += `## 🏗️ Architecture Overview\n\n`;
@@ -866,7 +866,7 @@ server.registerTool(
       }
 
       report += `---\n\n`;
-      report += `*This report was generated automatically by the CoPPA Validation MCP Server.*\n`;
+      report += `*This report was generated automatically by the CoPA Validation MCP Server.*\n`;
       report += `*For technical questions, contact the development team.*\n`;
 
       return {
@@ -892,7 +892,7 @@ server.registerTool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("🔒 CoPPA Validation MCP Server running on stdio");
+  console.error("🔒 CoPA Validation MCP Server running on stdio");
   console.error("🎯 Ready to validate Azure deployments and security configurations");
 }
 

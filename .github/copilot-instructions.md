@@ -1,4 +1,4 @@
-# Copilot Instructions for CoPPA Stop & Search Application
+# Copilot Instructions for CoPA Stop & Search Application
 
 ## General Development Guidelines
 
