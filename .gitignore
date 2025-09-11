@@ -7,10 +7,11 @@ frontend/node_modules
 .env.production
 .env.test
 
-# Build output directories (generated files)
-static/
+# Build output directories (generated files) - but NOT static/ which contains prebuilt frontend
 dist/
 build/
+frontend/dist/
+frontend/build/
 
 # Azure and Python cache
 .azure/
