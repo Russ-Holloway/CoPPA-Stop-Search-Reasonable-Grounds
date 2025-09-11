@@ -1,4 +1,4 @@
-# Deployment script for CoPPA - College of Policing Assistant
+# Deployment script for CoPA - College of Policing Assistant
 # This script will deploy all the necessary Azure resources for CoPPA
 
 # Default values
@@ -10,7 +10,7 @@ $OPENAI_NAME = "oai-" + (-join ((97..122) | Get-Random -Count 8 | ForEach-Object
 $SEARCH_NAME = "search-" + (-join ((97..122) | Get-Random -Count 8 | ForEach-Object {[char]$_}))
 
 Write-Host "╔════════════════════════════════════════════════════════════╗"
-Write-Host "║              CoPPA - College of Policing Assistant         ║"
+Write-Host "║              CoPA - College of Policing Assistant         ║"
 Write-Host "╚════════════════════════════════════════════════════════════╝"
 
 # Check if Azure PowerShell is installed
@@ -109,7 +109,7 @@ if ($?) {
     $webapp = Get-AzWebApp -Name $WEBSITE_NAME -ResourceGroupName $RESOURCE_GROUP
     $WEBAPP_URL = "https://" + $webapp.DefaultHostName
     
-    Write-Host "Your Policing Assistant is now deployed!"
+    Write-Host "Your College of Policing Assistant is now deployed!"
     Write-Host "Web App URL: $WEBAPP_URL"
     Write-Host ""
     Write-Host "Note: It may take a few minutes for the application to be fully deployed and ready to use."

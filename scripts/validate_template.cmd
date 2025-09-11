@@ -1,7 +1,7 @@
 @echo off
 echo.
 echo ================================================
-echo Policing Assistant - ARM Template Validation
+echo College of Policing Assistant - ARM Template Validation
 echo ================================================
 echo.
 

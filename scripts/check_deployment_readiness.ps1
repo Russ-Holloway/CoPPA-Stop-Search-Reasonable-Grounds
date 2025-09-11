@@ -1,5 +1,5 @@
 # Comprehensive Deployment Readiness Checker
-# This script performs a complete check of all Azure resources for the policing assistant app
+# This script performs a complete check of all Azure resources for the College of Policing Assistant app
 
 param(
     [Parameter(Mandatory = $true)]
@@ -42,7 +42,7 @@ param(
 # Set error action preference
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== Policing Assistant Deployment Readiness Checker ===" -ForegroundColor Green
+Write-Host "=== College of Policing Assistant Deployment Readiness Checker ===" -ForegroundColor Green
 Write-Host "Subscription: $SubscriptionId" -ForegroundColor Cyan
 Write-Host "Resource Group: $ResourceGroupName" -ForegroundColor Cyan
 Write-Host "Check Mode: $(if ($QuickCheck) { 'Quick' } else { 'Comprehensive' })" -ForegroundColor Cyan

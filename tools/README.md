@@ -1,6 +1,6 @@
 # CoPA Tools Directory
 
-This directory contains comprehensive security and validation tools for the CoPA (Copa Police Partnership Application) project.
+This directory contains comprehensive security and validation tools for the CoPA (College of Policing Assistant) project.
 
 ## �️ Security Tools Overview
 

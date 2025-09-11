@@ -5,7 +5,7 @@
     "parameters": {
         "config": {
             "basics": {
-                "description": "Deploy the Policing Assistant solution with automatic PDS-compliant naming. IMPORTANT: Ensure your resource group follows the naming format 'rg-{ForceCode}-uks-prod-ai-copa-stop-search' where {ForceCode} is your 3-letter police force code.",
+                "description": "Deploy the College of Policing Assistant solution with automatic PDS-compliant naming. IMPORTANT: Ensure your resource group follows the naming format 'rg-{ForceCode}-uks-prod-ai-copa-stop-search' where {ForceCode} is your 3-letter police force code.",
                 "location": {
                     "visible": true,
                     "allowedValues": [
