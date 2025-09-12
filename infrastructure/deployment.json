@@ -222,7 +222,7 @@
                         },
                         {
                             "name": "UI_TITLE",
-                            "value": "CoPA Stop Search"
+                            "value": "CoPA (College of Policing Assistant) for Stop Search"
                         },
                         {
                             "name": "UI_FAVICON",
@@ -238,7 +238,7 @@
                         },
                         {
                             "name": "UI_POLICE_FORCE_TAGLINE",
-                            "value": "This version of CoPA is configured for (Name of Police Force) Stop & Search Reasonable Grounds Review"
+                            "value": "This version of CoPA (College of Policing Assistant) is configured for (Name of Police Force) Stop & Search Reasonable Grounds Review"
                         },
                         {
                             "name": "UI_POLICE_FORCE_TAGLINE_2",

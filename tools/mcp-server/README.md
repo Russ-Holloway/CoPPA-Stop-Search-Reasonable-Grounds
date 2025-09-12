@@ -1,6 +1,6 @@
 # CoPA Validation MCP Server
 
-A comprehensive Model Context Protocol (MCP) server for validating Azure deployment configurations and ensuring security best practices for the CoPA Stop & Search application.
+A comprehensive Model Context Protocol (MCP) server for validating Azure deployment configurations and ensuring security best practices for the CoPA (College of Policing Assistant) for Stop Search application.
 
 ## 🎯 Overview
 
@@ -271,4 +271,4 @@ For technical support or questions:
 
 ---
 
-*This MCP server is specifically designed for the CoPA Stop & Search application but can be adapted for other Azure projects requiring comprehensive security validation.*
+*This MCP server is specifically designed for the CoPA (College of Policing Assistant) for Stop Search application but can be adapted for other Azure projects requiring comprehensive security validation.*

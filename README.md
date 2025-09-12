@@ -1,11 +1,11 @@
-# CoPA Stop & Search Assistant
+# CoPA (College of Policing Assistant) for Stop Search
 
 ![Version](https://img.shields.io/badge/Version-2.0.0-blue)
 ![Security Status](https://img.shields.io/badge/Security-Production%20Ready-brightgreen)
 ![Compliance](https://img.shields.io/badge/PDS%20Compliance-Ready-blue)
 ![Accessibility](https://img.shields.io/badge/WCAG%202.1%20AA-Compliant-green)
 
-**CoPA Stop & Search Assistant v2.0.0** is an AI-powered decision support tool designed to enhance police effectiveness through intelligent guidance. Built on Microsoft Azure, it integrates trusted data sources and policies to deliver secure, accessible, and transparent assistance for law enforcement professionals.
+**CoPA (College of Policing Assistant) for Stop Search v2.0.0** is an AI-powered decision support tool designed to enhance police effectiveness through intelligent guidance. Built on Microsoft Azure, it integrates trusted data sources and policies to deliver secure, accessible, and transparent assistance for law enforcement professionals.
 
 ## � Key Highlights
 
