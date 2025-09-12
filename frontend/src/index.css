@@ -36,9 +36,9 @@
   --bg-primary: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   --bg-secondary: #374151;
   --bg-tertiary: rgba(55, 65, 81, 0.8);
-  --text-primary: #f9fafb;
-  --text-secondary: #e5e7eb;
-  --text-muted: #9ca3af;
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted: #ffffff;
   --border-primary: rgba(55, 65, 81, 0.5);
   --border-secondary: rgba(251, 191, 36, 0.3);
   --accent-primary: #1a1761;
@@ -129,13 +129,11 @@ html {
 
 .ms-TextField-field:focus {
   border-color: #667eea !important;
-  box-shadow: 0 0 0 3px var(--shadow-light) !important;
 }
 
 /* Dark mode specific overrides for FluentUI components */
 .dark-mode .ms-TextField-field:focus {
   border-color: #fbbf24 !important;
-  box-shadow: 0 0 0 3px var(--shadow-light) !important;
 }
 
 /* Ensure proper dark mode inheritance */

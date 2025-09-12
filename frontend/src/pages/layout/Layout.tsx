@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Dialog, Stack, TextField } from '@fluentui/react'
 import { CopyRegular } from '@fluentui/react-icons'
 
@@ -119,13 +119,13 @@ const Layout = () => {
               {ui?.find_out_more_link && <FindOutMoreButton onClick={handleFindOutMoreClick} text="Find out more" />}
             </div>
           </div>
-          <div className={styles.headerCenterContent}>
-            <Link to="/" style={{ textDecoration: 'none' }}>
-              <h1 className={styles.headerTitle}>CoPA Stop & Search</h1>
-              <p className={styles.headerSubtitle}>
-                CoPA Stop Search is configured to assist supervisors when reviewing reasonable grounds
+                              <div className={styles.headerCenterContent}>
+            <div style={{ textDecoration: 'none', color: '#ffffff', cursor: 'pointer' }}>
+              <h1 className={styles.headerTitle} style={{ color: '#ffffff' }}>CoPA for Stop Search</h1>
+              <p className={styles.headerSubtitle} style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                To assist Supervisors when reviewing Reasonable Grounds
               </p>
-            </Link>
+            </div>
           </div>
           <div className={styles.headerRightContainer}>
             {appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured &&

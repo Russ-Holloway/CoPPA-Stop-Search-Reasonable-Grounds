@@ -812,10 +812,9 @@ const Chat = () => {
 
                 {/* Main content area */}
                 <div className={styles.mainContentArea}>
-                  {/* CoPA Title at top position (box 1) */}
+                  {/* CoPA Title removed - just show taglines */}
                   <div className={styles.chatEmptyStateLogo}>
-                    <h1 className={styles.chatEmptyStateTitle}>CoPA</h1>
-                    {/* Police force taglines displayed below CoPA title when configured */}
+                    {/* Police force taglines displayed when configured */}
                     {ui?.police_force_tagline && (
                       <p className={styles.chatEmptyStateTagline}>{ui.police_force_tagline}</p>
                     )}
