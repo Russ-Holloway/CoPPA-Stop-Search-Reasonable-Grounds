@@ -13,7 +13,7 @@ export const ShareButton: React.FC<ButtonProps> = ({ onClick, text }) => {
     <CommandBarButton
       className={styles.shareButtonRoot}
       onClick={onClick}
-      text={text}
+      text={text || ''}
       onRenderIcon={() => <ShareRegular style={{ width: 16, height: 16 }} />}
     />
   )
@@ -23,7 +23,7 @@ export const HistoryButton: React.FC<ButtonProps> = ({ onClick, text }) => {
   return (
     <DefaultButton
       className={styles.historyButtonRoot}
-      text={text}
+      text={text || ''}
       onClick={onClick}
       onRenderIcon={() => <ClockRegular style={{ width: 16, height: 16 }} />}
     />
@@ -34,7 +34,7 @@ export const FeedbackButton: React.FC<ButtonProps> = ({ onClick, text }) => {
   return (
     <DefaultButton
       className={styles.feedbackButtonRoot}
-      text={text}
+      text={text || ''}
       onClick={onClick}
       onRenderIcon={() => <CommentRegular style={{ width: 16, height: 16 }} />}
     />
@@ -45,7 +45,7 @@ export const FindOutMoreButton: React.FC<ButtonProps> = ({ onClick, text }) => {
   return (
     <DefaultButton
       className={styles.findOutMoreButtonRoot}
-      text={text}
+      text={text || ''}
       onClick={onClick}
       onRenderIcon={() => <InfoRegular style={{ width: 16, height: 16 }} />}
     />
