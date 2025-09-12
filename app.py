@@ -64,8 +64,17 @@ def rate_limit(max_requests=10, window_seconds=60):
     def decorator(f):
         @wraps(f)
         async def decorated_function(*args, **kwargs):
-            # Get client IP 
-            client_ip = security_monitor.get_client_ip(request.environ)
+            # Get client IP - Quart compatibility fix
+            try:
+                client_ip = request.headers.get(
+                    'X-Real-IP', 
+                    request.headers.get(
+                        'X-Forwarded-For',
+                        getattr(request, 'remote_addr', '0.0.0.0')
+                    )
+                )
+            except:
+                client_ip = '0.0.0.0'
             
             # Check if IP is blocked
             if security_monitor.is_blocked(client_ip):
@@ -838,7 +847,16 @@ async def conversation():
     
     try:
         request_json = await request.get_json()
-        client_ip = security_monitor.get_client_ip(request.environ)
+        try:
+            client_ip = request.headers.get(
+                'X-Real-IP', 
+                request.headers.get(
+                    'X-Forwarded-For',
+                    getattr(request, 'remote_addr', '0.0.0.0')
+                )
+            )
+        except:
+            client_ip = '0.0.0.0'
         
         # Input validation and sanitization
         if not isinstance(request_json, dict):
@@ -870,7 +888,16 @@ async def conversation():
             return jsonify({"error": f"Too many messages (max {MAX_MESSAGES})"}), 400
             
     except Exception as e:
-        client_ip = security_monitor.get_client_ip(request.environ)
+        try:
+            client_ip = request.headers.get(
+                'X-Real-IP', 
+                request.headers.get(
+                    'X-Forwarded-For',
+                    getattr(request, 'remote_addr', '0.0.0.0')
+                )
+            )
+        except:
+            client_ip = '0.0.0.0'
         security_monitor.log_invalid_input(client_ip, "malformed_request")
         return jsonify({"error": "Invalid request format"}), 400
 
@@ -879,7 +906,7 @@ async def conversation():
 
 @bp.route("/frontend_settings", methods=["GET"])
 @rate_limit(max_requests=30, window_seconds=60)  # More lenient for settings endpoint
-def get_frontend_settings():
+async def get_frontend_settings():
     try:
         # Dynamically check if CosmosDB is available
         cosmos_available = (
