@@ -46,7 +46,7 @@ from backend.utils import (
 )
 
 # Application version information
-APP_VERSION = "2.0.0"
+APP_VERSION = "3.0.0"
 APP_NAME = "CoPA Stop & Search"
 RELEASE_DATE = "2025-09-04"
 SECURITY_GRADE = "A+"
