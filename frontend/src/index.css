@@ -12,23 +12,23 @@
   --text-secondary: #374151;
   --text-muted: #6b7280;
   --border-primary: rgba(255, 255, 255, 0.2);
-  --border-secondary: rgba(102, 126, 234, 0.2);
+  --border-secondary: rgba(26, 23, 97, 0.2);
   --accent-primary: #1a1761;
-  --accent-secondary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --accent-secondary: linear-gradient(135deg, #1a1761 0%, #2a2b8a 100%);
   --shadow-light: rgba(0, 0, 0, 0.1);
   --shadow-medium: rgba(0, 0, 0, 0.15);
-  --shadow-heavy: rgba(102, 126, 234, 0.3);
+  --shadow-heavy: rgba(26, 23, 97, 0.3);
   --chat-container-bg: #ffffff;
   --chat-empty-title: #2c3e50;
   --scrollbar-track: rgba(0, 0, 0, 0.1);
-  --scrollbar-thumb: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --scrollbar-thumb-hover: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  --scrollbar-thumb: linear-gradient(135deg, #1a1761 0%, #2a2b8a 100%);
+  --scrollbar-thumb-hover: linear-gradient(135deg, #0f0d45 0%, #1a1761 100%);
 
   /* User message colors - light theme */
-  --bg-user-message: #667eea;
+  --bg-user-message: #1a1761;
   --text-user-message: #ffffff;
-  --shadow-user-message: rgba(102, 126, 234, 0.3);
-  --border-user-message: rgba(102, 126, 234, 0.3);
+  --shadow-user-message: rgba(26, 23, 97, 0.3);
+  --border-user-message: rgba(26, 23, 97, 0.3);
 }
 
 /* Dark theme variables */
@@ -128,7 +128,7 @@ html {
 }
 
 .ms-TextField-field:focus {
-  border-color: #667eea !important;
+  border-color: #1a1761 !important;
 }
 
 /* Dark mode specific overrides for FluentUI components */

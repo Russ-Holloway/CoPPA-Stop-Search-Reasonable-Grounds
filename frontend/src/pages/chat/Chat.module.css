@@ -694,7 +694,7 @@ a {
 }
 
 .clearChatButton {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a1761 0%, #2a2b8a 100%);
   border: 2px solid var(--chat-container-bg);
   border-radius: 12px;
   padding: 18px 36px;
@@ -704,7 +704,7 @@ a {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow:
-    0 6px 20px rgba(102, 126, 234, 0.3),
+    0 6px 20px rgba(26, 23, 97, 0.3),
     0 2px 4px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   display: flex;
@@ -720,17 +720,17 @@ a {
 .clearChatButton:hover {
   transform: translateY(-1px);
   box-shadow:
-    0 8px 25px rgba(102, 126, 234, 0.4),
+    0 8px 25px rgba(26, 23, 97, 0.4),
     0 4px 8px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+  background: linear-gradient(135deg, #0f0d45 0%, #1a1761 100%);
   border-color: #f0f9ff;
 }
 
 .clearChatButton:active {
   transform: translateY(1px);
   box-shadow:
-    0 2px 8px rgba(102, 126, 234, 0.3),
+    0 2px 8px rgba(26, 23, 97, 0.3),
     0 1px 2px rgba(0, 0, 0, 0.1),
     inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -772,7 +772,7 @@ a {
 .taglineInput {
   width: 100%;
   padding: 16px 20px;
-  border: 2px solid rgba(102, 126, 234, 0.3);
+  border: 2px solid rgba(26, 23, 97, 0.3);
   border-radius: 12px;
   font-size: 16px;
   line-height: 24px;
@@ -784,13 +784,13 @@ a {
 
 .taglineInput:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #1a1761;
   background: var(--bg-secondary);
   color: var(--text-primary);
 }
 
 .taglineInput::placeholder {
-  color: rgba(102, 126, 234, 0.6);
+  color: rgba(26, 23, 97, 0.6);
   font-style: italic;
 }
 

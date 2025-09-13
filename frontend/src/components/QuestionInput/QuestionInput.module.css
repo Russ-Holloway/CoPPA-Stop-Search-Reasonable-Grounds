@@ -141,13 +141,13 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: rgba(26, 23, 97, 0.1);
+  border: 1px solid rgba(26, 23, 97, 0.2);
   transition: all 0.3s ease;
 }
 
 .questionInputOptionsButton:hover {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(26, 23, 97, 0.2);
   transform: scale(1.05);
 }
 

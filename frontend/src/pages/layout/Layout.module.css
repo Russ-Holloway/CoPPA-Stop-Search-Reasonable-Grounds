@@ -210,12 +210,12 @@
 .copyButtonContainer:hover {
   cursor: pointer;
   background: var(--bg-tertiary);
-  border-color: #667eea;
+  border-color: #1a1761;
   transform: translateY(-1px);
 }
 
 .copyButton {
-  color: #667eea;
+  color: #1a1761;
 }
 
 .copyButtonText {

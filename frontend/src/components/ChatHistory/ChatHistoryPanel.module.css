@@ -28,13 +28,13 @@
   border-radius: 12px;
   display: flex;
   transition: all 0.3s ease;
-  border: 1px solid rgba(102, 126, 234, 0.1);
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border: 1px solid rgba(26, 23, 97, 0.1);
+  background: linear-gradient(135deg, rgba(26, 23, 97, 0.05) 0%, rgba(42, 43, 138, 0.05) 100%);
 }
 
 .itemCell:hover {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  border-color: rgba(102, 126, 234, 0.2);
+  background: linear-gradient(135deg, rgba(26, 23, 97, 0.1) 0%, rgba(42, 43, 138, 0.1) 100%);
+  border-color: rgba(26, 23, 97, 0.2);
   transform: translateY(-2px);
 }
 
