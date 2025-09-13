@@ -5,9 +5,6 @@
   padding: 8.1285px;
   gap: 5.42px;
   background: #ffffff;
-  box-shadow:
-    0px 1px 2px rgba(0, 0, 0, 0.14),
-    0px 0px 2px rgba(0, 0, 0, 0.12);
   border-radius: 5.419px;
 }
 
@@ -95,7 +92,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: #323130;
+  color: var(--text-primary);
   flex: none;
   order: 1;
   align-self: stretch;
@@ -231,7 +228,7 @@
   font-size: 10px;
   line-height: 14px;
   text-align: center;
-  color: #424242;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
@@ -296,7 +293,7 @@
   font-size: 10px;
   line-height: 14px;
   text-align: center;
-  color: #424242;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
@@ -384,7 +381,6 @@ sup {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #f8f9fa;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 :global(.dark-mode) .inlineCitationPanel {

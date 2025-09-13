@@ -4,28 +4,18 @@
   position: relative;
   margin: 0 auto;
   background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   border: 1px solid #e2e8f0;
   overflow: hidden;
   width: 100%;
-  max-width: 800px;
-  transition: box-shadow 0.2s ease;
-}
-
-.questionInputContainer:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  transition: all 0.2s ease;
 }
 
 /* Dark mode styling for question input container */
 :global(.dark-mode) .questionInputContainer {
   background: #2d3748;
   border-color: #4a5568;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-:global(.dark-mode) .questionInputContainer:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .questionInputTextArea {
@@ -40,7 +30,7 @@
   resize: vertical;
   transition: all 0.2s ease;
   background: transparent;
-  color: #1f2937;
+  color: var(--text-primary);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -48,6 +38,24 @@
 :global(.dark-mode) .questionInputTextArea {
   background: transparent;
   color: #ffffff;
+}
+
+/* Placeholder text styling for light mode */
+.questionInputTextArea::placeholder,
+.questionInputTextArea :global(.ms-TextField-field)::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+/* Placeholder text styling for dark mode */
+:global(.dark-mode) .questionInputTextArea::placeholder,
+:global(.dark-mode) .questionInputTextArea :global(.ms-TextField-field)::placeholder,
+:global(.dark-mode) .questionInputTextArea textarea::placeholder,
+:global(.dark-mode) .questionInputTextArea textarea::-webkit-input-placeholder,
+:global(.dark-mode) .questionInputTextArea textarea::-moz-placeholder,
+:global(.dark-mode) .questionInputTextArea textarea:-ms-input-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7 !important;
 }
 
 /* Force FluentUI TextField to respect our width */
@@ -85,7 +93,6 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -93,7 +100,6 @@
 .questionInputSendButton:hover {
   transform: translateY(-1px);
   background: #5855eb;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .questionInputSendButton:focus {
@@ -103,10 +109,6 @@
 
 .questionInputSendButton:active {
   transform: translateY(1px);
-  box-shadow:
-    0 2px 8px rgba(102, 126, 234, 0.3),
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .questionInputSendButtonDisabled {
@@ -119,11 +121,8 @@
   align-items: center;
   justify-content: center;
   cursor: not-allowed;
-  color: #6b7280;
+  color: var(--text-muted);
   transition: all 0.2s ease;
-  box-shadow:
-    0 2px 8px rgba(107, 114, 128, 0.2),
-    inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .questionInputBottomBorder {
@@ -132,7 +131,7 @@
   height: 4px;
   left: 0%;
   bottom: 0%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1a1761;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
@@ -142,13 +141,13 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: rgba(26, 23, 97, 0.1);
+  border: 1px solid rgba(26, 23, 97, 0.2);
   transition: all 0.3s ease;
 }
 
 .questionInputOptionsButton:hover {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(26, 23, 97, 0.2);
   transform: scale(1.05);
 }
 

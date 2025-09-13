@@ -1,28 +1,55 @@
 /* Global overrides for QuestionInput FluentUI components */
 /* This file uses regular CSS (not CSS Modules) to override FluentUI */
 
+/* Dark mode placeholder text overrides for FluentUI TextField */
+.dark-mode .ms-TextField-field::placeholder,
+.dark-mode .ms-TextField-field::-webkit-input-placeholder,
+.dark-mode .ms-TextField-field::-moz-placeholder,
+.dark-mode .ms-TextField-field:-ms-input-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+}
+
+/* More specific overrides for textarea placeholder in dark mode */
+.dark-mode textarea.ms-TextField-field::placeholder,
+.dark-mode textarea.ms-TextField-field::-webkit-input-placeholder,
+.dark-mode textarea.ms-TextField-field::-moz-placeholder,
+.dark-mode textarea.ms-TextField-field:-ms-input-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+}
+
+/* Most specific override targeting the QuestionInput component directly */
+.dark-mode div[class*='questionInputTextArea'] textarea::placeholder,
+.dark-mode div[class*='questionInputTextArea'] textarea::-webkit-input-placeholder,
+.dark-mode div[class*='questionInputTextArea'] textarea::-moz-placeholder,
+.dark-mode div[class*='questionInputTextArea'] textarea:-ms-input-placeholder {
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+}
+
 /* Target the specific QuestionInput container and its children */
 .ms-Stack[class*='questionInputContainer'] {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 600px !important;
   margin: 0 auto !important;
 }
 
 /* Force all FluentUI TextField components inside QuestionInput to fill available space */
 .ms-Stack[class*='questionInputContainer'] .ms-TextField-wrapper {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 100% !important;
   flex: 1 !important;
 }
 
 .ms-Stack[class*='questionInputContainer'] .ms-TextField-fieldGroup {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 100% !important;
 }
 
 .ms-Stack[class*='questionInputContainer'] .ms-TextField-field {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 100% !important;
   min-height: 120px !important;
 }
 
@@ -31,6 +58,6 @@ div[class*='questionInputContainer'] div[class*='questionInputTextArea'] .ms-Tex
 div[class*='questionInputContainer'] div[class*='questionInputTextArea'] .ms-TextField-fieldGroup,
 div[class*='questionInputContainer'] div[class*='questionInputTextArea'] .ms-TextField-field {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 100% !important;
   min-height: 120px !important;
 }
