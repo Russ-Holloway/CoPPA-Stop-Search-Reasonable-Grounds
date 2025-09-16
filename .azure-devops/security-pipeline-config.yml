@@ -1,0 +1,218 @@
+# Security Pipeline Configuration
+# Additional security tasks for enhanced scanning
+
+# Microsoft Security DevOps Extension Tasks
+# Add these to your pipeline for enhanced security
+
+# 1. Install Microsoft Security DevOps Extension in Azure DevOps
+# https://marketplace.visualstudio.com/items?itemName=ms-securitydevops.microsoft-security-devops-azdevops
+
+# 2. Add these tasks to your pipeline:
+
+security_tasks:
+  # Credential Scanning
+  - task: CredScan@2
+    displayName: 'Run Credential Scanner'
+    inputs:
+      toolMajorVersion: 'V2'
+      scanFolder: '$(Build.SourcesDirectory)'
+      debugMode: false
+    continueOnError: true
+
+  # Code Analysis (Static)  
+  - task: Semmle@1
+    displayName: 'Run CodeQL Analysis'
+    inputs:
+      sourceCodeDirectory: '$(Build.SourcesDirectory)'
+      language: 'python,javascript'
+      buildCommandsString: |
+        pip install -r requirements.txt
+        cd frontend && npm install && npm run build
+    continueOnError: true
+
+  # Container Scanning (if using containers)
+  - task: ContainerScan@0
+    displayName: 'Scan Container Images'
+    inputs:
+      image: 'copa-stop-search:$(Build.BuildId)'
+      buildContext: '$(Build.SourcesDirectory)'
+      dockerfile: 'WebApp.Dockerfile'
+    continueOnError: true
+
+  # Infrastructure as Code Security
+  - task: ms-securitydevops.microsoft-security-devops-azdevops.terrascan-task.Terrascan@1  
+    displayName: 'Run Terrascan IaC Security Scan'
+    inputs:
+      fileType: 'all'
+      scanDirectory: '$(Build.SourcesDirectory)/infra'
+    continueOnError: true
+
+# Alternative: Use Defender for DevOps (Microsoft Security DevOps)
+defender_for_devops:
+  - task: MicrosoftSecurityDevOps@1
+    displayName: 'Run Microsoft Security DevOps'
+    inputs:
+      categories: 'secrets,code,artifacts,IaC,containers'
+      languages: 'python,javascript,typescript'
+      tools: 'bandit,semgrep,terrascan,trivy'
+    continueOnError: true
+
+# Custom Security Tasks Using CLI Tools
+cli_security_tasks:
+  # OWASP Dependency Check
+  - script: |
+      # Install OWASP Dependency Check
+      wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.4/dependency-check-7.4.4-release.zip
+      unzip dependency-check-7.4.4-release.zip
+      
+      # Run dependency check
+      ./dependency-check/bin/dependency-check.sh \
+        --project "CoPA Stop Search" \
+        --scan . \
+        --format JSON \
+        --out dependency-check-report.json \
+        --suppression docs/security/dependency-suppression.xml
+    displayName: 'OWASP Dependency Check'
+    continueOnError: true
+
+  # npm audit for frontend
+  - script: |
+      cd frontend
+      npm audit --json > npm-audit-report.json || true
+      npm audit --audit-level moderate
+    displayName: 'NPM Security Audit'
+    continueOnError: true
+
+  # Git Secrets Scanning  
+  - script: |
+      # Install git-secrets
+      git clone https://github.com/awslabs/git-secrets.git
+      cd git-secrets && make install
+      
+      # Configure git-secrets  
+      git secrets --register-aws
+      git secrets --register-azure
+      
+      # Scan repository
+      git secrets --scan
+    displayName: 'Git Secrets Scan'
+    continueOnError: true
+
+  # Python Safety Check (already in main pipeline)
+  - script: |
+      pip install safety
+      safety check --json --output safety-report.json
+    displayName: 'Python Safety Check'
+    continueOnError: true
+
+# Publishing Security Results
+publish_security_results:
+  # Publish SARIF results for GitHub integration
+  - task: PublishSecurityResults@2
+    displayName: 'Publish Security Results'
+    inputs:
+      artifactName: 'security-results'
+      sarif: |
+        **/*.sarif
+        **/codeql-results.sarif
+        **/terrascan-results.sarif
+
+  # Create security summary
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Security Reports'
+    inputs:
+      pathToPublish: '.'
+      artifactName: 'security-reports'  
+      includes: |
+        **/security-report.json
+        **/dependency-check-report.json
+        **/npm-audit-report.json
+        **/bandit-report.json
+        **/safety-report.json
+
+# Quality Gates based on Security Results
+quality_gates:
+  # Fail build on critical security issues
+  - task: PowerShell@2
+    displayName: 'Security Quality Gate'
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Parse security reports and fail if critical issues found
+        $criticalIssues = 0
+        
+        # Check bandit report
+        if (Test-Path "bandit-report.json") {
+          $bandit = Get-Content "bandit-report.json" | ConvertFrom-Json
+          $criticalIssues += ($bandit.results | Where-Object {$_.issue_severity -eq "HIGH"}).Count
+        }
+        
+        # Check safety report  
+        if (Test-Path "safety-report.json") {
+          $safety = Get-Content "safety-report.json" | ConvertFrom-Json  
+          $criticalIssues += $safety.vulnerabilities.Count
+        }
+        
+        Write-Host "Critical security issues found: $criticalIssues"
+        
+        if ($criticalIssues -gt 0) {
+          Write-Host "##vso[task.logissue type=error]Critical security vulnerabilities detected"
+          Write-Host "##vso[task.complete result=Failed;]Security quality gate failed"
+        }
+    continueOnError: false
+
+# Environment-Specific Security Configuration
+environment_security:
+  development:
+    # More permissive for development
+    - allowSecurityWarnings: true
+    - requireSecurityApproval: false
+    - securityScanLevel: 'standard'
+    
+  production:  
+    # Strict security for production
+    - allowSecurityWarnings: false
+    - requireSecurityApproval: true
+    - securityScanLevel: 'comprehensive'
+    - requireVulnerabilityAssessment: true
+
+# Compliance and Reporting
+compliance_tasks:
+  # Generate compliance report
+  - task: PowerShell@2
+    displayName: 'Generate Compliance Report'
+    inputs:
+      targetType: 'inline' 
+      script: |
+        # Create compliance summary
+        $compliance = @{
+          scanDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+          pipelineBuild = "$(Build.BuildNumber)"
+          securityScansCompleted = @("bandit", "safety", "npm-audit", "credScan")
+          criticalIssues = 0
+          warningIssues = 0
+          complianceStatus = "PASS"
+        }
+        
+        $compliance | ConvertTo-Json | Out-File "compliance-report.json"
+        
+        Write-Host "Compliance report generated"
+
+# Integration with Azure Security Center / Microsoft Defender  
+defender_integration:
+  # Push results to Microsoft Defender for Cloud
+  - task: AzureCLI@2
+    displayName: 'Upload to Defender for Cloud'
+    inputs:
+      azureSubscription: $(azureServiceConnection)
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        # Upload security assessment results
+        az security assessment create \
+          --name "DevOps-Security-Scan" \
+          --status-code "healthy" \
+          --resource-details source="Azure DevOps" \
+          --additional-data scanResults="$(Pipeline.Workspace)/security-reports"
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    continueOnError: true

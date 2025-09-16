@@ -1,0 +1,159 @@
+# BTP CoPA Stop & Search Production Deployment Pipeline
+# This pipeline deploys the comprehensive Bicep template to BTP production environment
+
+trigger: none # Manual trigger only for production deployments
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: copa-btp-production
+
+stages:
+- stage: Validate
+  displayName: 'Validate Deployment'
+  jobs:
+  - job: ValidateTemplate
+    displayName: 'Validate Bicep Template'
+    steps:
+    - checkout: self
+    
+    - task: AzureCLI@2
+      displayName: 'Validate BTP Deployment Template'
+      inputs:
+        azureSubscription: 'BTP-Production' # Update with your service connection name
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "🔍 Validating BTP deployment template..."
+          
+          # Create resource group if it doesn't exist
+          az group create \
+            --name "$(AZURE_RESOURCE_GROUP)" \
+            --location "$(AZURE_LOCATION)" \
+            --tags "Environment=Production" "Force=BTP" "Application=CoPA-Stop-Search"
+          
+          # Validate the Bicep template
+          az deployment group validate \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --template-file "infrastructure/deployment-btp.bicep" \
+            --parameters "infrastructure/deployment-btp.bicepparam" \
+            --verbose
+          
+          echo "✅ Template validation completed successfully!"
+
+- stage: Deploy
+  displayName: 'Deploy to BTP Production'
+  dependsOn: Validate
+  condition: succeeded()
+  jobs:
+  - deployment: DeployBTP
+    displayName: 'Deploy BTP Infrastructure'
+    environment: 'BTP-Production' # This will require manual approval
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy BTP Infrastructure'
+            inputs:
+              azureSubscription: 'BTP-Production'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "🚀 Starting BTP production deployment..."
+                echo "📋 Deployment Details:"
+                echo "   Resource Group: $(AZURE_RESOURCE_GROUP)"
+                echo "   Location: $(AZURE_LOCATION)"
+                echo "   Force Code: $(FORCE_CODE)"
+                
+                # Deploy the infrastructure
+                az deployment group create \
+                  --resource-group "$(AZURE_RESOURCE_GROUP)" \
+                  --template-file "infrastructure/deployment-btp.bicep" \
+                  --parameters "infrastructure/deployment-btp.bicepparam" \
+                  --verbose \
+                  --output table
+                
+                echo "✅ BTP infrastructure deployment completed!"
+                
+                # Get the web app URL
+                webAppUrl=$(az webapp show \
+                  --name "$(AZURE_WEBAPP_NAME)" \
+                  --resource-group "$(AZURE_RESOURCE_GROUP)" \
+                  --query "defaultHostName" \
+                  --output tsv)
+                
+                echo "🌐 Application URL: https://$webAppUrl"
+                
+                # Test the application endpoint
+                echo "🧪 Testing application health..."
+                curl -s -o /dev/null -w "%{http_code}" "https://$webAppUrl" || echo "⚠️ Application may still be starting up"
+
+- stage: PostDeployment
+  displayName: 'Post-Deployment Verification'
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+  - job: VerifyDeployment
+    displayName: 'Verify BTP Deployment'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Verify Resources and Configuration'
+      inputs:
+        azureSubscription: 'BTP-Production'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "🔍 Verifying BTP deployment..."
+          
+          # List all created resources
+          echo "📋 Created Resources:"
+          az resource list \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --output table
+          
+          # Check web app status
+          echo "🌐 Web App Status:"
+          az webapp show \
+            --name "$(AZURE_WEBAPP_NAME)" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, state:state, defaultHostName:defaultHostName}" \
+            --output table
+          
+          # Check Application Insights
+          echo "📊 Application Insights:"
+          az monitor app-insights component show \
+            --app "appi-btp-uks-p-copa-stop-search" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, provisioningState:provisioningState}" \
+            --output table
+          
+          # Check Cosmos DB
+          echo "🗄️ Cosmos DB Status:"
+          az cosmosdb show \
+            --name "db-app-btp-copa" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, provisioningState:provisioningState}" \
+            --output table
+          
+          # Check Azure Search
+          echo "🔍 Azure Search Status:"
+          az search service show \
+            --name "srch-btp-uks-p-copa-stop-search" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, status:status}" \
+            --output table
+          
+          # Check Azure OpenAI
+          echo "🤖 Azure OpenAI Status:"
+          az cognitiveservices account show \
+            --name "cog-btp-uks-p-copa-stop-search" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, provisioningState:provisioningState}" \
+            --output table
+          
+          echo "✅ BTP deployment verification completed!"
+          echo "🎉 CoPA Stop & Search is now ready for BTP production use!"
