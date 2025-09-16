@@ -63,6 +63,18 @@ var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
+// Extract force code and environment from resource group name for custom naming convention
+// Expected pattern: rg-{force}-uks-{env}-copa-stop-search
+var rgParts = !empty(resourceGroupName) ? split(resourceGroupName, '-') : split('rg-${environmentName}-uks-d-copa-stop-search', '-')
+var forceCode = length(rgParts) >= 2 ? rgParts[1] : 'def'
+var region = length(rgParts) >= 3 ? rgParts[2] : 'uks'
+var envCode = length(rgParts) >= 4 ? rgParts[3] : 'd'
+var appName = length(rgParts) >= 5 ? rgParts[4] : 'copa'
+var workload = length(rgParts) >= 6 ? rgParts[5] : 'stop-search'
+
+// Custom naming pattern: {type}-{force}-{region}-{env}-{app}-{workload}
+var namingPrefix = '${forceCode}-${region}-${envCode}-${appName}-${workload}'
+
 // Organize resources in a resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
@@ -84,7 +96,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
   scope: resourceGroup
   params: {
-    name: !empty(appServicePlanName) ? appServicePlanName : '${abbrs.webServerFarms}${resourceToken}'
+    name: !empty(appServicePlanName) ? appServicePlanName : 'asp-${namingPrefix}'
     location: location
     tags: tags
     sku: {
@@ -96,7 +108,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 }
 
 // The application frontend
-var appServiceName = !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
+var appServiceName = !empty(backendServiceName) ? backendServiceName : 'app-${namingPrefix}'
 var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().tenantId}/v2.0'
 module backend 'core/host/appservice.bicep' = {
   name: 'web'
@@ -146,7 +158,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   name: 'openai'
   scope: openAiResourceGroup
   params: {
-    name: !empty(openAiResourceName) ? openAiResourceName : '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+    name: !empty(openAiResourceName) ? openAiResourceName : 'cog-${namingPrefix}'
     location: openAiResourceGroupLocation
     tags: tags
     sku: {
@@ -179,7 +191,7 @@ module searchService 'core/search/search-services.bicep' = {
   name: 'search-service'
   scope: searchServiceResourceGroup
   params: {
-    name: !empty(searchServiceName) ? searchServiceName : 'gptkb-${resourceToken}'
+    name: !empty(searchServiceName) ? searchServiceName : 'srch-${namingPrefix}'
     location: searchServiceResourceGroupLocation
     tags: tags
     authOptions: {
@@ -199,7 +211,7 @@ module cosmos 'db.bicep' = {
   name: 'cosmos'
   scope: resourceGroup
   params: {
-    accountName: !empty(cosmosAccountName) ? cosmosAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
+    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'db-app-${forceCode}-copa'
     location: resourceGroup.location
     tags: tags
     principalIds: [principalId, backend.outputs.identityPrincipalId]
@@ -275,6 +287,7 @@ module docPrepResources 'docprep.bicep' = {
   params: {
     location: location
     resourceToken: resourceToken
+    namingPrefix: namingPrefix
     tags: tags
     principalId: principalId
     resourceGroupName: resourceGroup.name

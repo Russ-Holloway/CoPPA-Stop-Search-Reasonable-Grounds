@@ -1,0 +1,362 @@
+# Azure DevOps Pipeline for CoPA Stop & Search
+# Secure deployment with Infrastructure as Code using Bicep templates
+
+trigger:
+  branches:
+    include:
+    - main
+    - Dev-Ops-Deployment
+  paths:
+    exclude:
+    - '**/*.md'
+    - 'docs/**'
+
+variables:
+  # Global variables
+  - name: azureServiceConnection
+    value: 'copa-azure-service-connection'
+  - name: vmImageName
+    value: 'ubuntu-latest'
+  - name: bicepTemplatePath
+    value: 'infra/main-pds-converted.bicep'
+  - name: bicepParametersPath
+    value: 'infra/main-pds-converted.bicepparam'
+  
+  # Build variables
+  - name: buildConfiguration
+    value: 'Release'
+  - name: pythonVersion
+    value: '3.11'
+  - name: nodeVersion
+    value: '18'
+
+stages:
+- stage: Validate
+  displayName: 'Validate Infrastructure and Code'
+  jobs:
+  - job: ValidateInfrastructure
+    displayName: 'Validate Bicep Templates'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: AzureCLI@2
+      displayName: 'Install Bicep CLI'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az bicep install
+          az bicep version
+    
+    - task: AzureCLI@2
+      displayName: 'Validate Bicep Template'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Validating Bicep template..."
+          az bicep build --file $(bicepTemplatePath)
+          
+          echo "Linting Bicep template..."
+          az bicep lint --file $(bicepTemplatePath)
+    
+    - task: AzureCLI@2
+      displayName: 'Security Scan - What-If Analysis'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Create a temporary resource group for what-if analysis
+          TEMP_RG="rg-temp-whatif-analysis-$(Build.BuildId)"
+          az group create --name $TEMP_RG --location uksouth
+          
+          echo "Running what-if analysis..."
+          az deployment group what-if \
+            --resource-group $TEMP_RG \
+            --template-file $(bicepTemplatePath) \
+            --parameters location=uksouth azureOpenAIModelName=gpt-4o azureOpenAIEmbeddingName=text-embedding-ada-002
+          
+          # Clean up temporary resource group
+          az group delete --name $TEMP_RG --yes --no-wait
+        
+  - job: ValidateApplication
+    displayName: 'Validate Application Code'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: UsePythonVersion@0
+      displayName: 'Set up Python $(pythonVersion)'
+      inputs:
+        versionSpec: '$(pythonVersion)'
+        
+    - task: NodeTool@0
+      displayName: 'Set up Node.js $(nodeVersion)'
+      inputs:
+        versionSpec: '$(nodeVersion)'
+        
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+        pip install flake8 black pylint safety bandit
+      displayName: 'Install Python dependencies'
+      
+    - script: |
+        cd frontend
+        npm install
+      displayName: 'Install Node.js dependencies'
+      
+    - script: |
+        echo "Running Python security scan with bandit..."
+        bandit -r . -f json -o bandit-report.json || true
+        
+        echo "Running Python dependency security check..."
+        safety check --json --output safety-report.json || true
+        
+        echo "Running Python linting..."
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        
+        echo "Running Python code formatting check..."
+        black --check --diff .
+      displayName: 'Security and Quality Checks'
+      continueOnError: true
+      
+    - script: |
+        cd frontend
+        echo "Running TypeScript build..."
+        npm run build
+        
+        echo "Running TypeScript linting..."
+        npm run lint || true
+      displayName: 'Frontend Build and Lint'
+      
+    - task: PublishTestResults@2
+      condition: always()
+      inputs:
+        testResultsFiles: '**/test-results.xml'
+        mergeTestResults: true
+      displayName: 'Publish Test Results'
+      
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Security Reports'
+      condition: always()
+      inputs:
+        pathToPublish: '.'
+        artifactName: 'security-reports'
+        includes: |
+          bandit-report.json
+          safety-report.json
+
+- stage: BuildAndPackage
+  displayName: 'Build and Package Application'
+  dependsOn: Validate
+  condition: succeeded()
+  jobs:
+  - job: BuildApplication
+    displayName: 'Build Application'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: UsePythonVersion@0
+      displayName: 'Set up Python $(pythonVersion)'
+      inputs:
+        versionSpec: '$(pythonVersion)'
+        
+    - task: NodeTool@0
+      displayName: 'Set up Node.js $(nodeVersion)'
+      inputs:
+        versionSpec: '$(nodeVersion)'
+        
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      displayName: 'Install Python dependencies'
+      
+    - script: |
+        cd frontend
+        npm install
+        npm run build
+      displayName: 'Build Frontend'
+      
+    - script: |
+        echo "Preparing deployment package..."
+        mkdir -p $(Build.ArtifactStagingDirectory)/app
+        
+        # Copy application files
+        cp -r *.py $(Build.ArtifactStagingDirectory)/app/ || true
+        cp -r backend/ $(Build.ArtifactStagingDirectory)/app/ || true
+        cp -r static/ $(Build.ArtifactStagingDirectory)/app/ || true
+        cp requirements.txt $(Build.ArtifactStagingDirectory)/app/
+        cp start.sh $(Build.ArtifactStagingDirectory)/app/
+        cp gunicorn.conf.py $(Build.ArtifactStagingDirectory)/app/ || true
+        cp WebApp.Dockerfile $(Build.ArtifactStagingDirectory)/app/ || true
+        
+        # Copy built frontend
+        if [ -d "frontend/dist" ]; then
+          cp -r frontend/dist/* $(Build.ArtifactStagingDirectory)/app/static/
+        fi
+        
+        echo "Application package prepared"
+        ls -la $(Build.ArtifactStagingDirectory)/app/
+      displayName: 'Package Application'
+      
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Application Artifact'
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)/app'
+        artifactName: 'copa-application'
+        
+  - job: PackageInfrastructure
+    displayName: 'Package Infrastructure'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - script: |
+        echo "Preparing infrastructure package..."
+        mkdir -p $(Build.ArtifactStagingDirectory)/infra
+        
+        # Copy Bicep templates
+        cp -r infra/ $(Build.ArtifactStagingDirectory)/
+        
+        # Copy createUIDefinition for portal deployments (backup option)
+        cp infrastructure/createUiDefinition.json $(Build.ArtifactStagingDirectory)/infra/ || true
+        
+        echo "Infrastructure package prepared"
+        ls -la $(Build.ArtifactStagingDirectory)/infra/
+      displayName: 'Package Infrastructure'
+      
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Infrastructure Artifact'
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)/infra'
+        artifactName: 'copa-infrastructure'
+
+- stage: DeployDevelopment
+  displayName: 'Deploy to Development'
+  dependsOn: BuildAndPackage
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/Dev-Ops-Deployment'))
+  variables:
+  - group: 'copa-dev-variables'
+  - name: environmentName
+    value: 'development'
+  - name: resourceGroupName
+    value: 'rg-dev-uksouth-copa-stop-search'
+  - name: azureLocation
+    value: 'uksouth'
+  jobs:
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy Infrastructure to Development'
+    environment: 'copa-development'
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+            
+          - download: current
+            artifact: 'copa-infrastructure'
+            
+          - download: current
+            artifact: 'copa-application'
+            
+          - task: AzureCLI@2
+            displayName: 'Create Resource Group'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az group create --name $(resourceGroupName) --location $(azureLocation)
+                
+          - task: AzureCLI@2
+            displayName: 'Deploy Infrastructure'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Deploying Bicep template..."
+                az deployment group create \
+                  --resource-group $(resourceGroupName) \
+                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main-pds-converted.bicep \
+                  --parameters \
+                    location=$(azureLocation) \
+                    azureOpenAIModelName=$(openAIModel) \
+                    azureOpenAIEmbeddingName=$(embeddingModel)
+                    
+          - task: AzureWebApp@1
+            displayName: 'Deploy Application'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              appType: 'webAppLinux'
+              appName: '$(webAppName)'
+              package: '$(Pipeline.Workspace)/copa-application'
+              runtimeStack: 'PYTHON|3.11'
+
+- stage: DeployProduction
+  displayName: 'Deploy to Production'
+  dependsOn: BuildAndPackage
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  variables:
+  - group: 'copa-prod-variables'
+  - name: environmentName
+    value: 'production'
+  jobs:
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy Infrastructure to Production'
+    environment: 'copa-production'
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+            
+          - download: current
+            artifact: 'copa-infrastructure'
+            
+          - download: current
+            artifact: 'copa-application'
+            
+          - task: AzureCLI@2
+            displayName: 'Deploy Infrastructure'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Deploying to production resource group: $(resourceGroupName)"
+                az deployment group create \
+                  --resource-group $(resourceGroupName) \
+                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main-pds-converted.bicep \
+                  --parameters \
+                    location=$(azureLocation) \
+                    azureOpenAIModelName=$(openAIModel) \
+                    azureOpenAIEmbeddingName=$(embeddingModel)
+                    
+          - task: AzureWebApp@1
+            displayName: 'Deploy Application'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              appType: 'webAppLinux'
+              appName: '$(webAppName)'
+              package: '$(Pipeline.Workspace)/copa-application'
+              runtimeStack: 'PYTHON|3.11'

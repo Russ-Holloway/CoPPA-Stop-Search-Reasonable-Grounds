@@ -1,6 +1,6 @@
 # CoPA (College of Policing Assistant) for Stop Search
 
-![Version](https://img.shields.io/badge/Version-2.0.0-blue)
+![Versio📋 **[DevOps Setup Guide](docs/DEVOPS-SETUP-GUIDE.md)** - Complete setup instructionsttps://img.shields.io/badge/Version-2.0.0-blue)
 ![Security Status](https://img.shields.io/badge/Security-Production%20Ready-brightgreen)
 ![Compliance](https://img.shields.io/badge/PDS%20Compliance-Ready-blue)
 ![Accessibility](https://img.shields.io/badge/WCAG%202.1%20AA-Compliant-green)
@@ -36,64 +36,33 @@
 
 ### PDS Compliant Deployment (For UK Police Forces)
 
-**🚔 For all 44 UK Police Forces:** Use our simplified PDS-compliant deployment. Just create a resource group following PDS naming (e.g., `rg-btp-prod-01`) and deploy - all resource names are generated automatically!
+**🚔 For all 44 UK Police Forces:** Secure DevOps deployment with PDS-compliant infrastructure and automated CI/CD pipelines.
 
 **✅ Compliance Features:**
 - **PDS Naming Standards:** Automatic compliance with Police Digital Service naming conventions
 - **WCAG 2.1 AA Accessibility:** Full accessibility compliance for inclusive access
 - **Security Standards:** Enterprise-grade security with Azure best practices
+- **DevOps Integration:** Secure, automated deployment through Azure DevOps pipelines
 
-[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2FcreateUiDefinition.json)
-
-**🎯 Simplified Deployment Process:**
-1. **Create Resource Group:** Use PDS naming like `rg-btp-prod-01`, `rg-met-prod-01`, etc.
-2. **Click Deploy:** All Azure resources are automatically created with PDS-compliant names
-3. **Choose OpenAI Models:** Select your preferred chat and embedding models
-4. **Deploy:** Infrastructure deployment completes automatically!
-5. **Deploy Code:** Upload your application code to the created App Service (manual step)
+**🎯 DevOps Deployment Process:**
+1. **Azure DevOps Setup:** Configure secure pipelines and service connections
+2. **Infrastructure as Code:** Deploy resources using Bicep templates
+3. **Automated CI/CD:** Automated build, test, and deployment pipelines
+4. **Security Scanning:** Built-in security scanning and compliance checks
 
 📋 **[PDS Deployment Guide](docs/PDS-DEPLOYMENT-GUIDE.md)** - Complete guide for police forces  
 📋 **[Azure Naming Guidelines](docs/azure-naming-guidelines.md)** - PDS naming conventions
 
-### Post-Deployment Setup
+### DevOps Setup
 
-After infrastructure deployment completes, you need to deploy your application code and configure authentication.
+This application is designed for deployment through Azure DevOps with secure CI/CD pipelines. The deployment process includes:
 
-#### Code Deployment (Required)
-The ARM template creates the Azure infrastructure but doesn't automatically deploy application code. You have several options:
+- **Infrastructure as Code:** Using Bicep templates for consistent, repeatable deployments
+- **Automated Builds:** Continuous integration with automated testing
+- **Secure Deployment:** Automated deployment with proper security scanning
+- **Configuration Management:** Environment-specific configuration through Azure DevOps variables
 
-**Option 1: GitHub Actions (Recommended)**
-```yaml
-# Set up GitHub Actions workflow for automated deployment
-- uses: azure/webapps-deploy@v2
-  with:
-    app-name: 'your-app-name'
-    package: '.'
-```
-
-**Option 2: Azure CLI**
-```bash
-# Deploy using Azure CLI
-az webapp deployment source config-zip \
-  --resource-group your-resource-group \
-  --name your-app-name \
-  --src app.zip
-```
-
-**Option 3: Visual Studio Code**
-- Install Azure App Service extension
-- Right-click on your app folder and select "Deploy to Web App"
-
-**📖 Full Guide:** [Code Deployment Guide](docs/code-deployment-guide.md)
-
-#### Authentication Setup (Required)
-**🚀 New: Post-Deployment Configuration**  
-Authentication is now configured *after* deployment, so you no longer need client secrets during the initial deployment!
-
-**Automated Setup (Recommended):**
-```bash
-# Linux/macOS
-./configure-auth.sh
+� **[DevOps Setup Guide](docs/DEVOPS-SETUP-GUIDE.md)** - Complete setup instructions
 
 # Windows PowerShell  
 .\configure-auth.ps1

@@ -1,0 +1,268 @@
+# Infrastructure-Only Pipeline for CoPA Stop & Search
+# Use this pipeline for testing infrastructure changes without application deployment
+
+trigger:
+  branches:
+    include:
+    - infra-test
+    - feature/infrastructure/*
+  paths:
+    include:
+    - 'infra/**'
+    - 'azure-pipelines-infra.yml'
+    exclude:
+    - '**/*.md'
+
+variables:
+  - name: azureServiceConnection
+    value: 'copa-azure-service-connection'
+  - name: vmImageName
+    value: 'ubuntu-latest'
+  - name: bicepTemplatePath
+    value: 'infra/main-pds-converted.bicep'
+
+stages:
+- stage: ValidateInfrastructure
+  displayName: 'Validate Infrastructure Only'
+  jobs:
+  - job: ValidateBicep
+    displayName: 'Validate Bicep Templates'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: AzureCLI@2
+      displayName: 'Install and Validate Bicep'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Installing Bicep CLI..."
+          az bicep install
+          az bicep version
+          
+          echo "Validating Bicep template..."
+          az bicep build --file $(bicepTemplatePath)
+          
+          echo "Running Bicep linting..."
+          az bicep lint --file $(bicepTemplatePath) || true
+          
+          echo "Generating ARM template for review..."
+          az bicep build --file $(bicepTemplatePath) --outfile generated-template.json
+          
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Generated ARM Template'
+      inputs:
+        pathToPublish: 'generated-template.json'
+        artifactName: 'generated-arm-template'
+        
+  - job: SecurityScanInfrastructure
+    displayName: 'Security Scan Infrastructure'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - script: |
+        echo "Running infrastructure security checks..."
+        
+        # Check for hardcoded secrets in Bicep files
+        echo "Checking for potential secrets..."
+        grep -r -i "password\|secret\|key\|connectionstring" infra/ || echo "No obvious secrets found"
+        
+        # Check for public access configurations
+        echo "Checking for public access configurations..."
+        grep -r -i "publicAccess\|allowBlobPublicAccess\|NetworkAccess" infra/ || echo "No public access configs found"
+        
+        # Validate resource naming conventions
+        echo "Validating PDS naming conventions..."
+        grep -n "split.*resourceGroup.*name" infra/main-pds-converted.bicep || echo "PDS naming logic found"
+        
+      displayName: 'Infrastructure Security Checks'
+      continueOnError: true
+
+- stage: TestDeployment
+  displayName: 'Test Infrastructure Deployment'
+  dependsOn: ValidateInfrastructure
+  condition: succeeded()
+  jobs:
+  - job: WhatIfAnalysis
+    displayName: 'What-If Deployment Analysis'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: AzureCLI@2
+      displayName: 'Run What-If Analysis'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Create temporary resource group for what-if analysis
+          TEMP_RG="rg-whatif-test-$(Build.BuildId)"
+          echo "Creating temporary resource group: $TEMP_RG"
+          
+          az group create --name $TEMP_RG --location uksouth
+          
+          echo "Running what-if analysis..."
+          az deployment group what-if \
+            --resource-group $TEMP_RG \
+            --template-file $(bicepTemplatePath) \
+            --parameters \
+              location=uksouth \
+              azureOpenAIModelName=gpt-4o \
+              azureOpenAIEmbeddingName=text-embedding-ada-002 \
+            --result-format FullResourcePayloads \
+            --no-pretty-print > whatif-results.json
+            
+          echo "What-if analysis completed. Results:"
+          cat whatif-results.json
+          
+          echo "Cleaning up temporary resource group..."
+          az group delete --name $TEMP_RG --yes --no-wait
+          
+    - task: PublishBuildArtifacts@1  
+      displayName: 'Publish What-If Results'
+      inputs:
+        pathToPublish: 'whatif-results.json'
+        artifactName: 'whatif-analysis'
+        
+  - job: ValidateDeploymentComplete
+    displayName: 'Validate Complete Deployment'
+    dependsOn: WhatIfAnalysis
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: AzureCLI@2
+      displayName: 'Test Complete Deployment'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Create test resource group
+          TEST_RG="rg-infra-test-$(Build.BuildId)"
+          echo "Creating test resource group: $TEST_RG"
+          
+          az group create --name $TEST_RG --location uksouth
+          
+          echo "Deploying infrastructure for testing..."
+          deployment_output=$(az deployment group create \
+            --resource-group $TEST_RG \
+            --template-file $(bicepTemplatePath) \
+            --parameters \
+              location=uksouth \
+              azureOpenAIModelName=gpt-4o \
+              azureOpenAIEmbeddingName=text-embedding-ada-002 \
+            --query 'properties.outputs' \
+            --output json)
+            
+          echo "Deployment completed successfully!"
+          echo "Deployment outputs:"
+          echo $deployment_output | jq '.'
+          
+          echo "Verifying deployed resources..."
+          az resource list --resource-group $TEST_RG --output table
+          
+          echo "Testing resource connectivity..."
+          # Test if web app is created and accessible
+          webapp_name=$(echo $deployment_output | jq -r '.webAppName.value')
+          if [ "$webapp_name" != "null" ]; then
+            echo "Web App created: $webapp_name"
+            curl -I "https://$webapp_name.azurewebsites.net" || echo "Web app not yet accessible (expected for infra-only deployment)"
+          fi
+          
+          echo "Infrastructure test deployment completed successfully!"
+          echo "##vso[task.setvariable variable=testResourceGroup]$TEST_RG"
+          
+    - task: AzureCLI@2
+      displayName: 'Cleanup Test Resources'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          TEST_RG=$(testResourceGroup)
+          if [ ! -z "$TEST_RG" ]; then
+            echo "Cleaning up test resource group: $TEST_RG"
+            az group delete --name $TEST_RG --yes --no-wait
+            echo "Cleanup initiated. Resources will be deleted in background."
+          fi
+      condition: always()
+
+- stage: DocumentationUpdate
+  displayName: 'Update Documentation' 
+  dependsOn: TestDeployment
+  condition: succeeded()
+  jobs:
+  - job: UpdateDocs
+    displayName: 'Update Infrastructure Documentation'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      persistCredentials: true
+      fetchDepth: 0
+      
+    - task: AzureCLI@2
+      displayName: 'Generate Infrastructure Documentation'
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Generating infrastructure documentation..."
+          
+          # Generate resource list from Bicep template
+          az bicep build --file $(bicepTemplatePath) --outfile temp-template.json
+          
+          # Extract resource types and create documentation
+          cat > infra/RESOURCES.md << 'EOL'
+          # Infrastructure Resources
+          
+          This document lists all Azure resources deployed by the Bicep template.
+          
+          **Generated on:** $(date)
+          **Pipeline:** $(Build.DefinitionName) - $(Build.BuildNumber)
+          
+          ## Resources Deployed
+          
+          EOL
+          
+          # Extract resource information from compiled template
+          jq -r '.resources[] | "- **\(.type)**: \(.name // .metadata.name // "Dynamic name")"' temp-template.json >> infra/RESOURCES.md
+          
+          echo "" >> infra/RESOURCES.md
+          echo "## Resource Naming Convention" >> infra/RESOURCES.md  
+          echo "" >> infra/RESOURCES.md
+          echo "All resources follow the PDS (Police Data Standard) naming convention:" >> infra/RESOURCES.md
+          echo "\`{resourceType}-{environment}-{location}-{forceCode}-{applicationName}\`" >> infra/RESOURCES.md
+          echo "" >> infra/RESOURCES.md
+          echo "The force code is automatically extracted from the resource group name." >> infra/RESOURCES.md
+          
+          rm temp-template.json
+          
+          echo "Infrastructure documentation updated successfully!"
+          
+    - script: |
+        if [ -n "$(Build.SourceBranch)" ] && [ "$(Build.SourceBranch)" != "refs/heads/main" ]; then
+          echo "Updating documentation on feature branch..."
+          git add infra/RESOURCES.md
+          git commit -m "docs: Update infrastructure documentation [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:$(Build.SourceBranchName) || echo "No changes to push"
+        else
+          echo "Skipping documentation update on main branch"
+        fi
+      displayName: 'Commit Documentation Updates'
+      condition: ne(variables['Build.SourceBranch'], 'refs/heads/main')

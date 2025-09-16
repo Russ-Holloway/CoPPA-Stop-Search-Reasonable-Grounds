@@ -5,6 +5,7 @@ param location string
 param tags object = {}
 param principalId string
 param resourceToken string
+param namingPrefix string = ''
 
 param formRecognizerServiceName string = ''
 param formRecognizerResourceGroupName string = ''
@@ -25,7 +26,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
   name: 'formrecognizer'
   scope: formRecognizerResourceGroup
   params: {
-    name: !empty(formRecognizerServiceName) ? formRecognizerServiceName : '${abbrs.cognitiveServicesFormRecognizer}${resourceToken}'
+    name: !empty(formRecognizerServiceName) ? formRecognizerServiceName : !empty(namingPrefix) ? 'doc-${namingPrefix}' : '${abbrs.cognitiveServicesFormRecognizer}${resourceToken}'
     kind: 'FormRecognizer'
     location: formRecognizerResourceGroupLocation
     tags: tags
