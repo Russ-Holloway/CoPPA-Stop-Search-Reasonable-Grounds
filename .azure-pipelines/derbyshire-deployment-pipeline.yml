@@ -1,0 +1,159 @@
+# Derbyshire CoPA Stop & Search Production Deployment Pipeline
+# This pipeline deploys the comprehensive Bicep template to Derbyshire production environment
+
+trigger: none # Manual trigger only for production deployments
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: copa-derbyshire-production
+
+stages:
+- stage: Validate
+  displayName: 'Validate Deployment'
+  jobs:
+  - job: ValidateTemplate
+    displayName: 'Validate Bicep Template'
+    steps:
+    - checkout: self
+    
+    - task: AzureCLI@2
+      displayName: 'Validate Derbyshire Deployment Template'
+      inputs:
+        azureSubscription: 'Derbyshire-Production' # Update with Derbyshire service connection name
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "🔍 Validating Derbyshire deployment template..."
+          
+          # Create resource group if it doesn't exist
+          az group create \
+            --name "$(AZURE_RESOURCE_GROUP)" \
+            --location "$(AZURE_LOCATION)" \
+            --tags "Environment=Production" "Force=Derbyshire" "Application=CoPA-Stop-Search"
+          
+          # Validate the Bicep template
+          az deployment group validate \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --template-file "infrastructure/deployment-btp.bicep" \
+            --parameters "infrastructure/deployment-btp.bicepparam" \
+            --verbose
+          
+          echo "✅ Template validation completed successfully!"
+
+- stage: Deploy
+  displayName: 'Deploy to Derbyshire Production'
+  dependsOn: Validate
+  condition: succeeded()
+  jobs:
+  - deployment: DeployDerbyshire
+    displayName: 'Deploy Derbyshire Infrastructure'
+    environment: 'Derbyshire-Production' # This will require manual approval
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Derbyshire Infrastructure'
+            inputs:
+              azureSubscription: 'Derbyshire-Production'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "🚀 Starting Derbyshire production deployment..."
+                echo "📋 Deployment Details:"
+                echo "   Resource Group: $(AZURE_RESOURCE_GROUP)"
+                echo "   Location: $(AZURE_LOCATION)"
+                echo "   Force Code: $(FORCE_CODE)"
+                
+                # Deploy the infrastructure
+                az deployment group create \
+                  --resource-group "$(AZURE_RESOURCE_GROUP)" \
+                  --template-file "infrastructure/deployment-btp.bicep" \
+                  --parameters "infrastructure/deployment-btp.bicepparam" \
+                  --verbose \
+                  --output table
+                
+                echo "✅ Derbyshire infrastructure deployment completed!"
+                
+                # Get the web app URL
+                webAppUrl=$(az webapp show \
+                  --name "$(AZURE_WEBAPP_NAME)" \
+                  --resource-group "$(AZURE_RESOURCE_GROUP)" \
+                  --query "defaultHostName" \
+                  --output tsv)
+                
+                echo "🌐 Application URL: https://$webAppUrl"
+                
+                # Test the application endpoint
+                echo "🧪 Testing application health..."
+                curl -s -o /dev/null -w "%{http_code}" "https://$webAppUrl" || echo "⚠️ Application may still be starting up"
+
+- stage: PostDeployment
+  displayName: 'Post-Deployment Verification'
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+  - job: VerifyDeployment
+    displayName: 'Verify Derbyshire Deployment'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Verify Resources and Configuration'
+      inputs:
+        azureSubscription: 'Derbyshire-Production'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "🔍 Verifying Derbyshire deployment..."
+          
+          # List all created resources
+          echo "📋 Created Resources:"
+          az resource list \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --output table
+          
+          # Check web app status
+          echo "🌐 Web App Status:"
+          az webapp show \
+            --name "$(AZURE_WEBAPP_NAME)" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, state:state, defaultHostName:defaultHostName}" \
+            --output table
+          
+          # Check Application Insights
+          echo "📊 Application Insights:"
+          az monitor app-insights component show \
+            --app "appi-derbyshire-uks-p-copa-stop-search" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, provisioningState:provisioningState}" \
+            --output table
+          
+          # Check Cosmos DB
+          echo "🗄️ Cosmos DB Status:"
+          az cosmosdb show \
+            --name "db-app-derbyshire-copa" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, provisioningState:provisioningState}" \
+            --output table
+          
+          # Check Azure Search
+          echo "🔍 Azure Search Status:"
+          az search service show \
+            --name "srch-derbyshire-uks-p-copa-stop-search" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, status:status}" \
+            --output table
+          
+          # Check Azure OpenAI
+          echo "🤖 Azure OpenAI Status:"
+          az cognitiveservices account show \
+            --name "cog-derbyshire-uks-p-copa-stop-search" \
+            --resource-group "$(AZURE_RESOURCE_GROUP)" \
+            --query "{name:name, provisioningState:provisioningState}" \
+            --output table
+          
+          echo "✅ Derbyshire deployment verification completed!"
+          echo "🎉 CoPA Stop & Search is now ready for Derbyshire production use!"
