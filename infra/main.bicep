@@ -406,7 +406,7 @@ module cosmos 'db.bicep' = {
   name: 'cosmos'
   scope: resourceGroup
   params: {
-    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'cosmos-${btpNamingPrefix}-${instanceNumber}'
+    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'db-${btpNamingPrefix}-${instanceNumber}'
     location: resourceGroup.location
     tags: tags
     principalIds: [principalId, backend.outputs.identityPrincipalId]
@@ -474,7 +474,7 @@ module cosmosPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enableP
   name: 'cosmos-private-endpoint'
   scope: resourceGroup
   params: {
-    name: 'pe-cosmos-${btpNamingPrefix}-${instanceNumber}'
+    name: 'pe-db-${btpNamingPrefix}-${instanceNumber}'
     location: location
     tags: tags
     privateLinkServiceId: cosmos.outputs.id

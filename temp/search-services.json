@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "12051201636642385473"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "sku": {
+      "type": "object",
+      "defaultValue": {
+        "name": "standard"
+      }
+    },
+    "authOptions": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "semanticSearch": {
+      "type": "string",
+      "defaultValue": "disabled"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Search/searchServices",
+      "apiVersion": "2021-04-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "authOptions": "[parameters('authOptions')]",
+        "disableLocalAuth": false,
+        "disabledDataExfiltrationOptions": [],
+        "encryptionWithCmk": {
+          "enforcement": "Unspecified"
+        },
+        "hostingMode": "default",
+        "networkRuleSet": {
+          "bypass": "None",
+          "ipRules": []
+        },
+        "partitionCount": 1,
+        "publicNetworkAccess": "Disabled",
+        "replicaCount": 1,
+        "semanticSearch": "[parameters('semanticSearch')]"
+      },
+      "sku": "[parameters('sku')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]"
+    },
+    "endpoint": {
+      "type": "string",
+      "value": "[format('https://{0}.search.windows.net/', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[parameters('name')]"
+    },
+    "skuName": {
+      "type": "string",
+      "value": "[parameters('sku').name]"
+    },
+    "adminKey": {
+      "type": "string",
+      "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2021-04-01-preview').primaryKey]"
+    }
+  }
+}
