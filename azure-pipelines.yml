@@ -13,8 +13,10 @@ trigger:
 
 variables:
   # Global variables
-  - name: azureServiceConnection
-    value: 'copa-azure-service-connection'
+  - name: azureServiceConnectionDev
+    value: 'BTP-Development'
+  - name: azureServiceConnectionProd
+    value: 'BTP-Production'
   - name: vmImageName
     value: 'ubuntu-latest'
   - name: bicepTemplatePath
@@ -45,7 +47,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Install Bicep CLI'
       inputs:
-        azureSubscription: $(azureServiceConnection)
+        azureSubscription: $(azureServiceConnectionDev)
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
@@ -55,7 +57,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Validate Bicep Template'
       inputs:
-        azureSubscription: $(azureServiceConnection)
+        azureSubscription: $(azureServiceConnectionDev)
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
@@ -68,7 +70,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Security Scan - What-If Analysis'
       inputs:
-        azureSubscription: $(azureServiceConnection)
+        azureSubscription: $(azureServiceConnectionDev)
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
@@ -281,7 +283,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
             inputs:
-              azureSubscription: $(azureServiceConnection)
+              azureSubscription: $(azureServiceConnectionDev)
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
@@ -290,7 +292,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Deploy Infrastructure'
             inputs:
-              azureSubscription: $(azureServiceConnection)
+              azureSubscription: $(azureServiceConnectionDev)
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
@@ -308,7 +310,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
             inputs:
-              azureSubscription: $(azureServiceConnection)
+              azureSubscription: $(azureServiceConnectionDev)
               appType: 'webAppLinux'
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/copa-application'
@@ -343,7 +345,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Deploy Infrastructure'
             inputs:
-              azureSubscription: $(azureServiceConnection)
+              azureSubscription: $(azureServiceConnectionProd)
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
@@ -361,7 +363,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
             inputs:
-              azureSubscription: $(azureServiceConnection)
+              azureSubscription: $(azureServiceConnectionProd)
               appType: 'webAppLinux'
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/copa-application'
