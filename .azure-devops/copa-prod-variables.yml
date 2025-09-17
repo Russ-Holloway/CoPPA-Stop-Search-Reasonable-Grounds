@@ -10,7 +10,7 @@ instanceNumber: '001'
 
 # OpenAI Configuration - Production Models
 openAIModel: gpt-4o
-embeddingModel: text-embedding-ada-002
+embeddingModel: text-embedding-3-small
 
 # BTP Naming Convention - Web App Name
 # Format: app-btp-{environmentCode}-copa-stop-search-{instanceNumber}
