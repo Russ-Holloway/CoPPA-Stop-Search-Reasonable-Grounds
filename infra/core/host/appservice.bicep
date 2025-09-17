@@ -8,6 +8,9 @@ param appServicePlanId string
 param keyVaultName string = ''
 param managedIdentity bool = !empty(keyVaultName)
 
+// Network Properties
+param subnetIdForIntegration string = ''
+
 // Runtime Properties
 @allowed([
   'dotnet', 'dotnetcore', 'dotnet-isolated', 'node', 'python', 'java', 'powershell', 'custom'
@@ -59,6 +62,8 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
       cors: {
         allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
       }
+      vnetName: !empty(subnetIdForIntegration) ? last(split(subnetIdForIntegration, '/')) : null
+      vnetRouteAllEnabled: !empty(subnetIdForIntegration)
     }
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: true
@@ -130,6 +135,15 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = if (!(empty(
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightsName)) {
   name: applicationInsightsName
+}
+
+resource appServiceVnetConnection 'Microsoft.Web/sites/networkConfig@2022-03-01' = if (!empty(subnetIdForIntegration)) {
+  parent: appService
+  name: 'virtualNetwork'
+  properties: {
+    subnetResourceId: subnetIdForIntegration
+    swiftSupported: true
+  }
 }
 
 output identityPrincipalId string = managedIdentity ? appService.identity.principalId : ''

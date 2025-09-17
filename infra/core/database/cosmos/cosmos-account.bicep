@@ -6,6 +6,8 @@ param tags object = {}
 @allowed([ 'GlobalDocumentDB', 'MongoDB', 'Parse' ])
 param kind string
 
+param publicNetworkAccess string = 'Disabled'
+
 resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
   name: name
   kind: kind
@@ -25,6 +27,9 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = {
     enableMultipleWriteLocations: false
     apiProperties: (kind == 'MongoDB') ? { serverVersion: '4.0' } : {}
     capabilities: [ { name: 'EnableServerless' } ]
+    publicNetworkAccess: publicNetworkAccess
+    networkAclBypass: 'AzureServices'
+    disableKeyBasedMetadataWriteAccess: true
   }
 }
 

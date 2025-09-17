@@ -9,6 +9,23 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
+// BTP Naming Convention Parameters
+@description('Environment code (e.g., p for production, d for development)')
+param environmentCode string = 'p'
+
+@description('Instance number for resources')
+param instanceNumber string = '001'
+
+// Network Configuration
+param vnetAddressPrefix string = '10.0.0.0/16'
+param appServiceSubnetAddressPrefix string = '10.0.1.0/24'
+param privateEndpointSubnetAddressPrefix string = '10.0.2.0/24'
+param enablePrivateEndpoints bool = true
+
+// Security Configuration
+param keyVaultName string = ''
+param logAnalyticsWorkspaceName string = ''
+
 param appServicePlanName string = ''
 param backendServiceName string = ''
 param resourceGroupName string = ''
@@ -59,25 +76,18 @@ param cosmosAccountName string = ''
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
-var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
-// Extract force code and environment from resource group name for custom naming convention
-// Expected pattern: rg-{force}-uks-{env}-copa-stop-search
-var rgParts = !empty(resourceGroupName) ? split(resourceGroupName, '-') : split('rg-${environmentName}-uks-d-copa-stop-search', '-')
-var forceCode = length(rgParts) >= 2 ? rgParts[1] : 'def'
-var region = length(rgParts) >= 3 ? rgParts[2] : 'uks'
-var envCode = length(rgParts) >= 4 ? rgParts[3] : 'd'
-var appName = length(rgParts) >= 5 ? rgParts[4] : 'copa'
-var workload = length(rgParts) >= 6 ? rgParts[5] : 'stop-search'
-
-// Custom naming pattern: {type}-{force}-{region}-{env}-{app}-{workload}
-var namingPrefix = '${forceCode}-${region}-${envCode}-${appName}-${workload}'
+// BTP naming convention: {service}-btp-{env}-copa-stop-search-{instance}
+// Resource Group: rg-btp-{env}-copa-stop-search
+// Services: {service}-btp-{env}-copa-stop-search-{instance}
+var btpNamingPrefix = 'btp-${environmentCode}-copa-stop-search'
+var btpResourceGroupName = 'rg-${btpNamingPrefix}'
 
 // Organize resources in a resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+  name: !empty(resourceGroupName) ? resourceGroupName : btpResourceGroupName
   location: location
   tags: tags
 }
@@ -90,13 +100,179 @@ resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-
   name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
 }
 
+// Network Security Infrastructure
+module nsg 'core/network/network-security-group.bicep' = {
+  name: 'nsg'
+  scope: resourceGroup
+  params: {
+    name: 'nsg-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    securityRules: [
+      {
+        name: 'AllowHTTPS'
+        properties: {
+          priority: 100
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowHTTP'
+        properties: {
+          priority: 110
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '80'
+        }
+      }
+      {
+        name: 'DenyAllInbound'
+        properties: {
+          priority: 4096
+          protocol: '*'
+          access: 'Deny'
+          direction: 'Inbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '*'
+        }
+      }
+    ]
+  }
+}
+
+// Virtual Network Infrastructure
+module vnet 'core/network/virtual-network.bicep' = {
+  name: 'vnet'
+  scope: resourceGroup
+  params: {
+    name: 'vnet-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    addressPrefixes: [vnetAddressPrefix]
+    subnets: [
+      {
+        name: 'app-service-subnet'
+        addressPrefix: appServiceSubnetAddressPrefix
+        delegations: [
+          {
+            name: 'delegation'
+            properties: {
+              serviceName: 'Microsoft.Web/serverFarms'
+            }
+          }
+        ]
+        networkSecurityGroupId: nsg.outputs.id
+      }
+      {
+        name: 'private-endpoint-subnet'
+        addressPrefix: privateEndpointSubnetAddressPrefix
+        privateEndpointNetworkPolicies: 'Disabled'
+        networkSecurityGroupId: nsg.outputs.id
+      }
+    ]
+  }
+}
+
+// Log Analytics Workspace
+module logAnalytics 'core/monitor/log-analytics-workspace.bicep' = {
+  name: 'log-analytics'
+  scope: resourceGroup
+  params: {
+    name: !empty(logAnalyticsWorkspaceName) ? logAnalyticsWorkspaceName : 'log-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    publicNetworkAccessForIngestion: 'Disabled'
+    publicNetworkAccessForQuery: 'Disabled'
+  }
+}
+
+// Key Vault
+module keyVault 'core/security/key-vault.bicep' = {
+  name: 'key-vault'
+  scope: resourceGroup
+  params: {
+    name: !empty(keyVaultName) ? keyVaultName : 'kv-${replace(btpNamingPrefix, '-', '')}-${instanceNumber}'
+    location: location
+    tags: tags
+    publicNetworkAccess: 'Disabled'
+  }
+}
+
+// Private DNS Zones
+module storagePrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+  name: 'storage-private-dns-zone'
+  scope: resourceGroup
+  params: {
+    name: 'privatelink.blob.${environment().suffixes.storage}'
+    location: location
+    tags: tags
+    virtualNetworkId: vnet.outputs.id
+  }
+}
+
+module cognitiveServicesPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+  name: 'cognitive-services-private-dns-zone'
+  scope: resourceGroup
+  params: {
+    name: 'privatelink.cognitiveservices.azure.com'
+    location: location
+    tags: tags
+    virtualNetworkId: vnet.outputs.id
+  }
+}
+
+module searchPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+  name: 'search-private-dns-zone'
+  scope: resourceGroup
+  params: {
+    name: 'privatelink.search.windows.net'
+    location: location
+    tags: tags
+    virtualNetworkId: vnet.outputs.id
+  }
+}
+
+module keyVaultPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+  name: 'key-vault-private-dns-zone'
+  scope: resourceGroup
+  params: {
+    name: 'privatelink.vaultcore.azure.net'
+    location: location
+    tags: tags
+    virtualNetworkId: vnet.outputs.id
+  }
+}
+
+module cosmosPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+  name: 'cosmos-private-dns-zone'
+  scope: resourceGroup
+  params: {
+    name: 'privatelink.documents.azure.com'
+    location: location
+    tags: tags
+    virtualNetworkId: vnet.outputs.id
+  }
+}
+
 
 // Create an App Service Plan to group applications under the same payment plan and SKU
 module appServicePlan 'core/host/appserviceplan.bicep' = {
   name: 'appserviceplan'
   scope: resourceGroup
   params: {
-    name: !empty(appServicePlanName) ? appServicePlanName : 'asp-${namingPrefix}'
+    name: !empty(appServicePlanName) ? appServicePlanName : 'asp-${btpNamingPrefix}-${instanceNumber}'
     location: location
     tags: tags
     sku: {
@@ -108,7 +284,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 }
 
 // The application frontend
-var appServiceName = !empty(backendServiceName) ? backendServiceName : 'app-${namingPrefix}'
+var appServiceName = !empty(backendServiceName) ? backendServiceName : 'app-${btpNamingPrefix}-${instanceNumber}'
 var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().tenantId}/v2.0'
 module backend 'core/host/appservice.bicep' = {
   name: 'web'
@@ -125,6 +301,7 @@ module backend 'core/host/appservice.bicep' = {
     authClientSecret: authClientSecret
     authClientId: authClientId
     authIssuerUri: authIssuerUri
+    subnetIdForIntegration: '${vnet.outputs.id}/subnets/app-service-subnet'
     appSettings: {
       // search
       AZURE_SEARCH_INDEX: searchIndexName
@@ -158,7 +335,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
   name: 'openai'
   scope: openAiResourceGroup
   params: {
-    name: !empty(openAiResourceName) ? openAiResourceName : 'cog-${namingPrefix}'
+    name: !empty(openAiResourceName) ? openAiResourceName : 'cog-${btpNamingPrefix}-${instanceNumber}'
     location: openAiResourceGroupLocation
     tags: tags
     sku: {
@@ -191,7 +368,7 @@ module searchService 'core/search/search-services.bicep' = {
   name: 'search-service'
   scope: searchServiceResourceGroup
   params: {
-    name: !empty(searchServiceName) ? searchServiceName : 'srch-${namingPrefix}'
+    name: !empty(searchServiceName) ? searchServiceName : 'srch-${btpNamingPrefix}-${instanceNumber}'
     location: searchServiceResourceGroupLocation
     tags: tags
     authOptions: {
@@ -206,15 +383,104 @@ module searchService 'core/search/search-services.bicep' = {
   }
 }
 
+// Storage Account for document processing and file uploads
+module storage 'core/storage/storage-account.bicep' = {
+  name: 'storage'
+  scope: resourceGroup
+  params: {
+    name: 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'
+    location: location
+    tags: tags
+    publicNetworkAccess: 'Disabled'
+    containers: [
+      {
+        name: 'content'
+        publicAccess: 'None'
+      }
+    ]
+  }
+}
+
 // The application database
 module cosmos 'db.bicep' = {
   name: 'cosmos'
   scope: resourceGroup
   params: {
-    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'db-app-${forceCode}-copa'
+    accountName: !empty(cosmosAccountName) ? cosmosAccountName : 'cosmos-${btpNamingPrefix}-${instanceNumber}'
     location: resourceGroup.location
     tags: tags
     principalIds: [principalId, backend.outputs.identityPrincipalId]
+  }
+}
+
+// Private Endpoints for secure network access
+module storagePrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'storage-private-endpoint'
+  scope: resourceGroup
+  params: {
+    name: 'pe-storage-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    privateLinkServiceId: storage.outputs.id
+    groupIds: ['blob']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && storagePrivateDnsZone != null) ? storagePrivateDnsZone!.outputs.id : ''
+  }
+}
+
+module cognitiveServicesPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'cognitive-services-private-endpoint'
+  scope: resourceGroup
+  params: {
+    name: 'pe-openai-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    privateLinkServiceId: openAi.outputs.id
+    groupIds: ['account']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
+  }
+}
+
+module searchPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'search-private-endpoint'
+  scope: searchServiceResourceGroup
+  params: {
+    name: 'pe-search-${btpNamingPrefix}-${instanceNumber}'
+    location: searchServiceResourceGroupLocation
+    tags: tags
+    privateLinkServiceId: searchService.outputs.id
+    groupIds: ['searchService']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && searchPrivateDnsZone != null) ? searchPrivateDnsZone!.outputs.id : ''
+  }
+}
+
+module keyVaultPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'key-vault-private-endpoint'
+  scope: resourceGroup
+  params: {
+    name: 'pe-keyvault-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    privateLinkServiceId: keyVault.outputs.id
+    groupIds: ['vault']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && keyVaultPrivateDnsZone != null) ? keyVaultPrivateDnsZone!.outputs.id : ''
+  }
+}
+
+module cosmosPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'cosmos-private-endpoint'
+  scope: resourceGroup
+  params: {
+    name: 'pe-cosmos-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    privateLinkServiceId: cosmos.outputs.id
+    groupIds: ['Sql']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && cosmosPrivateDnsZone != null) ? cosmosPrivateDnsZone!.outputs.id : ''
   }
 }
 
@@ -287,7 +553,7 @@ module docPrepResources 'docprep.bicep' = {
   params: {
     location: location
     resourceToken: resourceToken
-    namingPrefix: namingPrefix
+    namingPrefix: btpNamingPrefix
     tags: tags
     principalId: principalId
     resourceGroupName: resourceGroup.name
@@ -345,3 +611,24 @@ output AZURE_COSMOSDB_DATABASE string = cosmos.outputs.databaseName
 output AZURE_COSMOSDB_CONVERSATIONS_CONTAINER string = cosmos.outputs.containerName
 
 output AUTH_ISSUER_URI string = authIssuerUri
+
+// Network Security Infrastructure
+output AZURE_VNET_NAME string = vnet.outputs.name
+output AZURE_VNET_ID string = vnet.outputs.id
+output AZURE_NSG_NAME string = nsg.outputs.name
+output AZURE_NSG_ID string = nsg.outputs.id
+
+// Storage Account
+output AZURE_STORAGE_ACCOUNT_NAME string = storage.outputs.name
+output AZURE_STORAGE_PRIMARY_ENDPOINTS object = storage.outputs.primaryEndpoints
+
+// Key Vault
+output AZURE_KEYVAULT_NAME string = keyVault.outputs.name
+output AZURE_KEYVAULT_URI string = keyVault.outputs.vaultUri
+
+// Log Analytics
+output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalytics.outputs.name
+output AZURE_LOG_ANALYTICS_WORKSPACE_ID string = logAnalytics.outputs.id
+
+// Security Configuration
+output PRIVATE_ENDPOINTS_ENABLED bool = enablePrivateEndpoints

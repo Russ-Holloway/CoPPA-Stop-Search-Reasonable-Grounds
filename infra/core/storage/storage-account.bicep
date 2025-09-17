@@ -5,9 +5,9 @@ param tags object = {}
 @allowed([ 'Hot', 'Cool', 'Premium' ])
 param accessTier string = 'Hot'
 param allowBlobPublicAccess bool = false
-param allowCrossTenantReplication bool = true
-param allowSharedKeyAccess bool = true
-param defaultToOAuthAuthentication bool = false
+param allowCrossTenantReplication bool = false
+param allowSharedKeyAccess bool = false
+param defaultToOAuthAuthentication bool = true
 param deleteRetentionPolicy object = {}
 @allowed([ 'AzureDnsZone', 'Standard' ])
 param dnsEndpointType string = 'Standard'
@@ -16,6 +16,12 @@ param minimumTlsVersion string = 'TLS1_2'
 @allowed([ 'Enabled', 'Disabled' ])
 param publicNetworkAccess string = 'Disabled'
 param sku object = { name: 'Standard_LRS' }
+
+@description('Array of IP addresses or ranges to allow access from')
+param ipRules array = []
+
+@description('Array of virtual network resource IDs to allow access from')
+param virtualNetworkRules array = []
 
 param containers array = []
 
@@ -35,7 +41,15 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     minimumTlsVersion: minimumTlsVersion
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Allow'
+      defaultAction: publicNetworkAccess == 'Enabled' ? 'Allow' : 'Deny'
+      ipRules: [for ipRule in ipRules: {
+        action: 'Allow'
+        value: ipRule
+      }]
+      virtualNetworkRules: [for vnetRule in virtualNetworkRules: {
+        action: 'Allow'
+        id: vnetRule
+      }]
     }
     publicNetworkAccess: publicNetworkAccess
   }
@@ -48,7 +62,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     resource container 'containers' = [for container in containers: {
       name: container.name
       properties: {
-        publicAccess: contains(container, 'publicAccess') ? container.publicAccess : 'None'
+        publicAccess: container.?publicAccess ?? 'None'
       }
     }]
   }
@@ -56,3 +70,4 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
 
 output name string = storage.name
 output primaryEndpoints object = storage.properties.primaryEndpoints
+output id string = storage.id

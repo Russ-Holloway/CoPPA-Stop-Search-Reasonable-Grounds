@@ -36,8 +36,10 @@ stages:
           # Validate the Bicep template
           az deployment group validate \
             --resource-group "$(AZURE_RESOURCE_GROUP)" \
-            --template-file "infrastructure/deployment-btp.bicep" \
-            --parameters "infrastructure/deployment-btp.bicepparam" \
+            --template-file "infra/main.bicep" \
+            --parameters "infra/main.parameters.json" \
+              environmentCode="$(ENVIRONMENT_CODE)" \
+              instanceNumber="$(INSTANCE_NUMBER)" \
             --verbose
           
           echo "✅ Template validation completed successfully!"
@@ -72,8 +74,10 @@ stages:
                 # Deploy the infrastructure
                 az deployment group create \
                   --resource-group "$(AZURE_RESOURCE_GROUP)" \
-                  --template-file "infrastructure/deployment-btp.bicep" \
-                  --parameters "infrastructure/deployment-btp.bicepparam" \
+                  --template-file "infra/main.bicep" \
+                  --parameters "infra/main.parameters.json" \
+                    environmentCode="$(ENVIRONMENT_CODE)" \
+                    instanceNumber="$(INSTANCE_NUMBER)" \
                   --verbose \
                   --output table
                 
@@ -126,7 +130,7 @@ stages:
           # Check Application Insights
           echo "📊 Application Insights:"
           az monitor app-insights component show \
-            --app "appi-btp-uks-p-copa-stop-search" \
+            --app "appi-btp-$(ENVIRONMENT_CODE)-copa-stop-search-$(INSTANCE_NUMBER)" \
             --resource-group "$(AZURE_RESOURCE_GROUP)" \
             --query "{name:name, provisioningState:provisioningState}" \
             --output table
@@ -134,7 +138,7 @@ stages:
           # Check Cosmos DB
           echo "🗄️ Cosmos DB Status:"
           az cosmosdb show \
-            --name "db-app-btp-copa" \
+            --name "cosmos-btp-$(ENVIRONMENT_CODE)-copa-stop-search-$(INSTANCE_NUMBER)" \
             --resource-group "$(AZURE_RESOURCE_GROUP)" \
             --query "{name:name, provisioningState:provisioningState}" \
             --output table
@@ -142,7 +146,7 @@ stages:
           # Check Azure Search
           echo "🔍 Azure Search Status:"
           az search service show \
-            --name "srch-btp-uks-p-copa-stop-search" \
+            --name "srch-btp-$(ENVIRONMENT_CODE)-copa-stop-search-$(INSTANCE_NUMBER)" \
             --resource-group "$(AZURE_RESOURCE_GROUP)" \
             --query "{name:name, status:status}" \
             --output table
@@ -150,7 +154,7 @@ stages:
           # Check Azure OpenAI
           echo "🤖 Azure OpenAI Status:"
           az cognitiveservices account show \
-            --name "cog-btp-uks-p-copa-stop-search" \
+            --name "cog-btp-$(ENVIRONMENT_CODE)-copa-stop-search-$(INSTANCE_NUMBER)" \
             --resource-group "$(AZURE_RESOURCE_GROUP)" \
             --query "{name:name, provisioningState:provisioningState}" \
             --output table

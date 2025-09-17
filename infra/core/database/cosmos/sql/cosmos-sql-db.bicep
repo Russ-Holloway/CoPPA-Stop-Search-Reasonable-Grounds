@@ -6,6 +6,7 @@ param tags object = {}
 
 param containers array = []
 param principalIds array = []
+param publicNetworkAccess string = 'Disabled'
 
 module cosmos 'cosmos-sql-account.bicep' = {
   name: 'cosmos-sql-account'
@@ -13,6 +14,7 @@ module cosmos 'cosmos-sql-account.bicep' = {
     name: accountName
     location: location
     tags: tags
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 

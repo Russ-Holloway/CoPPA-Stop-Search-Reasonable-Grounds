@@ -19,7 +19,7 @@ variables:
   - name: vmImageName
     value: 'ubuntu-latest'
   - name: bicepTemplatePath
-    value: 'infra/main-pds-converted.bicep'
+    value: 'infra/main.bicep'
 
 stages:
 - stage: ValidateInfrastructure
@@ -116,6 +116,8 @@ stages:
             --resource-group $TEMP_RG \
             --template-file $(bicepTemplatePath) \
             --parameters \
+              environmentCode=t \
+              instanceNumber=001 \
               location=uksouth \
               azureOpenAIModelName=gpt-4o \
               azureOpenAIEmbeddingName=text-embedding-ada-002 \
@@ -162,6 +164,8 @@ stages:
             --resource-group $TEST_RG \
             --template-file $(bicepTemplatePath) \
             --parameters \
+              environmentCode=t \
+              instanceNumber=001 \
               location=uksouth \
               azureOpenAIModelName=gpt-4o \
               azureOpenAIEmbeddingName=text-embedding-ada-002 \

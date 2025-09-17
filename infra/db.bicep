@@ -31,3 +31,4 @@ output databaseName string = cosmos.outputs.databaseName
 output containerName string = containers[0].name
 output accountName string = cosmos.outputs.accountName
 output endpoint string = cosmos.outputs.endpoint
+output id string = cosmos.outputs.accountId

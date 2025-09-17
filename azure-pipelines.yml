@@ -18,9 +18,9 @@ variables:
   - name: vmImageName
     value: 'ubuntu-latest'
   - name: bicepTemplatePath
-    value: 'infra/main-pds-converted.bicep'
+    value: 'infra/main.bicep'
   - name: bicepParametersPath
-    value: 'infra/main-pds-converted.bicepparam'
+    value: 'infra/main.parameters.json'
   
   # Build variables
   - name: buildConfiguration
@@ -80,7 +80,9 @@ stages:
           az deployment group what-if \
             --resource-group $TEMP_RG \
             --template-file $(bicepTemplatePath) \
-            --parameters location=uksouth azureOpenAIModelName=gpt-4o azureOpenAIEmbeddingName=text-embedding-ada-002
+            --parameters $(bicepParametersPath) \
+              environmentCode=p \
+              instanceNumber=001
           
           # Clean up temporary resource group
           az group delete --name $TEMP_RG --yes --no-wait
@@ -255,7 +257,7 @@ stages:
   - name: environmentName
     value: 'development'
   - name: resourceGroupName
-    value: 'rg-dev-uksouth-copa-stop-search'
+    value: 'rg-btp-d-copa-stop-search'
   - name: azureLocation
     value: 'uksouth'
   jobs:
@@ -295,8 +297,10 @@ stages:
                 echo "Deploying Bicep template..."
                 az deployment group create \
                   --resource-group $(resourceGroupName) \
-                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main-pds-converted.bicep \
+                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
                   --parameters \
+                    environmentCode=d \
+                    instanceNumber=001 \
                     location=$(azureLocation) \
                     azureOpenAIModelName=$(openAIModel) \
                     azureOpenAIEmbeddingName=$(embeddingModel)
@@ -346,8 +350,10 @@ stages:
                 echo "Deploying to production resource group: $(resourceGroupName)"
                 az deployment group create \
                   --resource-group $(resourceGroupName) \
-                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main-pds-converted.bicep \
+                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
                   --parameters \
+                    environmentCode=p \
+                    instanceNumber=001 \
                     location=$(azureLocation) \
                     azureOpenAIModelName=$(openAIModel) \
                     azureOpenAIEmbeddingName=$(embeddingModel)

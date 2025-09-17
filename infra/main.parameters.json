@@ -43,6 +43,30 @@
     },
     "authClientSecret": {
       "value": "${AUTH_CLIENT_SECRET=}"
+    },
+    "environmentCode": {
+      "value": "${ENVIRONMENT_CODE=p}"
+    },
+    "instanceNumber": {
+      "value": "${INSTANCE_NUMBER=001}"
+    },
+    "enablePrivateEndpoints": {
+      "value": "${ENABLE_PRIVATE_ENDPOINTS=true}"
+    },
+    "vnetAddressPrefix": {
+      "value": "${VNET_ADDRESS_PREFIX=10.0.0.0/16}"
+    },
+    "appServiceSubnetAddressPrefix": {
+      "value": "${APP_SERVICE_SUBNET_ADDRESS_PREFIX=10.0.1.0/24}"
+    },
+    "privateEndpointSubnetAddressPrefix": {
+      "value": "${PRIVATE_ENDPOINT_SUBNET_ADDRESS_PREFIX=10.0.2.0/24}"
+    },
+    "keyVaultName": {
+      "value": "${AZURE_KEYVAULT_NAME=}"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "${AZURE_LOG_ANALYTICS_WORKSPACE_NAME=}"
     }
   }
 }
