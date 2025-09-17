@@ -255,7 +255,7 @@ stages:
   dependsOn: BuildAndPackage
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/Dev-Ops-Deployment'))
   variables:
-  - group: 'copa-dev-variables'
+  - group: 'copa-stop-search-dev-variables'
   - name: environmentName
     value: 'development'
   - name: resourceGroupName
@@ -321,7 +321,7 @@ stages:
   dependsOn: BuildAndPackage
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   variables:
-  - group: 'copa-prod-variables'
+  - group: 'copa-stop-search-prod-variables'
   - name: environmentName
     value: 'production'
   jobs:

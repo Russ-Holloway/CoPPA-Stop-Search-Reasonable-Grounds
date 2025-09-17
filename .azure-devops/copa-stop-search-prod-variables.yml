@@ -1,5 +1,5 @@
 # Production Environment Variables  
-# Variable Group: copa-prod-variables
+# Variable Group: copa-stop-search-prod-variables
 
 # Environment Configuration
 resourceGroupName: rg-btp-p-copa-stop-search
