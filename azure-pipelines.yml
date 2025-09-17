@@ -263,7 +263,7 @@ stages:
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure to Development'
-    environment: 'copa-development'
+    environment: 'BTP-Development'
     pool:
       vmImage: $(vmImageName)
     strategy:
@@ -325,7 +325,7 @@ stages:
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure to Production'
-    environment: 'copa-production'
+    environment: 'BTP-Production'
     pool:
       vmImage: $(vmImageName)
     strategy:
