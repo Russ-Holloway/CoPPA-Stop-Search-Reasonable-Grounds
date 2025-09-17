@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "2172793481700632108"
+      "templateHash": "12847809824758958180"
     }
   },
   "parameters": {
@@ -216,12 +216,60 @@
       "metadata": {
         "description": "Id of the user or app to assign application roles"
       }
+    },
+    "ownerTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Owner tag value for BTP policy compliance"
+      }
+    },
+    "costCentreTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Cost Centre tag value for BTP policy compliance"
+      }
+    },
+    "forceIdTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Force ID tag value for BTP policy compliance"
+      }
+    },
+    "serviceNameTag": {
+      "type": "string",
+      "defaultValue": "CoPA-Stop-Search",
+      "metadata": {
+        "description": "Service Name tag value for BTP policy compliance"
+      }
+    },
+    "locationIdTag": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Location ID tag value for BTP policy compliance"
+      }
+    },
+    "environmentTag": {
+      "type": "string",
+      "defaultValue": "Production",
+      "metadata": {
+        "description": "Environment tag value for BTP policy compliance"
+      }
     }
   },
   "variables": {
     "resourceToken": "[toLower(uniqueString(subscription().id, parameters('environmentName'), parameters('location')))]",
     "tags": {
-      "azd-env-name": "[parameters('environmentName')]"
+      "azd-env-name": "[parameters('environmentName')]",
+      "Owner": "[parameters('ownerTag')]",
+      "CostCentre": "[parameters('costCentreTag')]",
+      "ForceID": "[parameters('forceIdTag')]",
+      "ServiceName": "[parameters('serviceNameTag')]",
+      "LocationID": "[parameters('locationIdTag')]",
+      "Environment": "[parameters('environmentTag')]"
     },
     "btpNamingPrefix": "[format('btp-{0}-copa-stop-search', parameters('environmentCode'))]",
     "btpResourceGroupName": "[format('rg-{0}', variables('btpNamingPrefix'))]",
@@ -626,7 +674,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": "[if(not(empty(parameters('keyVaultName'))), createObject('value', parameters('keyVaultName')), createObject('value', format('kv-{0}-{1}', replace(variables('btpNamingPrefix'), '-', ''), parameters('instanceNumber'))))]",
+          "name": "[if(not(empty(parameters('keyVaultName'))), createObject('value', parameters('keyVaultName')), createObject('value', format('kv-{0}-{1}', variables('btpNamingPrefix'), parameters('instanceNumber'))))]",
           "location": {
             "value": "[parameters('location')]"
           },

@@ -76,8 +76,30 @@ param cosmosAccountName string = ''
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+// BTP Required Tags Parameters
+@description('Owner tag value for BTP policy compliance')
+param ownerTag string = ''
+@description('Cost Centre tag value for BTP policy compliance')
+param costCentreTag string = ''
+@description('Force ID tag value for BTP policy compliance')
+param forceIdTag string = ''
+@description('Service Name tag value for BTP policy compliance')
+param serviceNameTag string = 'CoPA-Stop-Search'
+@description('Location ID tag value for BTP policy compliance')
+param locationIdTag string = ''
+@description('Environment tag value for BTP policy compliance')
+param environmentTag string = 'Production'
+
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
-var tags = { 'azd-env-name': environmentName }
+var tags = { 
+  'azd-env-name': environmentName
+  Owner: ownerTag
+  CostCentre: costCentreTag
+  ForceID: forceIdTag
+  ServiceName: serviceNameTag
+  LocationID: locationIdTag
+  Environment: environmentTag
+}
 
 // BTP naming convention: {service}-btp-{env}-copa-stop-search-{instance}
 // Resource Group: rg-btp-{env}-copa-stop-search
@@ -203,7 +225,7 @@ module keyVault 'core/security/key-vault.bicep' = {
   name: 'key-vault'
   scope: resourceGroup
   params: {
-    name: !empty(keyVaultName) ? keyVaultName : 'kv-${replace(btpNamingPrefix, '-', '')}-${instanceNumber}'
+    name: !empty(keyVaultName) ? keyVaultName : 'kv-${btpNamingPrefix}-${instanceNumber}'
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'

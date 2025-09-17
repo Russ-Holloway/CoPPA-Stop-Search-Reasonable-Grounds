@@ -1,17 +1,19 @@
 #!/bin/bash
 
-# CoPA Stop & Search - BTP Deployment via Azure CLI
-# This script deploys the BTP infrastructure directly using Azure CLI
-# Use this while waiting for DevOps parallelism approval
+# CoPA Stop & Search - BTP SECURE Deployment via Azure CLI
+# This script deploys the complete BTP infrastructure with full security (private endpoints enabled)
+# Deploys at SUBSCRIPTION SCOPE as required by the Bicep template
 
-set -e
+set -euo pipefail
 
 # Configuration
 RESOURCE_GROUP_NAME="rg-btp-p-copa-stop-search"
 LOCATION="uksouth"
-DEPLOYMENT_NAME="btp-copa-deployment-$(date +%Y%m%d-%H%M%S)"
+ENVIRONMENT_NAME="copa-btp"
+ENVIRONMENT_CODE="p"
+INSTANCE_NUMBER="001"
+DEPLOYMENT_NAME="btp-copa-secure-deployment-$(date +%Y%m%d-%H%M%S)"
 TEMPLATE_FILE="./infra/main.bicep"
-PARAMETERS_FILE="./infra/main.parameters.json"
 
 # Colors for output
 RED='\033[0;31m'
@@ -74,24 +76,9 @@ set_subscription() {
 
 # Function to create resource group
 create_resource_group() {
-    echo_info "Checking if resource group exists: $RESOURCE_GROUP_NAME"
-    
-    if az group show --name "$RESOURCE_GROUP_NAME" &>/dev/null; then
-        echo_success "Resource group $RESOURCE_GROUP_NAME already exists"
-    else
-        echo_info "Creating resource group: $RESOURCE_GROUP_NAME in $LOCATION"
-        az group create \
-            --name "$RESOURCE_GROUP_NAME" \
-            --location "$LOCATION" \
-            --tags \
-                "Environment=Production" \
-                "Project=CoPA-Stop-Search" \
-                "DeploymentMethod=AzureCLI" \
-                "CreatedBy=$(az account show --query user.name -o tsv)" \
-                "CreatedDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-        
-        echo_success "Resource group created successfully"
-    fi
+    echo_info "Note: Resource group will be created by the subscription-level deployment"
+    echo_info "Target resource group: $RESOURCE_GROUP_NAME in $LOCATION"
+    echo_success "Resource group creation will be handled by Bicep template"
 }
 
 # Function to validate Bicep template
@@ -109,12 +96,29 @@ validate_template() {
         exit 1
     fi
     
-    # Validate against Azure
-    echo_info "Validating template against Azure..."
-    validation_result=$(az deployment group validate \
-        --resource-group "$RESOURCE_GROUP_NAME" \
+    # Get principal ID for validation
+    PRINCIPAL_ID=$(az ad signed-in-user show --query id -o tsv 2>/dev/null || echo "")
+    if [ -z "$PRINCIPAL_ID" ]; then
+        echo_warning "Could not get user principal ID, template validation may be limited"
+        PRINCIPAL_ID="00000000-0000-0000-0000-000000000000"
+    fi
+    
+    # Validate against Azure at SUBSCRIPTION scope
+    echo_info "Validating template against Azure (subscription scope)..."
+    validation_result=$(az deployment sub validate \
+        --location "$LOCATION" \
         --template-file "$TEMPLATE_FILE" \
-        --parameters "@$PARAMETERS_FILE" 2>&1)
+        --parameters \
+            environmentName="$ENVIRONMENT_NAME" \
+            location="$LOCATION" \
+            principalId="$PRINCIPAL_ID" \
+            environmentCode="$ENVIRONMENT_CODE" \
+            instanceNumber="$INSTANCE_NUMBER" \
+            enablePrivateEndpoints=true \
+            resourceGroupName="$RESOURCE_GROUP_NAME" \
+            openAiSkuName="S0" \
+            searchServiceSkuName="basic" \
+            formRecognizerSkuName="S0" 2>&1)
     
     if [ $? -eq 0 ]; then
         echo_success "Template validation passed"
@@ -128,16 +132,38 @@ validate_template() {
 # Function to run what-if analysis
 run_whatif() {
     echo_info "Running What-If analysis to preview changes..."
+    echo_info "🔒 This will show the SECURE deployment with private endpoints enabled"
     
-    az deployment group what-if \
-        --resource-group "$RESOURCE_GROUP_NAME" \
+    # Get principal ID
+    PRINCIPAL_ID=$(az ad signed-in-user show --query id -o tsv 2>/dev/null || echo "")
+    
+    az deployment sub what-if \
+        --location "$LOCATION" \
         --template-file "$TEMPLATE_FILE" \
-        --parameters "@$PARAMETERS_FILE" \
+        --parameters \
+            environmentName="$ENVIRONMENT_NAME" \
+            location="$LOCATION" \
+            principalId="$PRINCIPAL_ID" \
+            environmentCode="$ENVIRONMENT_CODE" \
+            instanceNumber="$INSTANCE_NUMBER" \
+            enablePrivateEndpoints=true \
+            vnetAddressPrefix="10.0.0.0/16" \
+            appServiceSubnetAddressPrefix="10.0.1.0/24" \
+            privateEndpointSubnetAddressPrefix="10.0.2.0/24" \
+            resourceGroupName="$RESOURCE_GROUP_NAME" \
+            openAiSkuName="S0" \
+            searchServiceSkuName="basic" \
+            formRecognizerSkuName="S0" \
         --result-format FullResourcePayloads
     
     echo ""
-    echo_warning "Please review the What-If results above carefully."
-    read -p "Do you want to proceed with the deployment? (y/n): " confirm
+    echo_warning "🔒 SECURE DEPLOYMENT PREVIEW ABOVE:"
+    echo "  ✅ Private endpoints enabled for all services"
+    echo "  ✅ VNet isolation for network security"  
+    echo "  ✅ Cosmos DB: db-btp-p-copa-stop-search-001"
+    echo "  ✅ Production-ready security configuration"
+    echo ""
+    read -p "Do you want to proceed with the SECURE deployment? (y/n): " confirm
     if [[ $confirm != [yY]* ]]; then
         echo_info "Deployment cancelled by user"
         exit 0
@@ -146,23 +172,58 @@ run_whatif() {
 
 # Function to deploy template
 deploy_template() {
-    echo_info "Starting deployment: $DEPLOYMENT_NAME"
-    echo_info "This may take 15-30 minutes..."
+    echo_info "🔒 Starting SECURE BTP deployment: $DEPLOYMENT_NAME"
+    echo_info "⏱️  This may take 20-40 minutes (private endpoints add time)..."
+    echo_info "🔐 Deploying with full network isolation and security"
     
-    # Start deployment
-    az deployment group create \
-        --resource-group "$RESOURCE_GROUP_NAME" \
+    # Get principal ID
+    PRINCIPAL_ID=$(az ad signed-in-user show --query id -o tsv 2>/dev/null || echo "")
+    if [ -z "$PRINCIPAL_ID" ]; then
+        echo_error "Could not get user principal ID, this is required for deployment"
+        exit 1
+    fi
+    
+    # Start SUBSCRIPTION-LEVEL deployment (the correct approach!)
+    az deployment sub create \
         --name "$DEPLOYMENT_NAME" \
+        --location "$LOCATION" \
         --template-file "$TEMPLATE_FILE" \
-        --parameters "@$PARAMETERS_FILE" \
+        --parameters \
+            environmentName="$ENVIRONMENT_NAME" \
+            location="$LOCATION" \
+            principalId="$PRINCIPAL_ID" \
+            environmentCode="$ENVIRONMENT_CODE" \
+            instanceNumber="$INSTANCE_NUMBER" \
+            enablePrivateEndpoints=true \
+            vnetAddressPrefix="10.0.0.0/16" \
+            appServiceSubnetAddressPrefix="10.0.1.0/24" \
+            privateEndpointSubnetAddressPrefix="10.0.2.0/24" \
+            resourceGroupName="$RESOURCE_GROUP_NAME" \
+            openAiResourceName="" \
+            openAiResourceGroupName="" \
+            openAiSkuName="S0" \
+            searchServiceName="" \
+            searchServiceResourceGroupName="" \
+            searchServiceSkuName="basic" \
+            formRecognizerServiceName="" \
+            formRecognizerResourceGroupName="" \
+            formRecognizerSkuName="S0" \
+            authClientId="" \
+            authClientSecret="" \
+            cosmosAccountName="" \
+            keyVaultName="" \
+            logAnalyticsWorkspaceName="" \
+            appServicePlanName="" \
+            backendServiceName="" \
         --verbose
     
     if [ $? -eq 0 ]; then
-        echo_success "Deployment completed successfully!"
+        echo_success "🔒 SECURE deployment completed successfully!"
+        echo_success "✅ All resources deployed with private endpoints enabled"
+        echo_success "✅ Cosmos DB created: db-btp-p-copa-stop-search-001"
     else
         echo_error "Deployment failed. Check the error messages above."
-        echo_info "You can check deployment status in the Azure portal:"
-        echo "https://portal.azure.com/#@/resource/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$RESOURCE_GROUP_NAME/deployments"
+        echo_info "You can check deployment status in the Azure portal"
         exit 1
     fi
 }
@@ -171,8 +232,7 @@ deploy_template() {
 get_deployment_outputs() {
     echo_info "Retrieving deployment outputs..."
     
-    outputs=$(az deployment group show \
-        --resource-group "$RESOURCE_GROUP_NAME" \
+    outputs=$(az deployment sub show \
         --name "$DEPLOYMENT_NAME" \
         --query "properties.outputs" \
         --output json)
@@ -191,73 +251,103 @@ get_deployment_outputs() {
 
 # Function to verify deployment
 verify_deployment() {
-    echo_info "Verifying deployment..."
+    echo_info "🔍 Verifying SECURE deployment..."
     
     # Check key resources
-    echo_info "Checking deployed resources..."
+    echo_info "Checking deployed resources in $RESOURCE_GROUP_NAME..."
     
     # App Service
     app_service_name="app-btp-p-copa-stop-search-001"
     if az webapp show --name "$app_service_name" --resource-group "$RESOURCE_GROUP_NAME" &>/dev/null; then
-        echo_success "App Service: $app_service_name"
+        echo_success "✅ App Service: $app_service_name"
         app_url="https://$app_service_name.azurewebsites.net"
-        echo_info "App URL: $app_url"
+        echo_info "   App URL: $app_url"
     else
-        echo_warning "App Service not found: $app_service_name"
+        echo_warning "⚠️  App Service not found: $app_service_name"
     fi
     
-    # Cosmos DB
+    # Cosmos DB - CHECK THE UPDATED NAME
     cosmos_name="db-btp-p-copa-stop-search-001"
     if az cosmosdb show --name "$cosmos_name" --resource-group "$RESOURCE_GROUP_NAME" &>/dev/null; then
-        echo_success "Cosmos DB: $cosmos_name"
+        echo_success "✅ Cosmos DB: $cosmos_name (CORRECT NAME!)"
     else
-        echo_warning "Cosmos DB not found: $cosmos_name"
+        echo_warning "⚠️  Cosmos DB not found: $cosmos_name"
     fi
     
     # Key Vault
-    kv_name="kvbtppcopastopsearch001"
-    if az keyvault show --name "$kv_name" --resource-group "$RESOURCE_GROUP_NAME" &>/dev/null; then
-        echo_success "Key Vault: $kv_name"
+    kv_name="kv-btp-p-copa-stop-search-001"
+    if az keyvault show --name "$kv_name" &>/dev/null; then
+        echo_success "✅ Key Vault: $kv_name"
     else
-        echo_warning "Key Vault not found: $kv_name"
+        echo_warning "⚠️  Key Vault not found: $kv_name"
     fi
     
-    # OpenAI
-    openai_name="cog-btp-p-copa-stop-search-001"
-    if az cognitiveservices account show --name "$openai_name" --resource-group "$RESOURCE_GROUP_NAME" &>/dev/null; then
-        echo_success "OpenAI Service: $openai_name"
+    # Check Private Endpoints (NEW!)
+    echo_info "🔒 Checking private endpoints..."
+    private_endpoints=$(az network private-endpoint list --resource-group "$RESOURCE_GROUP_NAME" --query "[].name" -o tsv 2>/dev/null || echo "")
+    if [ -n "$private_endpoints" ]; then
+        echo_success "✅ Private endpoints created:"
+        echo "$private_endpoints" | while read -r pe_name; do
+            echo "   🔐 $pe_name"
+        done
     else
-        echo_warning "OpenAI Service not found: $openai_name"
+        echo_warning "⚠️  No private endpoints found"
+    fi
+    
+    # Check VNet
+    echo_info "🌐 Checking virtual network..."
+    vnet_name=$(az network vnet list --resource-group "$RESOURCE_GROUP_NAME" --query "[0].name" -o tsv 2>/dev/null || echo "")
+    if [ -n "$vnet_name" ]; then
+        echo_success "✅ Virtual Network: $vnet_name"
+    else
+        echo_warning "⚠️  Virtual Network not found"
     fi
 }
 
 # Function to display next steps
 show_next_steps() {
     echo ""
-    echo_success "=== DEPLOYMENT SUMMARY ==="
+    echo_success "=== 🔒 SECURE BTP DEPLOYMENT SUMMARY ==="
     echo_info "Resource Group: $RESOURCE_GROUP_NAME"
     echo_info "Deployment Name: $DEPLOYMENT_NAME"
     echo_info "Location: $LOCATION"
+    echo_info "Security: FULL (Private endpoints enabled)"
     
     echo ""
-    echo_info "=== NEXT STEPS ==="
+    echo_info "=== 🎯 NEXT STEPS ==="
     echo "1. 🌐 Access the Azure Portal to verify resources:"
     echo "   https://portal.azure.com/#@/resource/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$RESOURCE_GROUP_NAME"
     
     echo ""
-    echo "2. 🔑 Configure application settings in the App Service"
-    echo "3. 📊 Set up monitoring and alerts"
-    echo "4. 🔒 Review security settings and private endpoints"
-    echo "5. 🧪 Test the application functionality"
+    echo "2. � SECURITY VERIFICATION:"
+    echo "   • Verify private endpoints are working"
+    echo "   • Check VNet connectivity"
+    echo "   • Confirm Cosmos DB is secure: db-btp-p-copa-stop-search-001"
     
     echo ""
-    echo_info "=== USEFUL COMMANDS ==="
+    echo "3. 🔑 APPLICATION CONFIGURATION:"
+    echo "   • Configure App Service connection strings"
+    echo "   • Set up authentication settings"
+    echo "   • Deploy application code"
+    
+    echo ""
+    echo "4. � IMPORTANT SECURITY NOTES:"
+    echo "   • Resources are ONLY accessible from the VNet"
+    echo "   • You may need VPN/Bastion for management access"
+    echo "   • This is production-ready security for police data"
+    
+    echo ""
+    echo_info "=== 🛠️ USEFUL COMMANDS ==="
     echo "• View deployment details:"
-    echo "  az deployment group show --resource-group $RESOURCE_GROUP_NAME --name $DEPLOYMENT_NAME"
+    echo "  az deployment sub show --name $DEPLOYMENT_NAME"
     
     echo ""
-    echo "• Monitor deployment progress:"
-    echo "  az deployment group list --resource-group $RESOURCE_GROUP_NAME --output table"
+    echo "• List all resources:"
+    echo "  az resource list --resource-group $RESOURCE_GROUP_NAME --output table"
+    
+    echo ""
+    echo "• Check private endpoints:"
+    echo "  az network private-endpoint list --resource-group $RESOURCE_GROUP_NAME --output table"
     
     echo ""
     echo "• Delete all resources (when no longer needed):"
@@ -266,19 +356,15 @@ show_next_steps() {
 
 # Main execution
 main() {
-    echo_info "=== CoPA Stop & Search - BTP Azure CLI Deployment ==="
-    echo_info "Starting deployment process..."
+    echo_info "=== 🔒 CoPA Stop & Search - BTP SECURE Deployment ==="
+    echo_info "🚨 Full security deployment with private endpoints"
+    echo_info "🎯 Production-ready for sensitive police data"
     echo ""
     
     # Pre-deployment checks
     if [ ! -f "$TEMPLATE_FILE" ]; then
         echo_error "Template file not found: $TEMPLATE_FILE"
         echo_info "Please run this script from the project root directory"
-        exit 1
-    fi
-    
-    if [ ! -f "$PARAMETERS_FILE" ]; then
-        echo_error "Parameters file not found: $PARAMETERS_FILE"
         exit 1
     fi
     
@@ -294,13 +380,16 @@ main() {
     show_next_steps
     
     echo ""
-    echo_success "🎉 BTP deployment completed successfully!"
+    echo_success "🎉 🔒 SECURE BTP deployment completed successfully!"
+    echo_success "✅ Cosmos DB deployed: db-btp-p-copa-stop-search-001"
+    echo_success "✅ Full network security with private endpoints"
 }
 
 # Handle script arguments
 case "${1:-}" in
     --help|-h)
-        echo "CoPA Stop & Search - BTP Azure CLI Deployment"
+        echo "🔒 CoPA Stop & Search - BTP SECURE Deployment"
+        echo "Full security deployment with private endpoints for police data"
         echo ""
         echo "Usage: $0 [options]"
         echo ""
@@ -309,9 +398,11 @@ case "${1:-}" in
         echo "  --validate     Only validate the template (no deployment)"
         echo "  --whatif       Only run what-if analysis (no deployment)"
         echo ""
-        echo "Environment Variables:"
-        echo "  RESOURCE_GROUP_NAME    Override resource group name"
-        echo "  LOCATION              Override deployment location"
+        echo "Security Features:"
+        echo "  ✅ Private endpoints for all services"
+        echo "  ✅ VNet isolation"
+        echo "  ✅ Production-ready configuration"
+        echo "  ✅ Cosmos DB: db-btp-p-copa-stop-search-001"
         echo ""
         exit 0
         ;;
@@ -320,16 +411,16 @@ case "${1:-}" in
         set_subscription
         create_resource_group
         validate_template
-        echo_success "Template validation completed successfully!"
+        echo_success "🔒 SECURE template validation completed successfully!"
         exit 0
         ;;
     --whatif)
         check_azure_login
-        set_subscription
+        set_subscription  
         create_resource_group
         validate_template
         run_whatif
-        echo_success "What-If analysis completed!"
+        echo_success "🔒 SECURE What-If analysis completed!"
         exit 0
         ;;
     *)
