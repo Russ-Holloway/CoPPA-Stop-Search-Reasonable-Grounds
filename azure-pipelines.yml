@@ -402,16 +402,19 @@ stages:
               inlineScript: |
                 echo "Deploying Bicep template with DevOps parameters..."
                 
-                # Determine template path based on deployment type
-                # Check if we're in infrastructure-only mode (Fast Infrastructure Validation)
-                if [ "$(Agent.JobName)" = "ValidateInfrastructureOnly" ] || [ "$(System.StageName)" = "FastInfraValidation" ]; then
-                  echo "Running in infrastructure-only mode - using source files"
-                  TEMPLATE_PATH="infra/main.bicep"
-                  PARAMS_PATH="infra/main.devops.parameters.json"
-                else
-                  echo "Running in full deployment mode - using pipeline artifacts"
-                  TEMPLATE_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                # Always use source files when artifacts aren't downloaded
+                # This handles both Fast Infrastructure Validation and when build artifacts aren't available
+                ARTIFACTS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                SOURCE_PATH="infra/main.bicep"
+                
+                if [ -f "$ARTIFACTS_PATH" ]; then
+                  echo "Using pipeline artifacts (full deployment mode)"
+                  TEMPLATE_PATH="$ARTIFACTS_PATH"
                   PARAMS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
+                else
+                  echo "Using source files (infrastructure-only mode or no artifacts)"
+                  TEMPLATE_PATH="$SOURCE_PATH"
+                  PARAMS_PATH="infra/main.devops.parameters.json"
                 fi
                 
                 echo "Template path: $TEMPLATE_PATH"
