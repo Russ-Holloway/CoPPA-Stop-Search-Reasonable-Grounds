@@ -48,27 +48,6 @@ variables:
   - name: infrastructureOnly
     value: $[contains(variables['Build.SourceVersionMessage'], '[infra-only]')]
 
-variables:
-  # Global variables
-  - name: azureServiceConnectionDev
-    value: 'BTP-Development'
-  - name: azureServiceConnectionProd
-    value: 'BTP-Production'
-  - name: vmImageName
-    value: 'ubuntu-latest'
-  - name: bicepTemplatePath
-    value: 'infra/main.bicep'
-  - name: bicepParametersPath
-    value: 'infra/main.parameters.json'
-  
-  # Build variables
-  - name: buildConfiguration
-    value: 'Release'
-  - name: pythonVersion
-    value: '3.11'
-  - name: nodeVersion
-    value: '18'
-
 stages:
 - stage: FastInfraValidation
   displayName: 'Fast Infrastructure Validation'
