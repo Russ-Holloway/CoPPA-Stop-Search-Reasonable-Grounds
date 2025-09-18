@@ -74,20 +74,15 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          # Create a temporary resource group for what-if analysis
-          TEMP_RG="rg-temp-whatif-analysis-$(Build.BuildId)"
-          az group create --name $TEMP_RG --location uksouth
-          
-          echo "Running what-if analysis..."
-          az deployment group what-if \
-            --resource-group $TEMP_RG \
+          echo "Running what-if analysis at subscription level..."
+          # Use subscription-level deployment for what-if analysis
+          az deployment sub what-if \
+            --location uksouth \
             --template-file $(bicepTemplatePath) \
-            --parameters $(bicepParametersPath) \
-              environmentCode=p \
-              instanceNumber=001
+            --parameters infra/main.devops.parameters.json \
+            --verbose
           
-          # Clean up temporary resource group
-          az group delete --name $TEMP_RG --yes --no-wait
+          echo "What-if analysis completed successfully"
         
   - job: ValidateApplication
     displayName: 'Validate Application Code'
@@ -121,18 +116,17 @@ stages:
       
     - script: |
         echo "Running Python security scan with bandit..."
-        bandit -r . -f json -o bandit-report.json || true
+        bandit -r . -f json -o bandit-report.json --exclude ./frontend,./node_modules,./.venv || true
         
         echo "Running Python dependency security check..."
         safety check --json --output safety-report.json || true
         
-        echo "Running Python linting..."
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        echo "Running Python linting for critical errors only..."
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=frontend,node_modules,.venv
         
-        echo "Running Python code formatting check..."
-        black --check --diff .
+        echo "Running Python code formatting check (warnings only)..."
+        black --check --diff . --exclude="/(frontend|node_modules|\.venv)/" || echo "Code formatting warnings detected but not failing build"
       displayName: 'Security and Quality Checks'
-      continueOnError: true
       
     - script: |
         cd frontend

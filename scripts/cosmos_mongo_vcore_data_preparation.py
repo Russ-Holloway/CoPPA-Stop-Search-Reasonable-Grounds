@@ -154,7 +154,7 @@ def validate_index(
         indexes = mongo_collection.index_information()
         if (indexes.get(index_name) == None):
             raise Exception(
-                f"Failed to create vector index {index_name} for collection {collection_name} under database {database_name}. Error: {str(e)}")
+                f"Failed to create vector index {index_name} for collection {collection_name} under database {database_name}.")
 
     except Exception as e:
         raise Exception(

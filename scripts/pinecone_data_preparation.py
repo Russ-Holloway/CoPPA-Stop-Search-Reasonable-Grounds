@@ -128,7 +128,7 @@ def validate_index(
     try:
         if not pinecone.describe_index(index_name).status['ready']:
             raise Exception(
-                f"Failed to create vector index {index_name}. Error: {str(e)}")
+                f"Failed to create vector index {index_name}.")
 
     except Exception as e:
         raise Exception(

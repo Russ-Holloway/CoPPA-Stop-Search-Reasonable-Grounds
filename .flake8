@@ -1,0 +1,15 @@
+[flake8]
+exclude = 
+    frontend,
+    node_modules,
+    .venv,
+    .git,
+    __pycache__,
+    *.egg-info,
+    .tox,
+    .mypy_cache,
+    .pytest_cache
+max-line-length = 120
+select = E9,F63,F7,F82
+ignore = E203,W503
+max-complexity = 10
