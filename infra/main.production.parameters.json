@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "copa-production"
+    },
+    "location": {
+      "value": "uksouth"
+    },
+    "principalId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "environmentCode": {
+      "value": "p"
+    },
+    "instanceNumber": {
+      "value": "001"
+    },
+    "enablePrivateEndpoints": {
+      "value": true
+    },
+    "vnetAddressPrefix": {
+      "value": "10.1.0.0/16"
+    },
+    "appServiceSubnetAddressPrefix": {
+      "value": "10.1.1.0/24"
+    },
+    "privateEndpointSubnetAddressPrefix": {
+      "value": "10.1.2.0/24"
+    },
+    "ownerTag": {
+      "value": "Production-Team"
+    },
+    "costCentreTag": {
+      "value": "IT-001"
+    },
+    "forceIdTag": {
+      "value": "BTP"
+    },
+    "serviceNameTag": {
+      "value": "CoPA-Stop-Search"
+    },
+    "locationIdTag": {
+      "value": "UK-South"
+    },
+    "environmentTag": {
+      "value": "Production"
+    }
+  }
+}

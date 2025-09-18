@@ -332,7 +332,18 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                az group create --name $(resourceGroupName) --location $(azureLocation)
+                echo "Creating resource group with required BTP policy tags..."
+                az group create \
+                  --name $(resourceGroupName) \
+                  --location $(azureLocation) \
+                  --tags \
+                    Owner="DevOps-Pipeline" \
+                    CostCentre="IT-001" \
+                    ForceID="BTP" \
+                    ServiceName="CoPA-Stop-Search" \
+                    LocationID="UK-South" \
+                    Environment="Development"
+                echo "Resource group created successfully with all required tags"
                 
           - task: AzureCLI@2
             displayName: 'Deploy Infrastructure'
@@ -341,16 +352,27 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "Deploying Bicep template..."
-                az deployment group create \
+                echo "Deploying Bicep template with DevOps parameters..."
+                
+                # Base deployment with parameters file
+                DEPLOYMENT_CMD="az deployment group create \
                   --resource-group $(resourceGroupName) \
                   --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
-                  --parameters \
-                    environmentCode=d \
-                    instanceNumber=001 \
-                    location=$(azureLocation) \
-                    azureOpenAIModelName=$(openAIModel) \
-                    azureOpenAIEmbeddingName=$(embeddingModel)
+                  --parameters $(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json \
+                  --verbose"
+                
+                # Add OpenAI model parameters if variables are set
+                if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIModelName=$(openAIModel)"
+                fi
+                
+                if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIEmbeddingName=$(embeddingModel)"
+                fi
+                
+                echo "Executing deployment command..."
+                eval $DEPLOYMENT_CMD
+                echo "Infrastructure deployment completed successfully"
                     
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
@@ -388,22 +410,53 @@ stages:
             artifact: 'copa-application'
             
           - task: AzureCLI@2
+            displayName: 'Create Resource Group'
+            inputs:
+              azureSubscription: $(azureServiceConnectionProd)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Creating production resource group with required BTP policy tags..."
+                az group create \
+                  --name $(resourceGroupName) \
+                  --location $(azureLocation) \
+                  --tags \
+                    Owner="Production-Team" \
+                    CostCentre="IT-001" \
+                    ForceID="BTP" \
+                    ServiceName="CoPA-Stop-Search" \
+                    LocationID="UK-South" \
+                    Environment="Production"
+                echo "Production resource group created successfully with all required tags"
+            
+          - task: AzureCLI@2
             displayName: 'Deploy Infrastructure'
             inputs:
               azureSubscription: $(azureServiceConnectionProd)
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "Deploying to production resource group: $(resourceGroupName)"
-                az deployment group create \
+                echo "Deploying Bicep template with Production parameters..."
+                
+                # Base deployment with parameters file
+                DEPLOYMENT_CMD="az deployment group create \
                   --resource-group $(resourceGroupName) \
                   --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
-                  --parameters \
-                    environmentCode=p \
-                    instanceNumber=001 \
-                    location=$(azureLocation) \
-                    azureOpenAIModelName=$(openAIModel) \
-                    azureOpenAIEmbeddingName=$(embeddingModel)
+                  --parameters $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json \
+                  --verbose"
+                
+                # Add OpenAI model parameters if variables are set
+                if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIModelName=$(openAIModel)"
+                fi
+                
+                if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIEmbeddingName=$(embeddingModel)"
+                fi
+                
+                echo "Executing deployment command..."
+                eval $DEPLOYMENT_CMD
+                echo "Production infrastructure deployment completed successfully"
                     
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
