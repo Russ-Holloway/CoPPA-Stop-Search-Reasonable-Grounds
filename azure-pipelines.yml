@@ -221,11 +221,22 @@ stages:
         npm run build
         
         echo "Verifying build output..."
-        if [ -d "dist" ]; then
+        if [ -f "../static/index.html" ] && [ -d "../static/assets" ]; then
           echo "Frontend build successful"
-          ls -la dist/
+          echo "Contents of ../static/:"
+          ls -la ../static/
+          echo "Contents of ../static/assets/:"
+          ls -la ../static/assets/
         else
-          echo "Frontend build failed - no dist directory"
+          echo "Frontend build failed - no static directory or assets found"
+          echo "Expected: ../static/index.html and ../static/assets/"
+          echo "Checking what exists:"
+          if [ -d "../static" ]; then
+            echo "Static directory contents:"
+            ls -la ../static/
+          else
+            echo "../static directory does not exist"
+          fi
           exit 1
         fi
       displayName: 'Build Frontend'
@@ -243,10 +254,8 @@ stages:
         cp gunicorn.conf.py $(Build.ArtifactStagingDirectory)/app/ || true
         cp WebApp.Dockerfile $(Build.ArtifactStagingDirectory)/app/ || true
         
-        # Copy built frontend
-        if [ -d "frontend/dist" ]; then
-          cp -r frontend/dist/* $(Build.ArtifactStagingDirectory)/app/static/
-        fi
+        # Static directory (including built frontend) is already copied above
+        echo "Frontend build files included in static/ directory"
         
         echo "Application package prepared"
         ls -la $(Build.ArtifactStagingDirectory)/app/
