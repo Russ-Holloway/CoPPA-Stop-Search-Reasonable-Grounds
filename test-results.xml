@@ -1,0 +1,1921 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="64" failures="0" skipped="32" tests="103" time="10.761" timestamp="2025-09-18T10:21:27.254964+00:00" hostname="codespaces-8c8a7c"><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.002"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.772"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.081"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.153"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.157"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.004"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.084"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.086"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.083"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-with_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.085"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.095"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.079"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.076"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.075"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.061"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.066"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.071"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[AzureCognitiveSearch-no_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.057"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.081"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.051"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.055"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.051"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.049"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.049"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.068"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-with_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.053"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.050"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.059"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.051"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.044"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[Elasticsearch-no_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.044"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.000"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.000"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.048"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-with_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.052"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-streaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-with_aoai_embeddings-with_es_embeddings-use_keys]" time="0.000"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_mi]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-with_aoai_embeddings-no_es_embeddings-use_keys]" time="0.045"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_mi]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-no_aoai_embeddings-with_es_embeddings-use_keys]" time="0.001"><skipped type="pytest.skip" message="Elasticsearch embeddings not supported for test.">/workspaces/CoPA-Stop-Search-Reasonable-Grounds/tests/integration_tests/test_datasources.py:129: Elasticsearch embeddings not supported for test.</skipped></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_mi]" time="0.046"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.integration_tests.test_datasources" name="test_dotenv[none-no_chat_history-nonstreaming-no_aoai_embeddings-no_es_embeddings-use_keys]" time="0.047"><error message="failed on setup with &quot;TypeError: No constructor defined&quot;">tests/integration_tests/test_datasources.py:122: in test_app
+    app_module = import_module("app")
+                 ^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:1026: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+app.py:32: in &lt;module&gt;
+    from backend.settings import (
+backend/settings.py:801: in &lt;module&gt;
+    class _AppSettings(BaseModel):
+backend/settings.py:803: in _AppSettings
+    azure_openai: _AzureOpenAISettings = _AzureOpenAISettings()
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/pydantic_settings/main.py:188: in __init__
+    super().__init__(
+backend/settings.py:210: in ensure_endpoint
+    raise ValidationError("AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_RESOURCE is required")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: No constructor defined</error></testcase><testcase classname="tests.unit_tests.test_settings" name="test_dotenv_no_datasource_1" time="0.095" /><testcase classname="tests.unit_tests.test_settings" name="test_dotenv_no_datasource_2" time="0.051" /><testcase classname="tests.unit_tests.test_settings" name="test_dotenv_with_azure_search_success" time="0.089" /><testcase classname="tests.unit_tests.test_settings" name="test_dotenv_with_elasticsearch_success" time="0.211" /><testcase classname="tests.unit_tests.test_utils" name="test_format_as_ndjson" time="0.001" /><testcase classname="tests.unit_tests.test_utils" name="test_format_as_ndjson_exception" time="0.002" /><testcase classname="tests.unit_tests.test_utils" name="test_parse_multi_columns" time="0.000" /></testsuite></testsuites>
