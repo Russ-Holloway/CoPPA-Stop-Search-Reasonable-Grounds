@@ -140,11 +140,22 @@ stages:
         npm run build
         
         echo "Verifying build output..."
-        if [ -d "dist" ]; then
-          echo "Build successful - dist directory created"
-          ls -la dist/
+        if [ -f "../static/index.html" ] && [ -d "../static/assets" ]; then
+          echo "Build successful - static directory and assets created"
+          echo "Contents of ../static/:"
+          ls -la ../static/
+          echo "Contents of ../static/assets/:"
+          ls -la ../static/assets/
         else
-          echo "Build failed - no dist directory found"
+          echo "Build failed - no static directory or assets found"
+          echo "Expected: ../static/index.html and ../static/assets/"
+          echo "Checking what exists:"
+          if [ -d "../static" ]; then
+            echo "Static directory contents:"
+            ls -la ../static/
+          else
+            echo "../static directory does not exist"
+          fi
           exit 1
         fi
       displayName: 'Frontend Build and Lint'

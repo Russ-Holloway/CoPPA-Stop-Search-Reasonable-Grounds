@@ -14,9 +14,9 @@ if [ ! -f "package.json" ]; then
 fi
 
 # Clean any previous build
-if [ -d "dist" ]; then
+if [ -d "../static" ]; then
     echo "🧹 Cleaning previous build..."
-    rm -rf dist
+    rm -rf ../static/assets/*
 fi
 
 # Install dependencies
@@ -32,22 +32,22 @@ echo "🏗️  Building application..."
 npm run build
 
 # Verify build output
-if [ -d "dist" ]; then
+if [ -f "../static/index.html" ] && [ -d "../static/assets" ]; then
     echo "✅ Build successful!"
     echo "📄 Build output:"
-    ls -la dist/
+    ls -la ../static/
     
     # Check for essential files
-    if [ -f "dist/index.html" ]; then
+    if [ -f "../static/index.html" ]; then
         echo "✅ index.html found"
     else
         echo "⚠️  Warning: index.html not found in build output"
     fi
     
-    if [ -d "dist/assets" ]; then
+    if [ -d "../static/assets" ]; then
         echo "✅ Assets directory found"
         echo "📁 Assets:"
-        ls -la dist/assets/
+        ls -la ../static/assets/
     else
         echo "⚠️  Warning: Assets directory not found"
     fi
@@ -56,6 +56,16 @@ if [ -d "dist" ]; then
     echo "🎉 Frontend build verification completed successfully!"
     
 else
-    echo "❌ Build failed - no dist directory created"
+    echo "❌ Build failed - no static directory or assets found"
+    echo "Expected files:"
+    echo "  - ../static/index.html"
+    echo "  - ../static/assets/"
+    echo ""
+    echo "Actual contents of ../static/:"
+    if [ -d "../static" ]; then
+        ls -la ../static/
+    else
+        echo "  Directory does not exist"
+    fi
     exit 1
 fi
