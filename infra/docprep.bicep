@@ -51,3 +51,4 @@ module formRecognizerRoleUser 'core/security/role.bicep' = {
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
 output AZURE_FORMRECOGNIZER_SKU_NAME string = formRecognizerSkuName
+output AZURE_FORMRECOGNIZER_ID string = formRecognizer.outputs.id

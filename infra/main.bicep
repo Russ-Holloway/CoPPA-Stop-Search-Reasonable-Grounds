@@ -138,23 +138,10 @@ module nsg 'core/network/network-security-group.bicep' = {
           protocol: 'Tcp'
           access: 'Allow'
           direction: 'Inbound'
-          sourceAddressPrefix: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
           destinationPortRange: '443'
-        }
-      }
-      {
-        name: 'AllowHTTP'
-        properties: {
-          priority: 110
-          protocol: 'Tcp'
-          access: 'Allow'
-          direction: 'Inbound'
-          sourceAddressPrefix: '*'
-          sourcePortRange: '*'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '80'
         }
       }
       {
@@ -229,6 +216,18 @@ module keyVault 'core/security/key-vault.bicep' = {
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
+  }
+}
+
+// Key Vault Secret for AUTH_CLIENT_SECRET
+module authClientSecretKvSecret 'core/security/key-vault-secret.bicep' = if (!empty(authClientSecret)) {
+  name: 'auth-client-secret'
+  scope: resourceGroup
+  params: {
+    keyVaultName: keyVault.outputs.name
+    secretName: 'auth-client-secret'
+    secretValue: authClientSecret
+    contentType: 'application/x-pkcs12'
   }
 }
 
@@ -308,6 +307,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 // The application frontend
 var appServiceName = !empty(backendServiceName) ? backendServiceName : 'app-${btpNamingPrefix}-${instanceNumber}'
 var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().tenantId}/v2.0'
+var authClientSecretKeyVaultRef = !empty(authClientSecret) ? '@Microsoft.KeyVault(SecretUri=${authClientSecretKvSecret!.outputs.secretUri})' : ''
 module backend 'core/host/appservice.bicep' = {
   name: 'web'
   scope: resourceGroup
@@ -320,15 +320,14 @@ module backend 'core/host/appservice.bicep' = {
     runtimeVersion: '3.10'
     scmDoBuildDuringDeployment: true
     managedIdentity: true
-    authClientSecret: authClientSecret
+    authClientSecret: authClientSecretKeyVaultRef
     authClientId: authClientId
     authIssuerUri: authIssuerUri
     subnetIdForIntegration: '${vnet.outputs.id}/subnets/app-service-subnet'
     appSettings: {
-      // search
+      // search - using managed identity authentication
       AZURE_SEARCH_INDEX: searchIndexName
       AZURE_SEARCH_SERVICE: searchService.outputs.name
-      AZURE_SEARCH_KEY: searchService.outputs.adminKey
       AZURE_SEARCH_USE_SEMANTIC_SEARCH: searchUseSemanticSearch
       AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG: searchSemanticSearchConfig
       AZURE_SEARCH_TOP_K: searchTopK
@@ -337,17 +336,30 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_SEARCH_FILENAME_COLUMN: searchFilenameColumn
       AZURE_SEARCH_TITLE_COLUMN: searchTitleColumn
       AZURE_SEARCH_URL_COLUMN: searchUrlColumn
-      // openai
+      // openai - using managed identity authentication
       AZURE_OPENAI_RESOURCE: openAi.outputs.name
+      AZURE_OPENAI_ENDPOINT: openAi.outputs.endpoint
       AZURE_OPENAI_MODEL: openAIModel
       AZURE_OPENAI_MODEL_NAME: openAIModelName
-      AZURE_OPENAI_KEY: openAi.outputs.key
       AZURE_OPENAI_TEMPERATURE: openAITemperature
       AZURE_OPENAI_TOP_P: openAITopP
       AZURE_OPENAI_MAX_TOKENS: openAIMaxTokens
       AZURE_OPENAI_STOP_SEQUENCE: openAIStopSequence
       AZURE_OPENAI_SYSTEM_MESSAGE: openAISystemMessage
       AZURE_OPENAI_STREAM: openAIStream
+    }
+  }
+}
+
+// Add Key Vault access policy for App Service managed identity
+module keyVaultAccessPolicy 'core/security/key-vault-access-policy.bicep' = {
+  name: 'key-vault-access-policy'
+  scope: resourceGroup
+  params: {
+    keyVaultName: keyVault.outputs.name
+    objectId: backend.outputs.identityPrincipalId
+    permissions: {
+      secrets: ['get']
     }
   }
 }
@@ -506,6 +518,22 @@ module cosmosPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enableP
   }
 }
 
+module formRecognizerPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'form-recognizer-private-endpoint'
+  scope: resourceGroup
+  params: {
+    name: 'pe-formrec-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    privateLinkServiceId: docPrepResources.outputs.AZURE_FORMRECOGNIZER_ID
+    groupIds: ['account']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
+  }
+}
+
+
+
 
 // USER ROLES
 module openAiRoleUser 'core/security/role.bicep' = {
@@ -596,7 +624,6 @@ output AZURE_SEARCH_INDEX string = searchIndexName
 output AZURE_SEARCH_SERVICE string = searchService.outputs.name
 output AZURE_SEARCH_SERVICE_RESOURCE_GROUP string = searchServiceResourceGroup.name
 output AZURE_SEARCH_SKU_NAME string = searchService.outputs.skuName
-output AZURE_SEARCH_KEY string = searchService.outputs.adminKey
 output AZURE_SEARCH_USE_SEMANTIC_SEARCH bool = searchUseSemanticSearch
 output AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG string = searchSemanticSearchConfig
 output AZURE_SEARCH_TOP_K int = searchTopK
@@ -613,7 +640,6 @@ output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output AZURE_OPENAI_MODEL string = openAIModel
 output AZURE_OPENAI_MODEL_NAME string = openAIModelName
 output AZURE_OPENAI_SKU_NAME string = openAi.outputs.skuName
-output AZURE_OPENAI_KEY string = openAi.outputs.key
 output AZURE_OPENAI_EMBEDDING_NAME string = embeddingDeploymentName
 output AZURE_OPENAI_TEMPERATURE int = openAITemperature
 output AZURE_OPENAI_TOP_P int = openAITopP

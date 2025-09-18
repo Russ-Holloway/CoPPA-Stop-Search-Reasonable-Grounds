@@ -18,6 +18,7 @@ resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   properties: {
     customSubDomainName: customSubDomainName
     publicNetworkAccess: publicNetworkAccess
+    disableLocalAuth: true
     networkAcls: {
       defaultAction: publicNetworkAccess == 'Enabled' ? 'Allow' : 'Deny'
       ipRules: []
@@ -45,4 +46,3 @@ output endpoint string = account.properties.endpoint
 output id string = account.id
 output name string = account.name
 output skuName string = account.sku.name
-output key string = account.listKeys().key1
