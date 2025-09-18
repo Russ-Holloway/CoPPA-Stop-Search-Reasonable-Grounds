@@ -403,13 +403,35 @@ stages:
                 echo "Deploying Bicep template with DevOps parameters..."
                 
                 # Determine template path based on deployment type
-                if [ "$(variables.infrastructureOnly)" = "True" ]; then
+                # Check if we're in infrastructure-only mode (Fast Infrastructure Validation)
+                if [ "$(Agent.JobName)" = "ValidateInfrastructureOnly" ] || [ "$(System.StageName)" = "FastInfraValidation" ]; then
+                  echo "Running in infrastructure-only mode - using source files"
                   TEMPLATE_PATH="infra/main.bicep"
                   PARAMS_PATH="infra/main.devops.parameters.json"
                 else
+                  echo "Running in full deployment mode - using pipeline artifacts"
                   TEMPLATE_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
                   PARAMS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
                 fi
+                
+                echo "Template path: $TEMPLATE_PATH"
+                echo "Parameters path: $PARAMS_PATH"
+                
+                # Verify files exist
+                if [ ! -f "$TEMPLATE_PATH" ]; then
+                  echo "❌ ERROR: Template file not found at: $TEMPLATE_PATH"
+                  echo "Current directory: $(pwd)"
+                  echo "Available files in infra/:"
+                  ls -la infra/ 2>/dev/null || echo "infra/ directory not found"
+                  exit 1
+                fi
+                
+                if [ ! -f "$PARAMS_PATH" ]; then
+                  echo "❌ ERROR: Parameters file not found at: $PARAMS_PATH"
+                  exit 1
+                fi
+                
+                echo "✅ Files verified successfully"
                 
                 # Base deployment with parameters file
                 DEPLOYMENT_CMD="az deployment group create \
