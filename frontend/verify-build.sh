@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Frontend Build Verification Script
+# This script verifies that the frontend can build successfully
+
+set -e
+
+echo "🔍 Starting frontend build verification..."
+
+# Check if we're in the frontend directory
+if [ ! -f "package.json" ]; then
+    echo "❌ Error: Not in frontend directory or package.json not found"
+    exit 1
+fi
+
+# Clean any previous build
+if [ -d "dist" ]; then
+    echo "🧹 Cleaning previous build..."
+    rm -rf dist
+fi
+
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm ci
+
+# Run type checking
+echo "🔧 Running TypeScript type checking..."
+npm run typecheck
+
+# Build the application
+echo "🏗️  Building application..."
+npm run build
+
+# Verify build output
+if [ -d "dist" ]; then
+    echo "✅ Build successful!"
+    echo "📄 Build output:"
+    ls -la dist/
+    
+    # Check for essential files
+    if [ -f "dist/index.html" ]; then
+        echo "✅ index.html found"
+    else
+        echo "⚠️  Warning: index.html not found in build output"
+    fi
+    
+    if [ -d "dist/assets" ]; then
+        echo "✅ Assets directory found"
+        echo "📁 Assets:"
+        ls -la dist/assets/
+    else
+        echo "⚠️  Warning: Assets directory not found"
+    fi
+    
+    echo ""
+    echo "🎉 Frontend build verification completed successfully!"
+    
+else
+    echo "❌ Build failed - no dist directory created"
+    exit 1
+fi
