@@ -10,6 +10,13 @@ trigger:
     exclude:
     - '**/*.md'
     - 'docs/**'
+    - '**/README*'
+    - '.gitignore'
+    - '.vscode/**'
+    - '.devcontainer/**'
+  batch: true  # Batch builds - if multiple commits pushed quickly, only build the latest
+
+pr: none  # Disable automatic PR builds - manual trigger only for PRs
 
 variables:
   # Global variables
