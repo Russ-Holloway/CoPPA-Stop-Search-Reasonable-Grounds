@@ -16,7 +16,29 @@ trigger:
     - '.devcontainer/**'
   batch: true  # Batch builds - if multiple commits pushed quickly, only build the latest
 
-pr: none  # Disable automatic PR builds - manual trigger only for PRs
+pr: none                echo "Deploying Bicep template with DevOps parameters..."
+                
+                # Get current user principal ID for role assignments
+                CURRENT_USER_ID=$(az ad signed-in-user show --query id --output tsv)
+                echo "Current user principal ID: $CURRENT_USER_ID"
+                
+                # Set template and parameters paths
+                if [ "$(variables.infrastructureOnly)" = "True" ]; then
+                  TEMPLATE_PATH="infra/main.bicep"
+                  PARAMS_PATH="infra/main.devops.parameters.json"
+                else
+                  TEMPLATE_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                  PARAMS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
+                fi
+                
+                # Base deployment with parameters file
+                DEPLOYMENT_CMD="az deployment group create \
+                  --resource-group $(resourceGroupName) \
+                  --name $(Build.BuildNumber)-infrastructure \
+                  --template-file $TEMPLATE_PATH \
+                  --parameters $PARAMS_PATH \
+                  --parameters principalId=$CURRENT_USER_ID \
+                  --verbose"tic PR builds - manual trigger only for PRs
 
 # Variables to control which stages run - set these in your commit message
 variables:
@@ -368,6 +390,10 @@ stages:
     value: 'rg-btp-d-copa-stop-search'
   - name: azureLocation
     value: 'uksouth'
+  - name: openAIModel
+    value: 'gpt-35-turbo-16k'
+  - name: embeddingModel
+    value: 'text-embedding-ada-002'
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure to Development'
@@ -378,6 +404,35 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: AzureCLI@2
+            displayName: 'Validate Azure Connection'
+            inputs:
+              azureSubscription: $(azureServiceConnectionDev)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Validating Azure connection and permissions..."
+                
+                # Check current subscription and permissions
+                az account show
+                echo "Current subscription: $(az account show --query name -o tsv)"
+                
+                # Check if we can list resource groups (basic permission test)
+                echo "Testing resource group permissions..."
+                az group list --query "[].name" --output table
+                
+                echo "✅ Azure connection validated successfully"
+                
+                # Check OpenAI quota in the region
+                echo "Checking OpenAI availability in $(azureLocation)..."
+                OPENAI_LOCATIONS=$(az cognitiveservices account list-skus --location $(azureLocation) --kind OpenAI --query "[].locations[]" --output tsv 2>/dev/null || echo "")
+                if [[ "$OPENAI_LOCATIONS" == *"$(azureLocation)"* ]] || [[ "$OPENAI_LOCATIONS" == *"uksouth"* ]]; then
+                  echo "✅ OpenAI is available in $(azureLocation)"
+                else
+                  echo "⚠️ OpenAI might not be available in $(azureLocation). Available locations for OpenAI:"
+                  az cognitiveservices account list-skus --kind OpenAI --query "[].locations[]" --output table || echo "Could not retrieve OpenAI locations"
+                fi
+                
           - checkout: self
             fetchDepth: 1
             condition: variables.infrastructureOnly
@@ -517,6 +572,14 @@ stages:
   - group: 'copa-stop-search-prod-variables'
   - name: environmentName
     value: 'production'
+  - name: resourceGroupName
+    value: 'rg-btp-p-copa-stop-search'
+  - name: azureLocation
+    value: 'uksouth'
+  - name: openAIModel
+    value: 'gpt-35-turbo-16k'
+  - name: embeddingModel
+    value: 'text-embedding-ada-002'
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure to Production'
