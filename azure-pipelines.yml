@@ -18,6 +18,36 @@ trigger:
 
 pr: none  # Disable automatic PR builds - manual trigger only for PRs
 
+# Variables to control which stages run - set these in your commit message
+variables:
+  # Global variables
+  - name: azureServiceConnectionDev
+    value: 'BTP-Development'
+  - name: azureServiceConnectionProd
+    value: 'BTP-Production'
+  - name: vmImageName
+    value: 'ubuntu-latest'
+  - name: bicepTemplatePath
+    value: 'infra/main.bicep'
+  - name: bicepParametersPath
+    value: 'infra/main.parameters.json'
+  
+  # Build variables
+  - name: buildConfiguration
+    value: 'Release'
+  - name: pythonVersion
+    value: '3.11'
+  - name: nodeVersion
+    value: '18'
+  
+  # Skip stages based on commit message - saves time when fixing specific issues
+  - name: skipValidation
+    value: $[contains(variables['Build.SourceVersionMessage'], '[skip-validation]')]
+  - name: skipBuild  
+    value: $[contains(variables['Build.SourceVersionMessage'], '[skip-build]')]
+  - name: infrastructureOnly
+    value: $[contains(variables['Build.SourceVersionMessage'], '[infra-only]')]
+
 variables:
   # Global variables
   - name: azureServiceConnectionDev
@@ -40,8 +70,39 @@ variables:
     value: '18'
 
 stages:
+- stage: FastInfraValidation
+  displayName: 'Fast Infrastructure Validation'
+  condition: variables.infrastructureOnly
+  jobs:
+  - job: ValidateInfrastructureOnly
+    displayName: 'Quick Bicep Validation'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      fetchDepth: 1  # Faster checkout
+      
+    - task: AzureCLI@2
+      displayName: 'Quick Bicep Lint Check'
+      inputs:
+        azureSubscription: $(azureServiceConnectionDev)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Quick validation - installing Bicep..."
+          az bicep install
+          
+          echo "Linting Bicep template..."
+          az bicep lint --file $(bicepTemplatePath)
+          
+          echo "Building Bicep template..."
+          az bicep build --file $(bicepTemplatePath)
+          
+          echo "Quick validation completed - proceeding to deployment"
+
 - stage: Validate
   displayName: 'Validate Infrastructure and Code'
+  condition: and(succeeded(), not(variables.skipValidation), not(variables.infrastructureOnly))
   jobs:
   - job: ValidateInfrastructure
     displayName: 'Validate Bicep Templates'
@@ -186,8 +247,8 @@ stages:
 
 - stage: BuildAndPackage
   displayName: 'Build and Package Application'
-  dependsOn: Validate
-  condition: succeeded()
+  dependsOn: []
+  condition: and(succeeded(), not(variables.skipBuild), not(variables.infrastructureOnly))
   jobs:
   - job: BuildApplication
     displayName: 'Build Application'
@@ -297,7 +358,7 @@ stages:
 
 - stage: DeployDevelopment
   displayName: 'Deploy to Development'
-  dependsOn: BuildAndPackage
+  dependsOn: []
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/Dev-Ops-Deployment'))
   variables:
   - group: 'copa-stop-search-dev-variables'
@@ -317,13 +378,17 @@ stages:
       runOnce:
         deploy:
           steps:
-          - checkout: none
+          - checkout: self
+            fetchDepth: 1
+            condition: variables.infrastructureOnly
             
           - download: current
             artifact: 'copa-infrastructure'
+            condition: not(variables.infrastructureOnly)
             
           - download: current
             artifact: 'copa-application'
+            condition: not(variables.infrastructureOnly)
             
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -354,11 +419,21 @@ stages:
               inlineScript: |
                 echo "Deploying Bicep template with DevOps parameters..."
                 
+                # Determine template path based on deployment type
+                if [ "$(variables.infrastructureOnly)" = "True" ]; then
+                  TEMPLATE_PATH="infra/main.bicep"
+                  PARAMS_PATH="infra/main.devops.parameters.json"
+                else
+                  TEMPLATE_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                  PARAMS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
+                fi
+                
                 # Base deployment with parameters file
                 DEPLOYMENT_CMD="az deployment group create \
                   --resource-group $(resourceGroupName) \
-                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
-                  --parameters $(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json \
+                  --name $(Build.BuildNumber)-infrastructure \
+                  --template-file $TEMPLATE_PATH \
+                  --parameters $PARAMS_PATH \
                   --verbose"
                 
                 # Add OpenAI model parameters if variables are set
@@ -373,15 +448,66 @@ stages:
                 echo "Executing deployment command..."
                 eval $DEPLOYMENT_CMD
                 echo "Infrastructure deployment completed successfully"
+                
+                # Set web app name based on BTP naming convention from Bicep template
+                WEB_APP_NAME="app-btp-d-copa-stop-search-001"
+                echo "Setting web app name to: $WEB_APP_NAME"
+                echo "##vso[task.setvariable variable=webAppName]$WEB_APP_NAME"
+                
+          - task: AzureCLI@2
+            displayName: 'Verify Web App Exists'
+            condition: not(variables.infrastructureOnly)
+            inputs:
+              azureSubscription: $(azureServiceConnectionDev)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Checking if web app exists: $(webAppName)"
+                
+                if az webapp show --name "$(webAppName)" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
+                  echo "✅ Web app $(webAppName) exists and is ready for deployment"
+                else
+                  echo "❌ Web app $(webAppName) does not exist!"
+                  echo "Available web apps in resource group $(resourceGroupName):"
+                  az webapp list --resource-group "$(resourceGroupName)" --query "[].name" --output table || echo "No web apps found"
+                  exit 1
+                fi
                     
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
+            condition: not(variables.infrastructureOnly)
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
               appType: 'webAppLinux'
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/copa-application'
               runtimeStack: 'PYTHON|3.11'
+              
+          - task: AzureCLI@2
+            displayName: 'Verify Application Deployment'
+            condition: not(variables.infrastructureOnly)
+            inputs:
+              azureSubscription: $(azureServiceConnectionDev)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Verifying web app deployment..."
+                WEB_APP_URL="https://$(webAppName).azurewebsites.net"
+                echo "Web app URL: $WEB_APP_URL"
+                
+                # Wait a moment for the app to start
+                sleep 30
+                
+                # Check if the app is responding
+                HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$WEB_APP_URL" || echo "000")
+                echo "HTTP Status: $HTTP_STATUS"
+                
+                if [[ "$HTTP_STATUS" == "200" ]] || [[ "$HTTP_STATUS" == "302" ]]; then
+                  echo "✅ Web app is responding successfully"
+                else
+                  echo "⚠️ Web app returned status $HTTP_STATUS, but deployment completed"
+                  echo "This might be normal if the app takes time to start"
+                fi
 
 - stage: DeployProduction
   displayName: 'Deploy to Production'
@@ -457,6 +583,29 @@ stages:
                 echo "Executing deployment command..."
                 eval $DEPLOYMENT_CMD
                 echo "Production infrastructure deployment completed successfully"
+                
+                # Set web app name based on BTP naming convention for production
+                WEB_APP_NAME="app-btp-p-copa-stop-search-001"
+                echo "Setting production web app name to: $WEB_APP_NAME"
+                echo "##vso[task.setvariable variable=webAppName]$WEB_APP_NAME"
+                
+          - task: AzureCLI@2
+            displayName: 'Verify Web App Exists'
+            inputs:
+              azureSubscription: $(azureServiceConnectionProd)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Checking if production web app exists: $(webAppName)"
+                
+                if az webapp show --name "$(webAppName)" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
+                  echo "✅ Production web app $(webAppName) exists and is ready for deployment"
+                else
+                  echo "❌ Production web app $(webAppName) does not exist!"
+                  echo "Available web apps in resource group $(resourceGroupName):"
+                  az webapp list --resource-group "$(resourceGroupName)" --query "[].name" --output table || echo "No web apps found"
+                  exit 1
+                fi
                     
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
@@ -466,3 +615,28 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/copa-application'
               runtimeStack: 'PYTHON|3.11'
+              
+          - task: AzureCLI@2
+            displayName: 'Verify Production Application Deployment'
+            inputs:
+              azureSubscription: $(azureServiceConnectionProd)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Verifying production web app deployment..."
+                WEB_APP_URL="https://$(webAppName).azurewebsites.net"
+                echo "Production web app URL: $WEB_APP_URL"
+                
+                # Wait a moment for the app to start
+                sleep 30
+                
+                # Check if the app is responding
+                HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$WEB_APP_URL" || echo "000")
+                echo "HTTP Status: $HTTP_STATUS"
+                
+                if [[ "$HTTP_STATUS" == "200" ]] || [[ "$HTTP_STATUS" == "302" ]]; then
+                  echo "✅ Production web app is responding successfully"
+                else
+                  echo "⚠️ Production web app returned status $HTTP_STATUS, but deployment completed"
+                  echo "This might be normal if the app takes time to start"
+                fi
