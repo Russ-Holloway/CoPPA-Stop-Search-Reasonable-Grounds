@@ -398,11 +398,11 @@ stages:
 
           - download: current
             artifact: 'copa-infrastructure'
-            condition: not(variables.infrastructureOnly)
+            condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
 
           - download: current
             artifact: 'copa-application'
-            condition: not(variables.infrastructureOnly)
+            condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -628,7 +628,7 @@ stages:
 
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
-            condition: not(variables.infrastructureOnly)
+            condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
               appType: 'webAppLinux'
@@ -638,7 +638,7 @@ stages:
 
           - task: AzureCLI@2
             displayName: 'Verify Application Deployment'
-            condition: not(variables.infrastructureOnly)
+            condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
               scriptType: 'bash'
@@ -692,9 +692,11 @@ stages:
 
           - download: current
             artifact: 'copa-infrastructure'
+            condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
 
           - download: current
             artifact: 'copa-application'
+            condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -728,17 +730,32 @@ stages:
 
                 Write-Host "START: Starting PRODUCTION PowerShell-based infrastructure deployment"
 
-                $templatePath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
-                $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json"
+                # Fallback logic for production deployment
+                $artifactsTemplatePath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                $sourceTemplatePath = "infra/main.bicep"
+                
+                if (Test-Path $artifactsTemplatePath) {
+                  Write-Host "PACKAGE: Using pipeline artifacts for production deployment"
+                  $templatePath = $artifactsTemplatePath
+                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json"
+                } else {
+                  Write-Host "FOLDER: Using source files for production deployment (infrastructure-only mode)"
+                  $templatePath = $sourceTemplatePath
+                  $parametersPath = "infra/main.production.parameters.json"
+                }
 
                 Write-Host "FILE: Production Template path: $templatePath"
-                Write-Host "CONFIG:  Production Parameters path: $parametersPath"
+                Write-Host "CONFIG: Production Parameters path: $parametersPath"
 
                 # Verify files exist
                 if (-not (Test-Path $templatePath)) {
                   Write-Error "FAIL: Production template file not found at: $templatePath"
-                  Write-Host "  Available files in artifact:"
-                  Get-ChildItem "$(Pipeline.Workspace)/copa-infrastructure/" | Format-Table Name, Length
+                  if (Test-Path "$(Pipeline.Workspace)/copa-infrastructure/") {
+                    Write-Host "  Available files in artifact:"
+                    Get-ChildItem "$(Pipeline.Workspace)/copa-infrastructure/" | Format-Table Name, Length
+                  } else {
+                    Write-Host "  Artifact directory not found - using source files"
+                  }
                   throw "Production template file not found"
                 }
 
