@@ -9,7 +9,7 @@
       "value": "uksouth"
     },
     "principalId": {
-      "value": "00000000-0000-0000-0000-000000000000"
+      "value": "e3443d1b-2018-44bc-8b31-e871c1e46dd3"
     },
     "environmentCode": {
       "value": "d"
@@ -28,6 +28,21 @@
     },
     "privateEndpointSubnetAddressPrefix": {
       "value": "10.0.2.0/24"
+    },
+    "openAIModelName": {
+      "value": "gpt-35-turbo-16k"
+    },
+    "embeddingModelName": {
+      "value": "text-embedding-ada-002"
+    },
+    "openAiSkuName": {
+      "value": "S0"
+    },
+    "searchServiceSkuName": {
+      "value": "standard"
+    },
+    "formRecognizerSkuName": {
+      "value": "S0"
     },
     "ownerTag": {
       "value": "DevOps-Pipeline"

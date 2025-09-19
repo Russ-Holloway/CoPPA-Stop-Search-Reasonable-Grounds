@@ -447,16 +447,20 @@ stages:
                 
                 # Add OpenAI model parameters if variables are set
                 if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIModelName=$(openAIModel)"
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters openAIModelName=$(openAIModel)"
                 fi
                 
                 if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIEmbeddingName=$(embeddingModel)"
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters embeddingModelName=$(embeddingModel)"
                 fi
                 
                 echo "Executing deployment command..."
-                eval $DEPLOYMENT_CMD
-                echo "Infrastructure deployment completed successfully"
+                if eval $DEPLOYMENT_CMD; then
+                  echo "✅ Infrastructure deployment completed successfully"
+                else
+                  echo "❌ Infrastructure deployment failed"
+                  exit 1
+                fi
                 
                 # Set web app name based on BTP naming convention from Bicep template
                 WEB_APP_NAME="app-btp-d-copa-stop-search-001"
@@ -592,16 +596,20 @@ stages:
                 
                 # Add OpenAI model parameters if variables are set
                 if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIModelName=$(openAIModel)"
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters openAIModelName=$(openAIModel)"
                 fi
                 
                 if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters azureOpenAIEmbeddingName=$(embeddingModel)"
+                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters embeddingModelName=$(embeddingModel)"
                 fi
                 
                 echo "Executing deployment command..."
-                eval $DEPLOYMENT_CMD
-                echo "Production infrastructure deployment completed successfully"
+                if eval $DEPLOYMENT_CMD; then
+                  echo "✅ Production infrastructure deployment completed successfully"
+                else
+                  echo "❌ Production infrastructure deployment failed"
+                  exit 1
+                fi
                 
                 # Set web app name based on BTP naming convention for production
                 WEB_APP_NAME="app-btp-p-copa-stop-search-001"
