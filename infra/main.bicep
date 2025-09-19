@@ -61,8 +61,8 @@ param embeddingModelName string = 'text-embedding-ada-002'
 
 // Used by prepdocs.py: Form recognizer
 param formRecognizerServiceName string = ''
-param formRecognizerResourceGroupName string = ''
-param formRecognizerResourceGroupLocation string = location
+// param formRecognizerResourceGroupName string = ''
+// param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = ''
 
 // Used for the Azure AD application - now optional for post-deployment configuration
@@ -600,8 +600,8 @@ module docPrepResources 'docprep.bicep' = {
     principalId: principalId
     resourceGroupName: resourceGroup.name
     formRecognizerServiceName: formRecognizerServiceName
-    formRecognizerResourceGroupName: formRecognizerResourceGroupName
-    formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
+    // formRecognizerResourceGroupName: formRecognizerResourceGroupName
+    // formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
     formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
   }
 }

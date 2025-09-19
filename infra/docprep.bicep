@@ -8,8 +8,8 @@ param resourceToken string
 param namingPrefix string = ''
 
 param formRecognizerServiceName string = ''
-param formRecognizerResourceGroupName string = ''
-param formRecognizerResourceGroupLocation string = location
+// param formRecognizerResourceGroupName string = ''
+// param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = 'S0'
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -18,17 +18,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing 
   name: resourceGroupName
 }
 
-resource formRecognizerResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(formRecognizerResourceGroupName)) {
-  name: !empty(formRecognizerResourceGroupName) ? formRecognizerResourceGroupName : resourceGroup.name
-}
-
 module formRecognizer 'core/ai/cognitiveservices.bicep' = {
   name: 'formrecognizer'
-  scope: formRecognizerResourceGroup
+  scope: resourceGroup
   params: {
     name: !empty(formRecognizerServiceName) ? formRecognizerServiceName : !empty(namingPrefix) ? 'doc-${namingPrefix}' : '${abbrs.cognitiveServicesFormRecognizer}${resourceToken}'
     kind: 'FormRecognizer'
-    location: formRecognizerResourceGroupLocation
+    location: location
     tags: tags
     sku: {
       name: formRecognizerSkuName
@@ -37,7 +33,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
 }
 
 module formRecognizerRoleUser 'core/security/role.bicep' = {
-  scope: formRecognizerResourceGroup
+  scope: resourceGroup
   name: 'formrecognizer-role-user'
   params: {
     principalId: principalId
@@ -49,6 +45,6 @@ module formRecognizerRoleUser 'core/security/role.bicep' = {
 // Used by prepdocs
 // Form recognizer
 output AZURE_FORMRECOGNIZER_SERVICE string = formRecognizer.outputs.name
-output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = formRecognizerResourceGroup.name
+output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = resourceGroup.name
 output AZURE_FORMRECOGNIZER_SKU_NAME string = formRecognizerSkuName
 output AZURE_FORMRECOGNIZER_ID string = formRecognizer.outputs.id
