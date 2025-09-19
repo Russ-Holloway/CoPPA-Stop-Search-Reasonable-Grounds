@@ -6,6 +6,7 @@ param tags object = {}
 param principalId string
 param resourceToken string
 param namingPrefix string = ''
+param deployUserRoles bool = true
 
 param formRecognizerServiceName string = ''
 // param formRecognizerResourceGroupName string = ''
@@ -32,7 +33,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
   }
 }
 
-module formRecognizerRoleUser 'core/security/role.bicep' = {
+module formRecognizerRoleUser 'core/security/role.bicep' = if (deployUserRoles && !empty(principalId)) {
   scope: resourceGroup
   name: 'formrecognizer-role-user'
   params: {

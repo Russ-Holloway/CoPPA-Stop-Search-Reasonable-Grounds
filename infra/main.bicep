@@ -76,6 +76,9 @@ param cosmosAccountName string = ''
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+@description('Whether to deploy user role assignments (requires elevated service principal permissions)')
+param deployUserRoles bool = true
+
 // BTP Required Tags Parameters
 @description('Owner tag value for BTP policy compliance')
 param ownerTag string = ''
@@ -527,8 +530,9 @@ module formRecognizerPrivateEndpoint 'core/network/private-endpoint.bicep' = if 
 
 
 
-// USER ROLES
-module openAiRoleUser 'core/security/role.bicep' = {
+// USER ROLES - Only deploy if explicitly enabled and principalId is provided
+// Skip user roles for service principal-only deployments (DevOps scenarios)
+module openAiRoleUser 'core/security/role.bicep' = if (deployUserRoles && !empty(principalId)) {
   scope: resourceGroup
   name: 'openai-role-user'
   params: {
@@ -538,7 +542,7 @@ module openAiRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module searchRoleUser 'core/security/role.bicep' = {
+module searchRoleUser 'core/security/role.bicep' = if (deployUserRoles && !empty(principalId)) {
   scope: resourceGroup
   name: 'search-role-user'
   params: {
@@ -548,7 +552,7 @@ module searchRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module searchIndexDataContribRoleUser 'core/security/role.bicep' = {
+module searchIndexDataContribRoleUser 'core/security/role.bicep' = if (deployUserRoles && !empty(principalId)) {
   scope: resourceGroup
   name: 'search-index-data-contrib-role-user'
   params: {
@@ -558,7 +562,7 @@ module searchIndexDataContribRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module searchServiceContribRoleUser 'core/security/role.bicep' = {
+module searchServiceContribRoleUser 'core/security/role.bicep' = if (deployUserRoles && !empty(principalId)) {
   scope: resourceGroup
   name: 'search-service-contrib-role-user'
   params: {
@@ -603,6 +607,7 @@ module docPrepResources 'docprep.bicep' = {
     // formRecognizerResourceGroupName: formRecognizerResourceGroupName
     // formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
     formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
+    deployUserRoles: deployUserRoles
   }
 }
 output AZURE_LOCATION string = location
