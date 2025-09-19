@@ -45,6 +45,7 @@ variables:
   # Build and deployment settings
   pythonVersion: '3.10'
   nodeVersion: '18.x'
+  vmImageName: 'ubuntu-latest'
 
   # Performance optimizations
   AZURE_CORE_OUTPUT: 'table'
@@ -68,7 +69,17 @@ stages:
   displayName: 'Build, Test & Security Validation'
   condition: not(variables.skipBuild)
   jobs:
-stages:
+  - job: BuildValidation
+    displayName: 'Build and Validation'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+      fetchDepth: 1
+
+# ===================================================================================================
+# STAGE 2: FAST INFRASTRUCTURE VALIDATION
+# ===================================================================================================
 - stage: FastInfraValidation
   displayName: 'Fast Infrastructure Validation'
   condition: variables.infrastructureOnly
@@ -76,7 +87,7 @@ stages:
   - job: ValidateInfrastructureOnly
     displayName: 'Quick Bicep Validation'
     pool:
-      vmImage: $(vmImageName)
+      vmImage: ubuntu-latest
     steps:
     - checkout: self
       fetchDepth: 1  # Faster checkout
