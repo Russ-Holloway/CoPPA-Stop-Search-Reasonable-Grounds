@@ -1,5 +1,7 @@
 # Azure DevOps Pipeline for CoPA Stop & Search
 # Secure deployment with Infrastructure as Code using Bicep templates
+# ✅ SOLUTION: Uses Azure PowerShell instead of Azure CLI to avoid the
+# "content for this response was already consumed" bug in Azure CLI 2.77.0
 
 trigger:
   branches:
@@ -18,6 +20,12 @@ trigger:
 
 pr: none  # Disable automatic PR builds - manual trigger only for PRs
 
+# Pool configuration for optimal performance
+pool:
+  vmImage: 'ubuntu-latest'
+  demands:
+  - azureps  # Requires Azure PowerShell capability
+
 # Variables to control which stages run - set these in your commit message
 variables:
   # Global variables
@@ -29,6 +37,14 @@ variables:
     value: 'ubuntu-latest'
   - name: bicepTemplatePath
     value: 'infra/main.bicep'
+  
+  # Performance optimizations
+  - name: AZURE_CORE_OUTPUT
+    value: 'table'
+  - name: AZURE_CORE_COLLECT_TELEMETRY
+    value: 'false'
+  - name: AZURE_CLI_DISABLE_CONNECTION_VERIFICATION
+    value: '1'
   - name: bicepParametersPath
     value: 'infra/main.parameters.json'
   
@@ -393,130 +409,162 @@ stages:
                     Environment="Development"
                 echo "Resource group created successfully with all required tags"
                 
-          - task: AzureCLI@2
-            displayName: 'Downgrade Azure CLI to Stable Version'
+          - task: AzurePowerShell@5
+            displayName: 'Deploy Infrastructure with PowerShell (Avoiding CLI Bug)'
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "Current Azure CLI version:"
-                az --version
+              ScriptType: 'InlineScript'
+              azurePowerShellVersion: 'LatestVersion'
+              pwsh: true
+              Inline: |
+                $ErrorActionPreference = 'Stop'
                 
-                echo "Installing Azure CLI 2.53.0 (known stable version)..."
-                
-                # Alternative approach - use direct Bicep deployment without REST API complexity
-                # The issue is with CLI 2.77.0, so let's simplify the deployment approach
-                
-                echo "Configuring Azure CLI for optimal deployment..."
-                export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1
-                export AZURE_CORE_COLLECT_TELEMETRY=false
-                export AZURE_CORE_OUTPUT=table
-                
-                echo "Azure CLI configured for deployment"
-                
-          - task: AzureCLI@2
-            displayName: 'Deploy Infrastructure'
-            inputs:
-              azureSubscription: $(azureServiceConnectionDev)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "Deploying Bicep template with DevOps parameters..."
+                Write-Host "🚀 Starting PowerShell-based infrastructure deployment (Bypassing Azure CLI 2.77.0 bug)"
                 
                 # Always use source files when artifacts aren't downloaded
-                # This handles both Fast Infrastructure Validation and when build artifacts aren't available
-                ARTIFACTS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
-                SOURCE_PATH="infra/main.bicep"
+                $artifactsPath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                $sourcePath = "infra/main.bicep"
                 
-                if [ -f "$ARTIFACTS_PATH" ]; then
-                  echo "Using pipeline artifacts (full deployment mode)"
-                  TEMPLATE_PATH="$ARTIFACTS_PATH"
-                  PARAMS_PATH="$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
-                else
-                  echo "Using source files (infrastructure-only mode or no artifacts)"
-                  TEMPLATE_PATH="$SOURCE_PATH"
-                  PARAMS_PATH="infra/main.devops.parameters.json"
-                fi
+                if (Test-Path $artifactsPath) {
+                  Write-Host "📦 Using pipeline artifacts (full deployment mode)"
+                  $templatePath = $artifactsPath
+                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
+                } else {
+                  Write-Host "📁 Using source files (infrastructure-only mode or no artifacts)"
+                  $templatePath = $sourcePath
+                  $parametersPath = "infra/main.devops.parameters.json"
+                }
                 
-                echo "Template path: $TEMPLATE_PATH"
-                echo "Parameters path: $PARAMS_PATH"
+                Write-Host "📄 Template path: $templatePath"
+                Write-Host "⚙️  Parameters path: $parametersPath"
                 
                 # Verify files exist
-                if [ ! -f "$TEMPLATE_PATH" ]; then
-                  echo "❌ ERROR: Template file not found at: $TEMPLATE_PATH"
-                  echo "Current directory: $(pwd)"
-                  echo "Available files in infra/:"
-                  ls -la infra/ 2>/dev/null || echo "infra/ directory not found"
-                  exit 1
-                fi
+                if (-not (Test-Path $templatePath)) {
+                  Write-Error "❌ Template file not found at: $templatePath"
+                  Write-Host "📂 Current directory: $(Get-Location)"
+                  if (Test-Path "infra/") {
+                    Write-Host "📋 Available files in infra/:"
+                    Get-ChildItem "infra/" | Format-Table Name, Length
+                  }
+                  throw "Template file not found"
+                }
                 
-                if [ ! -f "$PARAMS_PATH" ]; then
-                  echo "❌ ERROR: Parameters file not found at: $PARAMS_PATH"
-                  exit 1
-                fi
+                if (-not (Test-Path $parametersPath)) {
+                  Write-Error "❌ Parameters file not found at: $parametersPath"
+                  throw "Parameters file not found"
+                }
                 
-                echo "✅ Files verified successfully"
+                Write-Host "✅ Files verified successfully"
                 
-                # Convert Bicep to ARM template first to avoid Bicep-specific issues
-                echo "Converting Bicep template to ARM template..."
-                az bicep build --file $TEMPLATE_PATH --outfile /tmp/main.json
-                
-                if [ ! -f "/tmp/main.json" ]; then
-                  echo "❌ Failed to compile Bicep template to ARM"
-                  exit 1
-                fi
-                
-                echo "ARM template compiled successfully"
-                
-                # Use simplified direct Bicep deployment approach
-                echo "Starting simplified Bicep deployment..."
-                DEPLOYMENT_NAME="$(Build.BuildNumber)-infrastructure-$(date +%s)"
-                
-                # Add OpenAI model parameters if variables are set
-                EXTRA_PARAMS=""
-                if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
-                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters openAIModelName=$(openAIModel)"
-                fi
-                
-                if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
-                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters embeddingModelName=$(embeddingModel)"
-                fi
-                
-                # Use direct Bicep deployment with optimized settings
-                echo "Deploying with optimized Azure CLI settings..."
-                
-                az deployment sub create \
-                  --location $(azureLocation) \
-                  --name "$DEPLOYMENT_NAME" \
-                  --template-file "infra/main.bicep" \
-                  --parameters $PARAMS_PATH \
-                  $EXTRA_PARAMS \
-                  --output table \
-                  --verbose
-                
-                if [ $? -eq 0 ]; then
-                  echo "✅ Infrastructure deployment completed successfully"
-                else
-                  echo "❌ Deployment failed, checking deployment status..."
+                # Load parameters from JSON file
+                try {
+                  $parametersJson = Get-Content -Path $parametersPath -Raw | ConvertFrom-Json
+                  $parameters = @{}
                   
-                  # Check deployment status
-                  DEPLOYMENT_STATUS=$(az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.provisioningState" --output tsv 2>/dev/null || echo "Unknown")
-                  echo "Deployment status: $DEPLOYMENT_STATUS"
+                  # Convert JSON parameters to hashtable format required by PowerShell
+                  $parametersJson.parameters.PSObject.Properties | ForEach-Object {
+                    $parameters[$_.Name] = $_.Value.value
+                  }
                   
-                  if [ "$DEPLOYMENT_STATUS" = "Succeeded" ]; then
-                    echo "✅ Deployment actually succeeded despite CLI error"
-                  else
-                    echo "❌ Deployment status indicates failure"
-                    az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.error" --output table 2>/dev/null || true
-                    exit 1
-                  fi
-                fi
+                  Write-Host "📋 Loaded parameters from file:"
+                  $parameters.GetEnumerator() | Sort-Object Name | ForEach-Object {
+                    if ($_.Name -like "*password*" -or $_.Name -like "*key*" -or $_.Name -like "*secret*") {
+                      Write-Host "  $($_.Name) = ***MASKED***"
+                    } else {
+                      Write-Host "  $($_.Name) = $($_.Value)"
+                    }
+                  }
+                  
+                  # Add OpenAI model parameters if variables are set
+                  if ("$(openAIModel)" -ne "`$(openAIModel)" -and "$(openAIModel)" -ne "") {
+                    $parameters['openAIModelName'] = "$(openAIModel)"
+                    Write-Host "🤖 Added OpenAI model: $(openAIModel)"
+                  }
+                  
+                  if ("$(embeddingModel)" -ne "`$(embeddingModel)" -and "$(embeddingModel)" -ne "") {
+                    $parameters['embeddingModelName'] = "$(embeddingModel)"
+                    Write-Host "📊 Added embedding model: $(embeddingModel)"
+                  }
+                  
+                } catch {
+                  Write-Error "❌ Failed to load parameters: $($_.Exception.Message)"
+                  throw
+                }
                 
-                # Set web app name based on BTP naming convention from Bicep template
-                WEB_APP_NAME="app-btp-d-copa-stop-search-001"
-                echo "Setting web app name to: $WEB_APP_NAME"
-                echo "##vso[task.setvariable variable=webAppName]$WEB_APP_NAME"
+                # Create deployment name
+                $deploymentName = "$(Build.BuildNumber)-infrastructure-$((Get-Date).ToString('yyyyMMdd-HHmmss'))"
+                Write-Host "🏷️  Deployment name: $deploymentName"
+                
+                try {
+                  # Deploy infrastructure using PowerShell (avoids CLI response handling bug)
+                  Write-Host "🚀 Starting Bicep deployment with PowerShell..."
+                  Write-Host "📍 Target location: $(azureLocation)"
+                  
+                  $deploymentResult = New-AzSubscriptionDeployment `
+                    -Name $deploymentName `
+                    -Location "$(azureLocation)" `
+                    -TemplateFile $templatePath `
+                    -TemplateParameterObject $parameters `
+                    -Verbose
+                  
+                  Write-Host "✅ Infrastructure deployment completed successfully!"
+                  Write-Host "📊 Final State: $($deploymentResult.ProvisioningState)"
+                  Write-Host "🆔 Deployment ID: $($deploymentResult.Id)"
+                  
+                  # Output deployment results
+                  if ($deploymentResult.Outputs) {
+                    Write-Host "📤 Deployment Outputs:"
+                    $deploymentResult.Outputs | ConvertTo-Json -Depth 3
+                    
+                    # Extract web app name from outputs or use BTP naming convention
+                    if ($deploymentResult.Outputs.ContainsKey('webAppName')) {
+                      $webAppName = $deploymentResult.Outputs.webAppName.Value
+                    } else {
+                      $webAppName = "app-btp-d-copa-stop-search-001"
+                    }
+                  } else {
+                    # Fallback to BTP naming convention
+                    $webAppName = "app-btp-d-copa-stop-search-001"
+                  }
+                  
+                  Write-Host "🌐 Web App Name: $webAppName"
+                  Write-Host "##vso[task.setvariable variable=webAppName]$webAppName"
+                  
+                } catch {
+                  Write-Error "❌ PowerShell deployment failed: $($_.Exception.Message)"
+                  Write-Host "🔍 Exception details: $($_.Exception.ToString())"
+                  
+                  # Try to get deployment details for debugging
+                  try {
+                    Write-Host "🔍 Attempting to get deployment status..."
+                    $deployment = Get-AzSubscriptionDeployment -Name $deploymentName -ErrorAction SilentlyContinue
+                    if ($deployment) {
+                      Write-Host "📊 Deployment State: $($deployment.ProvisioningState)"
+                      
+                      if ($deployment.ProvisioningState -eq "Failed") {
+                        Write-Host "🔍 Getting deployment operation details..."
+                        $operations = Get-AzSubscriptionDeploymentOperation -DeploymentName $deploymentName -ErrorAction SilentlyContinue
+                        
+                        if ($operations) {
+                          foreach ($op in $operations | Where-Object { $_.Properties.ProvisioningState -eq "Failed" }) {
+                            Write-Host "❌ Failed Operation:"
+                            Write-Host "  Resource: $($op.Properties.TargetResource.ResourceName)"
+                            Write-Host "  Type: $($op.Properties.TargetResource.ResourceType)"
+                            if ($op.Properties.StatusMessage) {
+                              Write-Host "  Error: $($op.Properties.StatusMessage | ConvertTo-Json -Depth 5)"
+                            }
+                          }
+                        }
+                      }
+                    } else {
+                      Write-Host "⚠️  Could not retrieve deployment information"
+                    }
+                  } catch {
+                    Write-Host "⚠️  Error getting deployment details: $($_.Exception.Message)"
+                  }
+                  
+                  throw
+                }
                 
           - task: AzureCLI@2
             displayName: 'Verify Web App Exists'
@@ -627,74 +675,146 @@ stages:
                     Environment="Production"
                 echo "Production resource group created successfully with all required tags"
             
-          - task: AzureCLI@2
-            displayName: 'Deploy Infrastructure'
+          - task: AzurePowerShell@5
+            displayName: 'Deploy Infrastructure with PowerShell (Production)'
             inputs:
               azureSubscription: $(azureServiceConnectionProd)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "Deploying Bicep template with Production parameters..."
+              ScriptType: 'InlineScript'
+              azurePowerShellVersion: 'LatestVersion'
+              pwsh: true
+              Inline: |
+                $ErrorActionPreference = 'Stop'
                 
-                # Convert Bicep to ARM template first to avoid Bicep-specific issues
-                echo "Converting Bicep template to ARM template..."
-                az bicep build --file $(Pipeline.Workspace)/copa-infrastructure/main.bicep --outfile /tmp/main-prod.json
+                Write-Host "🚀 Starting PRODUCTION PowerShell-based infrastructure deployment"
                 
-                if [ ! -f "/tmp/main-prod.json" ]; then
-                  echo "❌ Failed to compile Bicep template to ARM"
-                  exit 1
-                fi
+                $templatePath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json"
                 
-                echo "Production ARM template compiled successfully"
+                Write-Host "📄 Production Template path: $templatePath"
+                Write-Host "⚙️  Production Parameters path: $parametersPath"
                 
-                # Use simplified direct Bicep deployment approach for production
-                echo "Starting simplified production Bicep deployment..."
-                DEPLOYMENT_NAME="$(Build.BuildNumber)-prod-infrastructure-$(date +%s)"
+                # Verify files exist
+                if (-not (Test-Path $templatePath)) {
+                  Write-Error "❌ Production template file not found at: $templatePath"
+                  Write-Host "📂 Available files in artifact:"
+                  Get-ChildItem "$(Pipeline.Workspace)/copa-infrastructure/" | Format-Table Name, Length
+                  throw "Production template file not found"
+                }
                 
-                # Add OpenAI model parameters if variables are set
-                EXTRA_PARAMS=""
-                if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
-                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters openAIModelName=$(openAIModel)"
-                fi
+                if (-not (Test-Path $parametersPath)) {
+                  Write-Error "❌ Production parameters file not found at: $parametersPath"
+                  throw "Production parameters file not found"
+                }
                 
-                if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
-                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters embeddingModelName=$(embeddingModel)"
-                fi
+                Write-Host "✅ Production files verified successfully"
                 
-                # Use direct Bicep deployment with optimized settings for production
-                echo "Deploying production with optimized Azure CLI settings..."
-                
-                az deployment sub create \
-                  --location $(azureLocation) \
-                  --name "$DEPLOYMENT_NAME" \
-                  --template-file "infra/main.bicep" \
-                  --parameters $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json \
-                  $EXTRA_PARAMS \
-                  --output table \
-                  --verbose
-                
-                if [ $? -eq 0 ]; then
-                  echo "✅ Production infrastructure deployment completed successfully"
-                else
-                  echo "❌ Production deployment failed, checking deployment status..."
+                # Load parameters for production
+                try {
+                  $parametersJson = Get-Content -Path $parametersPath -Raw | ConvertFrom-Json
+                  $parameters = @{}
                   
-                  # Check deployment status
-                  DEPLOYMENT_STATUS=$(az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.provisioningState" --output tsv 2>/dev/null || echo "Unknown")
-                  echo "Production deployment status: $DEPLOYMENT_STATUS"
+                  # Convert JSON parameters to hashtable
+                  $parametersJson.parameters.PSObject.Properties | ForEach-Object {
+                    $parameters[$_.Name] = $_.Value.value
+                  }
                   
-                  if [ "$DEPLOYMENT_STATUS" = "Succeeded" ]; then
-                    echo "✅ Production deployment actually succeeded despite CLI error"
-                  else
-                    echo "❌ Production deployment status indicates failure"
-                    az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.error" --output table 2>/dev/null || true
-                    exit 1
-                  fi
-                fi
+                  Write-Host "📋 Loaded PRODUCTION parameters:"
+                  $parameters.GetEnumerator() | Sort-Object Name | ForEach-Object {
+                    if ($_.Name -like "*password*" -or $_.Name -like "*key*" -or $_.Name -like "*secret*") {
+                      Write-Host "  $($_.Name) = ***MASKED***"
+                    } else {
+                      Write-Host "  $($_.Name) = $($_.Value)"
+                    }
+                  }
+                  
+                  # Add OpenAI model parameters for production
+                  if ("$(openAIModel)" -ne "`$(openAIModel)" -and "$(openAIModel)" -ne "") {
+                    $parameters['openAIModelName'] = "$(openAIModel)"
+                    Write-Host "🤖 Added PRODUCTION OpenAI model: $(openAIModel)"
+                  }
+                  
+                  if ("$(embeddingModel)" -ne "`$(embeddingModel)" -and "$(embeddingModel)" -ne "") {
+                    $parameters['embeddingModelName'] = "$(embeddingModel)"
+                    Write-Host "📊 Added PRODUCTION embedding model: $(embeddingModel)"
+                  }
+                  
+                } catch {
+                  Write-Error "❌ Failed to load production parameters: $($_.Exception.Message)"
+                  throw
+                }
                 
-                # Set web app name based on BTP naming convention for production
-                WEB_APP_NAME="app-btp-p-copa-stop-search-001"
-                echo "Setting production web app name to: $WEB_APP_NAME"
-                echo "##vso[task.setvariable variable=webAppName]$WEB_APP_NAME"
+                # Create production deployment name
+                $deploymentName = "$(Build.BuildNumber)-prod-infrastructure-$((Get-Date).ToString('yyyyMMdd-HHmmss'))"
+                Write-Host "🏷️  PRODUCTION Deployment name: $deploymentName"
+                
+                try {
+                  # Deploy production infrastructure using PowerShell
+                  Write-Host "🚀 Starting PRODUCTION Bicep deployment with PowerShell..."
+                  Write-Host "📍 Target location: $(azureLocation)"
+                  
+                  $deploymentResult = New-AzSubscriptionDeployment `
+                    -Name $deploymentName `
+                    -Location "$(azureLocation)" `
+                    -TemplateFile $templatePath `
+                    -TemplateParameterObject $parameters `
+                    -Verbose
+                  
+                  Write-Host "✅ PRODUCTION infrastructure deployment completed successfully!"
+                  Write-Host "📊 Final State: $($deploymentResult.ProvisioningState)"
+                  Write-Host "🆔 Deployment ID: $($deploymentResult.Id)"
+                  
+                  # Output deployment results for production
+                  if ($deploymentResult.Outputs) {
+                    Write-Host "📤 PRODUCTION Deployment Outputs:"
+                    $deploymentResult.Outputs | ConvertTo-Json -Depth 3
+                    
+                    # Extract web app name for production
+                    if ($deploymentResult.Outputs.ContainsKey('webAppName')) {
+                      $webAppName = $deploymentResult.Outputs.webAppName.Value
+                    } else {
+                      $webAppName = "app-btp-p-copa-stop-search-001"
+                    }
+                  } else {
+                    # Fallback to production BTP naming convention
+                    $webAppName = "app-btp-p-copa-stop-search-001"
+                  }
+                  
+                  Write-Host "🌐 PRODUCTION Web App Name: $webAppName"
+                  Write-Host "##vso[task.setvariable variable=webAppName]$webAppName"
+                  
+                } catch {
+                  Write-Error "❌ PRODUCTION PowerShell deployment failed: $($_.Exception.Message)"
+                  Write-Host "🔍 Exception details: $($_.Exception.ToString())"
+                  
+                  # Try to get production deployment details for debugging
+                  try {
+                    Write-Host "🔍 Getting PRODUCTION deployment status..."
+                    $deployment = Get-AzSubscriptionDeployment -Name $deploymentName -ErrorAction SilentlyContinue
+                    if ($deployment) {
+                      Write-Host "📊 PRODUCTION Deployment State: $($deployment.ProvisioningState)"
+                      
+                      if ($deployment.ProvisioningState -eq "Failed") {
+                        Write-Host "🔍 Getting PRODUCTION deployment operation details..."
+                        $operations = Get-AzSubscriptionDeploymentOperation -DeploymentName $deploymentName -ErrorAction SilentlyContinue
+                        
+                        if ($operations) {
+                          foreach ($op in $operations | Where-Object { $_.Properties.ProvisioningState -eq "Failed" }) {
+                            Write-Host "❌ Failed PRODUCTION Operation:"
+                            Write-Host "  Resource: $($op.Properties.TargetResource.ResourceName)"
+                            Write-Host "  Type: $($op.Properties.TargetResource.ResourceType)"
+                            if ($op.Properties.StatusMessage) {
+                              Write-Host "  Error: $($op.Properties.StatusMessage | ConvertTo-Json -Depth 5)"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  } catch {
+                    Write-Host "⚠️  Error getting PRODUCTION deployment details: $($_.Exception.Message)"
+                  }
+                  
+                  throw
+                }
                 
           - task: AzureCLI@2
             displayName: 'Verify Web App Exists'
