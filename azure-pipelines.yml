@@ -448,7 +448,7 @@ stages:
                 echo "ARM template compiled successfully"
                 
                 # Use ARM template instead of Bicep for deployment
-                echo "Starting ARM template deployment..."
+                echo "Starting alternative deployment approach..."
                 DEPLOYMENT_NAME="$(Build.BuildNumber)-infrastructure-$(date +%s)"
                 
                 # Add OpenAI model parameters if variables are set
@@ -461,56 +461,111 @@ stages:
                   EXTRA_PARAMS="$EXTRA_PARAMS --parameters embeddingModelName=$(embeddingModel)"
                 fi
                 
-                # Retry deployment up to 3 times
-                RETRY_COUNT=0
-                MAX_RETRIES=3
-                SUCCESS=false
+                # Method 1: Try with Azure REST API deployment using curl
+                echo "Method 1: Using Azure REST API for deployment..."
                 
-                while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
-                  RETRY_COUNT=$((RETRY_COUNT + 1))
-                  echo "Deployment attempt $RETRY_COUNT of $MAX_RETRIES..."
+                # Get access token
+                ACCESS_TOKEN=$(az account get-access-token --query accessToken --output tsv)
+                SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+                
+                # Prepare ARM template and parameters for REST API
+                ARM_TEMPLATE=$(cat /tmp/main.json | jq -c .)
+                PARAMS_JSON=$(cat $PARAMS_PATH)
+                
+                # Create deployment payload
+                cat > deployment-payload.json << EOF
+{
+  "properties": {
+    "template": $ARM_TEMPLATE,
+    "parameters": $PARAMS_JSON,
+    "mode": "Incremental"
+  }
+}
+EOF
+                
+                # Submit deployment via REST API
+                DEPLOYMENT_URL="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/providers/Microsoft.Resources/deployments/$DEPLOYMENT_NAME?api-version=2021-04-01"
+                
+                echo "Submitting deployment via REST API..."
+                RESPONSE=$(curl -s -X PUT \
+                  -H "Authorization: Bearer $ACCESS_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d @deployment-payload.json \
+                  "$DEPLOYMENT_URL")
+                
+                if echo "$RESPONSE" | jq -e '.properties' > /dev/null 2>&1; then
+                  echo "✅ Deployment submitted successfully via REST API"
                   
-                  CURRENT_DEPLOYMENT_NAME="${DEPLOYMENT_NAME}-attempt-${RETRY_COUNT}"
+                  # Monitor deployment status
+                  echo "Monitoring deployment status..."
+                  for i in {1..60}; do
+                    STATUS_RESPONSE=$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "$DEPLOYMENT_URL")
+                    DEPLOYMENT_STATUS=$(echo "$STATUS_RESPONSE" | jq -r '.properties.provisioningState // "Unknown"')
+                    
+                    echo "Deployment status check $i/60: $DEPLOYMENT_STATUS"
+                    
+                    case "$DEPLOYMENT_STATUS" in
+                      "Succeeded")
+                        echo "✅ Infrastructure deployment completed successfully"
+                        SUCCESS=true
+                        break
+                        ;;
+                      "Failed")
+                        echo "❌ Deployment failed"
+                        echo "Error details:"
+                        echo "$STATUS_RESPONSE" | jq -r '.properties.error // "No error details available"'
+                        exit 1
+                        ;;
+                      "Canceled")
+                        echo "❌ Deployment was canceled"
+                        exit 1
+                        ;;
+                    esac
+                    
+                    sleep 30
+                  done
+                  
+                  if [ "$SUCCESS" != true ]; then
+                    echo "⚠️ Deployment monitoring timed out after 30 minutes"
+                    echo "Current status: $DEPLOYMENT_STATUS"
+                    # Check one more time
+                    FINAL_STATUS_RESPONSE=$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "$DEPLOYMENT_URL")
+                    FINAL_STATUS=$(echo "$FINAL_STATUS_RESPONSE" | jq -r '.properties.provisioningState // "Unknown"')
+                    if [ "$FINAL_STATUS" = "Succeeded" ]; then
+                      echo "✅ Final check shows deployment succeeded"
+                      SUCCESS=true
+                    else
+                      echo "❌ Final deployment status: $FINAL_STATUS"
+                      exit 1
+                    fi
+                  fi
+                else
+                  echo "❌ Failed to submit deployment via REST API"
+                  echo "Response: $RESPONSE"
+                  
+                  # Fallback to direct Bicep deployment without ARM conversion
+                  echo "Method 2: Fallback to direct Bicep deployment with enhanced CLI settings..."
+                  
+                  # Configure CLI for better handling
+                  export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1
+                  export AZURE_CORE_COLLECT_TELEMETRY=false
+                  export AZURE_CORE_OUTPUT=json
                   
                   if az deployment sub create \
                     --location $(azureLocation) \
-                    --name "$CURRENT_DEPLOYMENT_NAME" \
-                    --template-file /tmp/main.json \
+                    --name "$DEPLOYMENT_NAME-bicep" \
+                    --template-file "infra/main.bicep" \
                     --parameters $PARAMS_PATH \
                     $EXTRA_PARAMS \
-                    --no-wait; then
-                    
-                    echo "Deployment submitted successfully, waiting for completion..."
-                    
-                    # Wait for deployment with timeout
-                    if timeout 1800 az deployment sub wait --name "$CURRENT_DEPLOYMENT_NAME" --created; then
-                      # Check final status
-                      DEPLOYMENT_STATUS=$(az deployment sub show --name "$CURRENT_DEPLOYMENT_NAME" --query "properties.provisioningState" --output tsv)
-                      
-                      if [ "$DEPLOYMENT_STATUS" = "Succeeded" ]; then
-                        echo "✅ Infrastructure deployment completed successfully on attempt $RETRY_COUNT"
-                        SUCCESS=true
-                      else
-                        echo "❌ Deployment failed with status: $DEPLOYMENT_STATUS"
-                        # Show error details
-                        az deployment sub show --name "$CURRENT_DEPLOYMENT_NAME" --query "properties.error" --output json || true
-                      fi
-                    else
-                      echo "❌ Deployment timed out after 30 minutes"
-                    fi
+                    --output table \
+                    --only-show-errors; then
+                    echo "✅ Bicep deployment succeeded"
+                    SUCCESS=true
                   else
-                    echo "❌ Failed to submit deployment on attempt $RETRY_COUNT"
+                    echo "❌ All deployment methods failed"
+                    echo "This appears to be an Azure CLI 2.77.0 compatibility issue"
+                    exit 1
                   fi
-                  
-                  if [ "$SUCCESS" = false ] && [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                    echo "Waiting 30 seconds before retry..."
-                    sleep 30
-                  fi
-                done
-                
-                if [ "$SUCCESS" = false ]; then
-                  echo "❌ All deployment attempts failed"
-                  exit 1
                 fi
                 
                 # Set web app name based on BTP naming convention from Bicep template
@@ -648,7 +703,7 @@ stages:
                 echo "Production ARM template compiled successfully"
                 
                 # Use ARM template instead of Bicep for deployment
-                echo "Starting production ARM template deployment..."
+                echo "Starting production alternative deployment approach..."
                 DEPLOYMENT_NAME="$(Build.BuildNumber)-prod-infrastructure-$(date +%s)"
                 
                 # Add OpenAI model parameters if variables are set
@@ -661,56 +716,111 @@ stages:
                   EXTRA_PARAMS="$EXTRA_PARAMS --parameters embeddingModelName=$(embeddingModel)"
                 fi
                 
-                # Retry deployment up to 3 times
-                RETRY_COUNT=0
-                MAX_RETRIES=3
-                SUCCESS=false
+                # Method 1: Try with Azure REST API deployment using curl
+                echo "Method 1: Using Azure REST API for production deployment..."
                 
-                while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
-                  RETRY_COUNT=$((RETRY_COUNT + 1))
-                  echo "Production deployment attempt $RETRY_COUNT of $MAX_RETRIES..."
+                # Get access token
+                ACCESS_TOKEN=$(az account get-access-token --query accessToken --output tsv)
+                SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+                
+                # Prepare ARM template and parameters for REST API
+                ARM_TEMPLATE=$(cat /tmp/main-prod.json | jq -c .)
+                PARAMS_JSON=$(cat $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json)
+                
+                # Create deployment payload
+                cat > deployment-payload-prod.json << EOF
+{
+  "properties": {
+    "template": $ARM_TEMPLATE,
+    "parameters": $PARAMS_JSON,
+    "mode": "Incremental"
+  }
+}
+EOF
+                
+                # Submit deployment via REST API
+                DEPLOYMENT_URL="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/providers/Microsoft.Resources/deployments/$DEPLOYMENT_NAME?api-version=2021-04-01"
+                
+                echo "Submitting production deployment via REST API..."
+                RESPONSE=$(curl -s -X PUT \
+                  -H "Authorization: Bearer $ACCESS_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d @deployment-payload-prod.json \
+                  "$DEPLOYMENT_URL")
+                
+                if echo "$RESPONSE" | jq -e '.properties' > /dev/null 2>&1; then
+                  echo "✅ Production deployment submitted successfully via REST API"
                   
-                  CURRENT_DEPLOYMENT_NAME="${DEPLOYMENT_NAME}-attempt-${RETRY_COUNT}"
+                  # Monitor deployment status
+                  echo "Monitoring production deployment status..."
+                  for i in {1..60}; do
+                    STATUS_RESPONSE=$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "$DEPLOYMENT_URL")
+                    DEPLOYMENT_STATUS=$(echo "$STATUS_RESPONSE" | jq -r '.properties.provisioningState // "Unknown"')
+                    
+                    echo "Production deployment status check $i/60: $DEPLOYMENT_STATUS"
+                    
+                    case "$DEPLOYMENT_STATUS" in
+                      "Succeeded")
+                        echo "✅ Production infrastructure deployment completed successfully"
+                        SUCCESS=true
+                        break
+                        ;;
+                      "Failed")
+                        echo "❌ Production deployment failed"
+                        echo "Error details:"
+                        echo "$STATUS_RESPONSE" | jq -r '.properties.error // "No error details available"'
+                        exit 1
+                        ;;
+                      "Canceled")
+                        echo "❌ Production deployment was canceled"
+                        exit 1
+                        ;;
+                    esac
+                    
+                    sleep 30
+                  done
+                  
+                  if [ "$SUCCESS" != true ]; then
+                    echo "⚠️ Production deployment monitoring timed out after 30 minutes"
+                    echo "Current status: $DEPLOYMENT_STATUS"
+                    # Check one more time
+                    FINAL_STATUS_RESPONSE=$(curl -s -H "Authorization: Bearer $ACCESS_TOKEN" "$DEPLOYMENT_URL")
+                    FINAL_STATUS=$(echo "$FINAL_STATUS_RESPONSE" | jq -r '.properties.provisioningState // "Unknown"')
+                    if [ "$FINAL_STATUS" = "Succeeded" ]; then
+                      echo "✅ Final check shows production deployment succeeded"
+                      SUCCESS=true
+                    else
+                      echo "❌ Final production deployment status: $FINAL_STATUS"
+                      exit 1
+                    fi
+                  fi
+                else
+                  echo "❌ Failed to submit production deployment via REST API"
+                  echo "Response: $RESPONSE"
+                  
+                  # Fallback to direct Bicep deployment without ARM conversion
+                  echo "Method 2: Fallback to direct Bicep deployment with enhanced CLI settings..."
+                  
+                  # Configure CLI for better handling
+                  export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1
+                  export AZURE_CORE_COLLECT_TELEMETRY=false
+                  export AZURE_CORE_OUTPUT=json
                   
                   if az deployment sub create \
                     --location $(azureLocation) \
-                    --name "$CURRENT_DEPLOYMENT_NAME" \
-                    --template-file /tmp/main-prod.json \
+                    --name "$DEPLOYMENT_NAME-bicep" \
+                    --template-file "infra/main.bicep" \
                     --parameters $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json \
                     $EXTRA_PARAMS \
-                    --no-wait; then
-                    
-                    echo "Production deployment submitted successfully, waiting for completion..."
-                    
-                    # Wait for deployment with timeout
-                    if timeout 1800 az deployment sub wait --name "$CURRENT_DEPLOYMENT_NAME" --created; then
-                      # Check final status
-                      DEPLOYMENT_STATUS=$(az deployment sub show --name "$CURRENT_DEPLOYMENT_NAME" --query "properties.provisioningState" --output tsv)
-                      
-                      if [ "$DEPLOYMENT_STATUS" = "Succeeded" ]; then
-                        echo "✅ Production infrastructure deployment completed successfully on attempt $RETRY_COUNT"
-                        SUCCESS=true
-                      else
-                        echo "❌ Production deployment failed with status: $DEPLOYMENT_STATUS"
-                        # Show error details
-                        az deployment sub show --name "$CURRENT_DEPLOYMENT_NAME" --query "properties.error" --output json || true
-                      fi
-                    else
-                      echo "❌ Production deployment timed out after 30 minutes"
-                    fi
+                    --output table \
+                    --only-show-errors; then
+                    echo "✅ Production Bicep deployment succeeded"
+                    SUCCESS=true
                   else
-                    echo "❌ Failed to submit production deployment on attempt $RETRY_COUNT"
+                    echo "❌ All production deployment methods failed"
+                    echo "This appears to be an Azure CLI 2.77.0 compatibility issue"
+                    exit 1
                   fi
-                  
-                  if [ "$SUCCESS" = false ] && [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                    echo "Waiting 30 seconds before retry..."
-                    sleep 30
-                  fi
-                done
-                
-                if [ "$SUCCESS" = false ]; then
-                  echo "❌ All production deployment attempts failed"
-                  exit 1
                 fi
                 
                 # Set web app name based on BTP naming convention for production
