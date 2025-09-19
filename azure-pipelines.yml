@@ -472,16 +472,18 @@ stages:
                 ARM_TEMPLATE=$(cat /tmp/main.json | jq -c .)
                 PARAMS_JSON=$(cat $PARAMS_PATH)
                 
-                # Create deployment payload
-                cat > deployment-payload.json << EOF
-{
-  "properties": {
-    "template": $ARM_TEMPLATE,
-    "parameters": $PARAMS_JSON,
-    "mode": "Incremental"
-  }
-}
-EOF
+                # Create deployment payload using jq
+                echo "Creating deployment payload..."
+                jq -n \
+                  --argjson template "$ARM_TEMPLATE" \
+                  --argjson parameters "$PARAMS_JSON" \
+                  '{
+                    properties: {
+                      template: $template,
+                      parameters: $parameters,
+                      mode: "Incremental"
+                    }
+                  }' > deployment-payload.json
                 
                 # Submit deployment via REST API
                 DEPLOYMENT_URL="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/providers/Microsoft.Resources/deployments/$DEPLOYMENT_NAME?api-version=2021-04-01"
@@ -727,16 +729,18 @@ EOF
                 ARM_TEMPLATE=$(cat /tmp/main-prod.json | jq -c .)
                 PARAMS_JSON=$(cat $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json)
                 
-                # Create deployment payload
-                cat > deployment-payload-prod.json << EOF
-{
-  "properties": {
-    "template": $ARM_TEMPLATE,
-    "parameters": $PARAMS_JSON,
-    "mode": "Incremental"
-  }
-}
-EOF
+                # Create deployment payload using jq
+                echo "Creating production deployment payload..."
+                jq -n \
+                  --argjson template "$ARM_TEMPLATE" \
+                  --argjson parameters "$PARAMS_JSON" \
+                  '{
+                    properties: {
+                      template: $template,
+                      parameters: $parameters,
+                      mode: "Incremental"
+                    }
+                  }' > deployment-payload-prod.json
                 
                 # Submit deployment via REST API
                 DEPLOYMENT_URL="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/providers/Microsoft.Resources/deployments/$DEPLOYMENT_NAME?api-version=2021-04-01"
