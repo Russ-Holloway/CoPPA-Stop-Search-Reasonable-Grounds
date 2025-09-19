@@ -16,67 +16,58 @@ trigger:
     - '.gitignore'
     - '.vscode/**'
     - '.devcontainer/**'
-  batch: true  # Batch builds - if mult                  if ($validationResult) {
-                    Write-Host "❌ Template validation failed with the following errors:"
-                    foreach ($validationError in $validationResult) {
-                      Write-Host "  🚫 Error Code: $($validationError.Code)"
-                      Write-Host "  📝 Message: $($validationError.Message)"
-                      if ($validationError.Details) {
-                        Write-Host "  🔍 Details: $($validationError.Details | ConvertTo-Json -Depth 3)"
-                      }
-                      if ($validationError.Target) {
-                        Write-Host "  🎯 Target: $($validationError.Target)"
-                      }
-                    }
-                    throw "Template validation failed. See errors above."
-                  }ushed quickly, only build the latest
+  batch: true  # Batch builds - if multiple commits come in quickly, batch them
 
-pr: none  # Disable automatic PR builds - manual trigger only for PRs
+pr:
+  branches:
+    include:
+    - main
+    - Dev-Ops-Deployment
+  drafts: false
 
-# Pool configuration for optimal performance
 pool:
-  vmImage: 'ubuntu-latest'
-  demands:
-  - azureps  # Requires Azure PowerShell capability
+  vmImage: ubuntu-latest
 
-# Variables to control which stages run - set these in your commit message
+# Global variables for the pipeline
 variables:
-  # Global variables
-  - name: azureServiceConnectionDev
-    value: 'BTP-Development'
-  - name: azureServiceConnectionProd
-    value: 'BTP-Production'
-  - name: vmImageName
-    value: 'ubuntu-latest'
-  - name: bicepTemplatePath
-    value: 'infra/main.bicep'
+  # Azure Resource Configuration
+  azureServiceConnectionDev: 'Azure-DevOps-Service-Connection-Dev'
+  azureServiceConnectionProd: 'Azure-DevOps-Service-Connection-Prod'
+  azureLocation: 'uksouth'
+  
+  # Resource naming and configuration
+  resourceGroupName: 'rg-btp-d-copa-stop-search'
+  
+  # OpenAI Configuration (overrideable via pipeline variables)
+  openAIModel: 'gpt-35-turbo-16k'
+  embeddingModel: 'text-embedding-ada-002'
+  
+  # Build and deployment settings
+  pythonVersion: '3.10'
+  nodeVersion: '18.x'
   
   # Performance optimizations
-  - name: AZURE_CORE_OUTPUT
-    value: 'table'
-  - name: AZURE_CORE_COLLECT_TELEMETRY
-    value: 'false'
-  - name: AZURE_CLI_DISABLE_CONNECTION_VERIFICATION
-    value: '1'
-  - name: bicepParametersPath
-    value: 'infra/main.parameters.json'
+  AZURE_CORE_OUTPUT: 'table'
+  AZURE_CORE_COLLECT_TELEMETRY: 'false'
+  AZURE_CLI_DISABLE_CONNECTION_VERIFICATION: '1'
+  bicepParametersPath: 'infra/main.parameters.json'
   
   # Build variables
-  - name: buildConfiguration
-    value: 'Release'
-  - name: pythonVersion
-    value: '3.11'
-  - name: nodeVersion
-    value: '18'
+  buildConfiguration: 'Release'
   
   # Skip stages based on commit message - saves time when fixing specific issues
-  - name: skipValidation
-    value: $[contains(variables['Build.SourceVersionMessage'], '[skip-validation]')]
-  - name: skipBuild  
-    value: $[contains(variables['Build.SourceVersionMessage'], '[skip-build]')]
-  - name: infrastructureOnly
-    value: $[contains(variables['Build.SourceVersionMessage'], '[infra-only]')]
+  skipValidation: $[contains(variables['Build.SourceVersionMessage'], '[skip-validation]')]
+  skipInfrastructure: $[contains(variables['Build.SourceVersionMessage'], '[skip-infrastructure]')]
+  skipApplication: $[contains(variables['Build.SourceVersionMessage'], '[skip-app]')]
 
+stages:
+# ===================================================================================================
+# STAGE 1: BUILD AND VALIDATION 
+# ===================================================================================================
+- stage: BuildAndValidation
+  displayName: 'Build, Test & Security Validation'
+  condition: not(variables.skipBuild)
+  jobs:
 stages:
 - stage: FastInfraValidation
   displayName: 'Fast Infrastructure Validation'
