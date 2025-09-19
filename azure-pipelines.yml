@@ -438,27 +438,43 @@ stages:
                 
                 # Base deployment with parameters file
                 # Use subscription deployment since template has targetScope = 'subscription'
-                DEPLOYMENT_CMD="az deployment sub create \
-                  --location $(azureLocation) \
-                  --name $(Build.BuildNumber)-infrastructure \
-                  --template-file $TEMPLATE_PATH \
-                  --parameters $PARAMS_PATH \
-                  --verbose"
+                # Try with --no-wait initially to avoid timeout issues, then check status
+                echo "Starting deployment..."
+                DEPLOYMENT_NAME="$(Build.BuildNumber)-infrastructure-$(date +%s)"
                 
                 # Add OpenAI model parameters if variables are set
+                EXTRA_PARAMS=""
                 if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters openAIModelName=$(openAIModel)"
+                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters openAIModelName=$(openAIModel)"
                 fi
                 
                 if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters embeddingModelName=$(embeddingModel)"
+                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters embeddingModelName=$(embeddingModel)"
                 fi
                 
-                echo "Executing deployment command..."
-                if eval $DEPLOYMENT_CMD; then
+                az deployment sub create \
+                  --location $(azureLocation) \
+                  --name "$DEPLOYMENT_NAME" \
+                  --template-file $TEMPLATE_PATH \
+                  --parameters $PARAMS_PATH \
+                  $EXTRA_PARAMS \
+                  --no-wait
+                
+                echo "Deployment started with name: $DEPLOYMENT_NAME"
+                echo "Waiting for deployment to complete..."
+                
+                # Wait for deployment to complete and check status
+                az deployment sub wait --name "$DEPLOYMENT_NAME" --created
+                
+                # Check deployment status
+                DEPLOYMENT_STATUS=$(az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.provisioningState" --output tsv)
+                
+                if [ "$DEPLOYMENT_STATUS" = "Succeeded" ]; then
                   echo "✅ Infrastructure deployment completed successfully"
                 else
-                  echo "❌ Infrastructure deployment failed"
+                  echo "❌ Infrastructure deployment failed with status: $DEPLOYMENT_STATUS"
+                  # Show deployment error details
+                  az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.error" --output json || true
                   exit 1
                 fi
                 
@@ -587,27 +603,43 @@ stages:
                 
                 # Base deployment with parameters file
                 # Use subscription deployment since template has targetScope = 'subscription'
-                DEPLOYMENT_CMD="az deployment sub create \
-                  --location $(azureLocation) \
-                  --name $(Build.BuildNumber)-infrastructure \
-                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
-                  --parameters $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json \
-                  --verbose"
+                # Try with --no-wait initially to avoid timeout issues, then check status
+                echo "Starting production deployment..."
+                DEPLOYMENT_NAME="$(Build.BuildNumber)-prod-infrastructure-$(date +%s)"
                 
                 # Add OpenAI model parameters if variables are set
+                EXTRA_PARAMS=""
                 if [ -n "$(openAIModel)" ] && [ "$(openAIModel)" != "\$(openAIModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters openAIModelName=$(openAIModel)"
+                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters openAIModelName=$(openAIModel)"
                 fi
                 
                 if [ -n "$(embeddingModel)" ] && [ "$(embeddingModel)" != "\$(embeddingModel)" ]; then
-                  DEPLOYMENT_CMD="$DEPLOYMENT_CMD --parameters embeddingModelName=$(embeddingModel)"
+                  EXTRA_PARAMS="$EXTRA_PARAMS --parameters embeddingModelName=$(embeddingModel)"
                 fi
                 
-                echo "Executing deployment command..."
-                if eval $DEPLOYMENT_CMD; then
+                az deployment sub create \
+                  --location $(azureLocation) \
+                  --name "$DEPLOYMENT_NAME" \
+                  --template-file $(Pipeline.Workspace)/copa-infrastructure/main.bicep \
+                  --parameters $(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json \
+                  $EXTRA_PARAMS \
+                  --no-wait
+                
+                echo "Production deployment started with name: $DEPLOYMENT_NAME"
+                echo "Waiting for production deployment to complete..."
+                
+                # Wait for deployment to complete and check status
+                az deployment sub wait --name "$DEPLOYMENT_NAME" --created
+                
+                # Check deployment status
+                DEPLOYMENT_STATUS=$(az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.provisioningState" --output tsv)
+                
+                if [ "$DEPLOYMENT_STATUS" = "Succeeded" ]; then
                   echo "✅ Production infrastructure deployment completed successfully"
                 else
-                  echo "❌ Production infrastructure deployment failed"
+                  echo "❌ Production infrastructure deployment failed with status: $DEPLOYMENT_STATUS"
+                  # Show deployment error details
+                  az deployment sub show --name "$DEPLOYMENT_NAME" --query "properties.error" --output json || true
                   exit 1
                 fi
                 
