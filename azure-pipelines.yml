@@ -31,8 +31,8 @@ pool:
 # Global variables for the pipeline
 variables:
   # Azure Resource Configuration
-  azureServiceConnectionDev: 'Azure-DevOps-Service-Connection-Dev'
-  azureServiceConnectionProd: 'Azure-DevOps-Service-Connection-Prod'
+  azureServiceConnectionDev: 'BTP-Development'
+  azureServiceConnectionProd: 'BTP-Production'
   azureLocation: 'uksouth'
 
   # Resource naming and configuration
