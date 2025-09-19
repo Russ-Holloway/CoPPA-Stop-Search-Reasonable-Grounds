@@ -1,6 +1,6 @@
 # Azure DevOps Pipeline for CoPA Stop & Search
 # Secure deployment with Infrastructure as Code using Bicep templates
-# ✅ SOLUTION: Uses Azure PowerShell instead of Azure CLI to avoid the
+# PASS: SOLUTION: Uses Azure PowerShell instead of Azure CLI to avoid the
 # "content for this response was already consumed" bug in Azure CLI 2.77.0
 
 trigger:
@@ -34,27 +34,27 @@ variables:
   azureServiceConnectionDev: 'Azure-DevOps-Service-Connection-Dev'
   azureServiceConnectionProd: 'Azure-DevOps-Service-Connection-Prod'
   azureLocation: 'uksouth'
-  
+
   # Resource naming and configuration
   resourceGroupName: 'rg-btp-d-copa-stop-search'
-  
+
   # OpenAI Configuration (overrideable via pipeline variables)
   openAIModel: 'gpt-35-turbo-16k'
   embeddingModel: 'text-embedding-ada-002'
-  
+
   # Build and deployment settings
   pythonVersion: '3.10'
   nodeVersion: '18.x'
-  
+
   # Performance optimizations
   AZURE_CORE_OUTPUT: 'table'
   AZURE_CORE_COLLECT_TELEMETRY: 'false'
   AZURE_CLI_DISABLE_CONNECTION_VERIFICATION: '1'
   bicepParametersPath: 'infra/main.parameters.json'
-  
+
   # Build variables
   buildConfiguration: 'Release'
-  
+
   # Skip stages based on commit message - saves time when fixing specific issues
   skipValidation: $[contains(variables['Build.SourceVersionMessage'], '[skip-validation]')]
   skipInfrastructure: $[contains(variables['Build.SourceVersionMessage'], '[skip-infrastructure]')]
@@ -62,7 +62,7 @@ variables:
 
 stages:
 # ===================================================================================================
-# STAGE 1: BUILD AND VALIDATION 
+# STAGE 1: BUILD AND VALIDATION
 # ===================================================================================================
 - stage: BuildAndValidation
   displayName: 'Build, Test & Security Validation'
@@ -80,7 +80,7 @@ stages:
     steps:
     - checkout: self
       fetchDepth: 1  # Faster checkout
-      
+
     - task: AzureCLI@2
       displayName: 'Quick Bicep Lint Check'
       inputs:
@@ -90,13 +90,13 @@ stages:
         inlineScript: |
           echo "Quick validation - installing Bicep..."
           az bicep install
-          
+
           echo "Linting Bicep template..."
           az bicep lint --file $(bicepTemplatePath)
-          
+
           echo "Building Bicep template..."
           az bicep build --file $(bicepTemplatePath)
-          
+
           echo "Quick validation completed - proceeding to deployment"
 
 - stage: Validate
@@ -110,7 +110,7 @@ stages:
     steps:
     - checkout: self
       fetchDepth: 0
-      
+
     - task: AzureCLI@2
       displayName: 'Install Bicep CLI'
       inputs:
@@ -120,7 +120,7 @@ stages:
         inlineScript: |
           az bicep install
           az bicep version
-    
+
     - task: AzureCLI@2
       displayName: 'Validate Bicep Template'
       inputs:
@@ -130,10 +130,10 @@ stages:
         inlineScript: |
           echo "Validating Bicep template..."
           az bicep build --file $(bicepTemplatePath)
-          
+
           echo "Linting Bicep template..."
           az bicep lint --file $(bicepTemplatePath)
-    
+
     - task: AzureCLI@2
       displayName: 'Security Scan - What-If Analysis'
       inputs:
@@ -148,9 +148,9 @@ stages:
             --template-file $(bicepTemplatePath) \
             --parameters infra/main.devops.parameters.json \
             --verbose
-          
+
           echo "What-if analysis completed successfully"
-        
+
   - job: ValidateApplication
     displayName: 'Validate Application Code'
     pool:
@@ -158,54 +158,54 @@ stages:
     steps:
     - checkout: self
       fetchDepth: 0
-      
+
     - task: UsePythonVersion@0
       displayName: 'Set up Python $(pythonVersion)'
       inputs:
         versionSpec: '$(pythonVersion)'
-        
+
     - task: NodeTool@0
       displayName: 'Set up Node.js $(nodeVersion)'
       inputs:
         versionSpec: '$(nodeVersion)'
-        
+
     - script: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
         pip install flake8 black pylint safety bandit
       displayName: 'Install Python dependencies'
-      
+
     - script: |
         cd frontend
         npm ci
       displayName: 'Install Node.js dependencies'
-      
+
     - script: |
         echo "Running Python security scan with bandit..."
         bandit -r . -f json -o bandit-report.json --exclude ./frontend,./node_modules,./.venv || true
-        
+
         echo "Running Python dependency security check..."
         safety check --json --output safety-report.json || true
-        
+
         echo "Running Python linting for critical errors only..."
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=frontend,node_modules,.venv
-        
+
         echo "Running Python code formatting check (warnings only)..."
         black --check --diff . --exclude="/(frontend|node_modules|\.venv)/" || echo "Code formatting warnings detected but not failing build"
       displayName: 'Security and Quality Checks'
-      
+
     - script: |
         cd frontend
         echo "Installing frontend dependencies..."
         npm ci
-        
+
         echo "Running TypeScript type checking..."
         npm run typecheck
-        
+
         echo "Building frontend application..."
         npm run build
-        
+
         echo "Verifying build output..."
         if [ -f "../static/index.html" ] && [ -d "../static/assets" ]; then
           echo "Build successful - static directory and assets created"
@@ -226,14 +226,14 @@ stages:
           exit 1
         fi
       displayName: 'Frontend Build and Lint'
-      
+
     - task: PublishTestResults@2
       condition: always()
       inputs:
         testResultsFiles: '**/test-results.xml'
         mergeTestResults: true
       displayName: 'Publish Test Results'
-      
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Security Reports'
       condition: always()
@@ -256,30 +256,30 @@ stages:
     steps:
     - checkout: self
       fetchDepth: 0
-      
+
     - task: UsePythonVersion@0
       displayName: 'Set up Python $(pythonVersion)'
       inputs:
         versionSpec: '$(pythonVersion)'
-        
+
     - task: NodeTool@0
       displayName: 'Set up Node.js $(nodeVersion)'
       inputs:
         versionSpec: '$(nodeVersion)'
-        
+
     - script: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
       displayName: 'Install Python dependencies'
-      
+
     - script: |
         cd frontend
         echo "Installing frontend dependencies..."
         npm ci
-        
+
         echo "Building frontend application..."
         npm run build
-        
+
         echo "Verifying build output..."
         if [ -f "../static/index.html" ] && [ -d "../static/assets" ]; then
           echo "Frontend build successful"
@@ -300,11 +300,11 @@ stages:
           exit 1
         fi
       displayName: 'Build Frontend'
-      
+
     - script: |
         echo "Preparing deployment package..."
         mkdir -p $(Build.ArtifactStagingDirectory)/app
-        
+
         # Copy application files
         cp -r *.py $(Build.ArtifactStagingDirectory)/app/ || true
         cp -r backend/ $(Build.ArtifactStagingDirectory)/app/ || true
@@ -313,20 +313,20 @@ stages:
         cp start.sh $(Build.ArtifactStagingDirectory)/app/
         cp gunicorn.conf.py $(Build.ArtifactStagingDirectory)/app/ || true
         cp WebApp.Dockerfile $(Build.ArtifactStagingDirectory)/app/ || true
-        
+
         # Static directory (including built frontend) is already copied above
         echo "Frontend build files included in static/ directory"
-        
+
         echo "Application package prepared"
         ls -la $(Build.ArtifactStagingDirectory)/app/
       displayName: 'Package Application'
-      
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Application Artifact'
       inputs:
         pathToPublish: '$(Build.ArtifactStagingDirectory)/app'
         artifactName: 'copa-application'
-        
+
   - job: PackageInfrastructure
     displayName: 'Package Infrastructure'
     pool:
@@ -334,21 +334,21 @@ stages:
     steps:
     - checkout: self
       fetchDepth: 0
-      
+
     - script: |
         echo "Preparing infrastructure package..."
         mkdir -p $(Build.ArtifactStagingDirectory)/infra
-        
+
         # Copy Bicep templates
         cp -r infra/ $(Build.ArtifactStagingDirectory)/
-        
+
         # Copy createUIDefinition for portal deployments (backup option)
         cp infrastructure/createUiDefinition.json $(Build.ArtifactStagingDirectory)/infra/ || true
-        
+
         echo "Infrastructure package prepared"
         ls -la $(Build.ArtifactStagingDirectory)/infra/
       displayName: 'Package Infrastructure'
-      
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Infrastructure Artifact'
       inputs:
@@ -384,15 +384,15 @@ stages:
           - checkout: self
             fetchDepth: 1
             condition: variables.infrastructureOnly
-            
+
           - download: current
             artifact: 'copa-infrastructure'
             condition: not(variables.infrastructureOnly)
-            
+
           - download: current
             artifact: 'copa-application'
             condition: not(variables.infrastructureOnly)
-            
+
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
             inputs:
@@ -412,7 +412,7 @@ stages:
                     LocationID="UK-South" \
                     Environment="Development"
                 echo "Resource group created successfully with all required tags"
-                
+
           - task: AzurePowerShell@5
             displayName: 'Deploy Infrastructure with PowerShell (Avoiding CLI Bug)'
             inputs:
@@ -422,55 +422,55 @@ stages:
               pwsh: true
               Inline: |
                 $ErrorActionPreference = 'Stop'
-                
-                Write-Host "🚀 Starting PowerShell-based infrastructure deployment (Bypassing Azure CLI 2.77.0 bug)"
-                
+
+                Write-Host "START: Starting PowerShell-based infrastructure deployment (Bypassing Azure CLI 2.77.0 bug)"
+
                 # Always use source files when artifacts aren't downloaded
                 $artifactsPath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
                 $sourcePath = "infra/main.bicep"
-                
+
                 if (Test-Path $artifactsPath) {
-                  Write-Host "📦 Using pipeline artifacts (full deployment mode)"
+                  Write-Host "PACKAGE: Using pipeline artifacts (full deployment mode)"
                   $templatePath = $artifactsPath
                   $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
                 } else {
-                  Write-Host "📁 Using source files (infrastructure-only mode or no artifacts)"
+                  Write-Host "FOLDER: Using source files (infrastructure-only mode or no artifacts)"
                   $templatePath = $sourcePath
                   $parametersPath = "infra/main.devops.parameters.json"
                 }
-                
-                Write-Host "📄 Template path: $templatePath"
-                Write-Host "⚙️  Parameters path: $parametersPath"
-                
+
+                Write-Host "FILE: Template path: $templatePath"
+                Write-Host "CONFIG:  Parameters path: $parametersPath"
+
                 # Verify files exist
                 if (-not (Test-Path $templatePath)) {
-                  Write-Error "❌ Template file not found at: $templatePath"
-                  Write-Host "📂 Current directory: $(Get-Location)"
+                  Write-Error "FAIL: Template file not found at: $templatePath"
+                  Write-Host "  Current directory: $(Get-Location)"
                   if (Test-Path "infra/") {
-                    Write-Host "📋 Available files in infra/:"
+                    Write-Host "INFO: Available files in infra/:"
                     Get-ChildItem "infra/" | Format-Table Name, Length
                   }
                   throw "Template file not found"
                 }
-                
+
                 if (-not (Test-Path $parametersPath)) {
-                  Write-Error "❌ Parameters file not found at: $parametersPath"
+                  Write-Error "FAIL: Parameters file not found at: $parametersPath"
                   throw "Parameters file not found"
                 }
-                
-                Write-Host "✅ Files verified successfully"
-                
+
+                Write-Host "PASS: Files verified successfully"
+
                 # Load parameters from JSON file
                 try {
                   $parametersJson = Get-Content -Path $parametersPath -Raw | ConvertFrom-Json
                   $parameters = @{}
-                  
+
                   # Convert JSON parameters to hashtable format required by PowerShell
                   $parametersJson.parameters.PSObject.Properties | ForEach-Object {
                     $parameters[$_.Name] = $_.Value.value
                   }
-                  
-                  Write-Host "📋 Loaded parameters from file:"
+
+                  Write-Host "INFO: Loaded parameters from file:"
                   $parameters.GetEnumerator() | Sort-Object Name | ForEach-Object {
                     if ($_.Name -like "*password*" -or $_.Name -like "*key*" -or $_.Name -like "*secret*") {
                       Write-Host "  $($_.Name) = ***MASKED***"
@@ -478,74 +478,74 @@ stages:
                       Write-Host "  $($_.Name) = $($_.Value)"
                     }
                   }
-                  
+
                   # Add OpenAI model parameters if variables are set
                   if ("$(openAIModel)" -ne "`$(openAIModel)" -and "$(openAIModel)" -ne "") {
                     $parameters['openAIModelName'] = "$(openAIModel)"
-                    Write-Host "🤖 Added OpenAI model: $(openAIModel)"
+                    Write-Host "AI: Added OpenAI model: $(openAIModel)"
                   }
-                  
+
                   if ("$(embeddingModel)" -ne "`$(embeddingModel)" -and "$(embeddingModel)" -ne "") {
                     $parameters['embeddingModelName'] = "$(embeddingModel)"
-                    Write-Host "📊 Added embedding model: $(embeddingModel)"
+                    Write-Host "DATA: Added embedding model: $(embeddingModel)"
                   }
-                  
+
                 } catch {
-                  Write-Error "❌ Failed to load parameters: $($_.Exception.Message)"
+                  Write-Error "FAIL: Failed to load parameters: $($_.Exception.Message)"
                   throw
                 }
-                
+
                 # Create deployment name
                 $deploymentName = "$(Build.BuildNumber)-infrastructure-$((Get-Date).ToString('yyyyMMdd-HHmmss'))"
-                Write-Host "🏷️  Deployment name: $deploymentName"
-                
+                Write-Host "TAG:  Deployment name: $deploymentName"
+
                 try {
                   # First, validate the template before attempting deployment
-                  Write-Host "🔍 Validating Bicep template before deployment..."
-                  Write-Host "📍 Target location: $(azureLocation)"
-                  
+                  Write-Host "VALIDATE: Validating Bicep template before deployment..."
+                  Write-Host "LOCATION: Target location: $(azureLocation)"
+
                   $validationResult = Test-AzSubscriptionDeployment `
                     -Location "$(azureLocation)" `
                     -TemplateFile $templatePath `
                     -TemplateParameterObject $parameters `
                     -Verbose
-                  
+
                   if ($validationResult) {
-                    Write-Host "❌ Template validation failed with the following errors:"
+                    Write-Host "FAIL: Template validation failed with the following errors:"
                     foreach ($error in $validationResult) {
-                      Write-Host "  🚫 Error Code: $($error.Code)"
-                      Write-Host "  📝 Message: $($error.Message)"
+                      Write-Host "  ERROR: Error Code: $($error.Code)"
+                      Write-Host "  MESSAGE: Message: $($error.Message)"
                       if ($error.Details) {
-                        Write-Host "  � Details: $($error.Details | ConvertTo-Json -Depth 3)"
+                        Write-Host "    Details: $($error.Details | ConvertTo-Json -Depth 3)"
                       }
                       if ($error.Target) {
-                        Write-Host "  🎯 Target: $($error.Target)"
+                        Write-Host "  TARGET: Target: $($error.Target)"
                       }
                     }
                     throw "Template validation failed. See errors above."
                   }
-                  
-                  Write-Host "✅ Template validation passed successfully!"
-                  
+
+                  Write-Host "PASS: Template validation passed successfully!"
+
                   # Deploy infrastructure using PowerShell (avoids CLI response handling bug)
-                  Write-Host "🚀 Starting Bicep deployment with PowerShell..."
-                  
+                  Write-Host "START: Starting Bicep deployment with PowerShell..."
+
                   $deploymentResult = New-AzSubscriptionDeployment `
                     -Name $deploymentName `
                     -Location "$(azureLocation)" `
                     -TemplateFile $templatePath `
                     -TemplateParameterObject $parameters `
                     -Verbose
-                  
-                  Write-Host "✅ Infrastructure deployment completed successfully!"
-                  Write-Host "📊 Final State: $($deploymentResult.ProvisioningState)"
-                  Write-Host "🆔 Deployment ID: $($deploymentResult.Id)"
-                  
+
+                  Write-Host "PASS: Infrastructure deployment completed successfully!"
+                  Write-Host "DATA: Final State: $($deploymentResult.ProvisioningState)"
+                  Write-Host "  Deployment ID: $($deploymentResult.Id)"
+
                   # Output deployment results
                   if ($deploymentResult.Outputs) {
-                    Write-Host "📤 Deployment Outputs:"
+                    Write-Host "  Deployment Outputs:"
                     $deploymentResult.Outputs | ConvertTo-Json -Depth 3
-                    
+
                     # Extract web app name from outputs or use BTP naming convention
                     if ($deploymentResult.Outputs.ContainsKey('webAppName')) {
                       $webAppName = $deploymentResult.Outputs.webAppName.Value
@@ -556,28 +556,28 @@ stages:
                     # Fallback to BTP naming convention
                     $webAppName = "app-btp-d-copa-stop-search-001"
                   }
-                  
-                  Write-Host "🌐 Web App Name: $webAppName"
+
+                  Write-Host "WEB: Web App Name: $webAppName"
                   Write-Host "##vso[task.setvariable variable=webAppName]$webAppName"
-                  
+
                 } catch {
-                  Write-Error "❌ PowerShell deployment failed: $($_.Exception.Message)"
-                  Write-Host "🔍 Exception details: $($_.Exception.ToString())"
-                  
+                  Write-Error "FAIL: PowerShell deployment failed: $($_.Exception.Message)"
+                  Write-Host "VALIDATE: Exception details: $($_.Exception.ToString())"
+
                   # Try to get deployment details for debugging
                   try {
-                    Write-Host "🔍 Attempting to get deployment status..."
+                    Write-Host "VALIDATE: Attempting to get deployment status..."
                     $deployment = Get-AzSubscriptionDeployment -Name $deploymentName -ErrorAction SilentlyContinue
                     if ($deployment) {
-                      Write-Host "📊 Deployment State: $($deployment.ProvisioningState)"
-                      
+                      Write-Host "DATA: Deployment State: $($deployment.ProvisioningState)"
+
                       if ($deployment.ProvisioningState -eq "Failed") {
-                        Write-Host "🔍 Getting deployment operation details..."
+                        Write-Host "VALIDATE: Getting deployment operation details..."
                         $operations = Get-AzSubscriptionDeploymentOperation -DeploymentName $deploymentName -ErrorAction SilentlyContinue
-                        
+
                         if ($operations) {
                           foreach ($op in $operations | Where-Object { $_.Properties.ProvisioningState -eq "Failed" }) {
-                            Write-Host "❌ Failed Operation:"
+                            Write-Host "FAIL: Failed Operation:"
                             Write-Host "  Resource: $($op.Properties.TargetResource.ResourceName)"
                             Write-Host "  Type: $($op.Properties.TargetResource.ResourceType)"
                             if ($op.Properties.StatusMessage) {
@@ -587,15 +587,15 @@ stages:
                         }
                       }
                     } else {
-                      Write-Host "⚠️  Could not retrieve deployment information"
+                      Write-Host "   Could not retrieve deployment information"
                     }
                   } catch {
-                    Write-Host "⚠️  Error getting deployment details: $($_.Exception.Message)"
+                    Write-Host "   Error getting deployment details: $($_.Exception.Message)"
                   }
-                  
+
                   throw
                 }
-                
+
           - task: AzureCLI@2
             displayName: 'Verify Web App Exists'
             condition: not(variables.infrastructureOnly)
@@ -605,16 +605,16 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 echo "Checking if web app exists: $(webAppName)"
-                
+
                 if az webapp show --name "$(webAppName)" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
-                  echo "✅ Web app $(webAppName) exists and is ready for deployment"
+                  echo "PASS: Web app $(webAppName) exists and is ready for deployment"
                 else
-                  echo "❌ Web app $(webAppName) does not exist!"
+                  echo "FAIL: Web app $(webAppName) does not exist!"
                   echo "Available web apps in resource group $(resourceGroupName):"
                   az webapp list --resource-group "$(resourceGroupName)" --query "[].name" --output table || echo "No web apps found"
                   exit 1
                 fi
-                    
+
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
             condition: not(variables.infrastructureOnly)
@@ -624,7 +624,7 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/copa-application'
               runtimeStack: 'PYTHON|3.11'
-              
+
           - task: AzureCLI@2
             displayName: 'Verify Application Deployment'
             condition: not(variables.infrastructureOnly)
@@ -636,18 +636,18 @@ stages:
                 echo "Verifying web app deployment..."
                 WEB_APP_URL="https://$(webAppName).azurewebsites.net"
                 echo "Web app URL: $WEB_APP_URL"
-                
+
                 # Wait a moment for the app to start
                 sleep 30
-                
+
                 # Check if the app is responding
                 HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$WEB_APP_URL" || echo "000")
                 echo "HTTP Status: $HTTP_STATUS"
-                
+
                 if [[ "$HTTP_STATUS" == "200" ]] || [[ "$HTTP_STATUS" == "302" ]]; then
-                  echo "✅ Web app is responding successfully"
+                  echo "PASS: Web app is responding successfully"
                 else
-                  echo "⚠️ Web app returned status $HTTP_STATUS, but deployment completed"
+                  echo "  Web app returned status $HTTP_STATUS, but deployment completed"
                   echo "This might be normal if the app takes time to start"
                 fi
 
@@ -678,13 +678,13 @@ stages:
         deploy:
           steps:
           - checkout: none
-            
+
           - download: current
             artifact: 'copa-infrastructure'
-            
+
           - download: current
             artifact: 'copa-application'
-            
+
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
             inputs:
@@ -704,7 +704,7 @@ stages:
                     LocationID="UK-South" \
                     Environment="Production"
                 echo "Production resource group created successfully with all required tags"
-            
+
           - task: AzurePowerShell@5
             displayName: 'Deploy Infrastructure with PowerShell (Production)'
             inputs:
@@ -714,41 +714,41 @@ stages:
               pwsh: true
               Inline: |
                 $ErrorActionPreference = 'Stop'
-                
-                Write-Host "🚀 Starting PRODUCTION PowerShell-based infrastructure deployment"
-                
+
+                Write-Host "START: Starting PRODUCTION PowerShell-based infrastructure deployment"
+
                 $templatePath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
                 $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json"
-                
-                Write-Host "📄 Production Template path: $templatePath"
-                Write-Host "⚙️  Production Parameters path: $parametersPath"
-                
+
+                Write-Host "FILE: Production Template path: $templatePath"
+                Write-Host "CONFIG:  Production Parameters path: $parametersPath"
+
                 # Verify files exist
                 if (-not (Test-Path $templatePath)) {
-                  Write-Error "❌ Production template file not found at: $templatePath"
-                  Write-Host "📂 Available files in artifact:"
+                  Write-Error "FAIL: Production template file not found at: $templatePath"
+                  Write-Host "  Available files in artifact:"
                   Get-ChildItem "$(Pipeline.Workspace)/copa-infrastructure/" | Format-Table Name, Length
                   throw "Production template file not found"
                 }
-                
+
                 if (-not (Test-Path $parametersPath)) {
-                  Write-Error "❌ Production parameters file not found at: $parametersPath"
+                  Write-Error "FAIL: Production parameters file not found at: $parametersPath"
                   throw "Production parameters file not found"
                 }
-                
-                Write-Host "✅ Production files verified successfully"
-                
+
+                Write-Host "PASS: Production files verified successfully"
+
                 # Load parameters for production
                 try {
                   $parametersJson = Get-Content -Path $parametersPath -Raw | ConvertFrom-Json
                   $parameters = @{}
-                  
+
                   # Convert JSON parameters to hashtable
                   $parametersJson.parameters.PSObject.Properties | ForEach-Object {
                     $parameters[$_.Name] = $_.Value.value
                   }
-                  
-                  Write-Host "📋 Loaded PRODUCTION parameters:"
+
+                  Write-Host "INFO: Loaded PRODUCTION parameters:"
                   $parameters.GetEnumerator() | Sort-Object Name | ForEach-Object {
                     if ($_.Name -like "*password*" -or $_.Name -like "*key*" -or $_.Name -like "*secret*") {
                       Write-Host "  $($_.Name) = ***MASKED***"
@@ -756,74 +756,74 @@ stages:
                       Write-Host "  $($_.Name) = $($_.Value)"
                     }
                   }
-                  
+
                   # Add OpenAI model parameters for production
                   if ("$(openAIModel)" -ne "`$(openAIModel)" -and "$(openAIModel)" -ne "") {
                     $parameters['openAIModelName'] = "$(openAIModel)"
-                    Write-Host "🤖 Added PRODUCTION OpenAI model: $(openAIModel)"
+                    Write-Host "AI: Added PRODUCTION OpenAI model: $(openAIModel)"
                   }
-                  
+
                   if ("$(embeddingModel)" -ne "`$(embeddingModel)" -and "$(embeddingModel)" -ne "") {
                     $parameters['embeddingModelName'] = "$(embeddingModel)"
-                    Write-Host "📊 Added PRODUCTION embedding model: $(embeddingModel)"
+                    Write-Host "DATA: Added PRODUCTION embedding model: $(embeddingModel)"
                   }
-                  
+
                 } catch {
-                  Write-Error "❌ Failed to load production parameters: $($_.Exception.Message)"
+                  Write-Error "FAIL: Failed to load production parameters: $($_.Exception.Message)"
                   throw
                 }
-                
+
                 # Create production deployment name
                 $deploymentName = "$(Build.BuildNumber)-prod-infrastructure-$((Get-Date).ToString('yyyyMMdd-HHmmss'))"
-                Write-Host "🏷️  PRODUCTION Deployment name: $deploymentName"
-                
+                Write-Host "TAG:  PRODUCTION Deployment name: $deploymentName"
+
                 try {
                   # First, validate the production template before attempting deployment
-                  Write-Host "� Validating PRODUCTION Bicep template before deployment..."
-                  Write-Host "📍 Target location: $(azureLocation)"
-                  
+                  Write-Host "  Validating PRODUCTION Bicep template before deployment..."
+                  Write-Host "LOCATION: Target location: $(azureLocation)"
+
                   $validationResult = Test-AzSubscriptionDeployment `
                     -Location "$(azureLocation)" `
                     -TemplateFile $templatePath `
                     -TemplateParameterObject $parameters `
                     -Verbose
-                  
+
                   if ($validationResult) {
-                    Write-Host "❌ PRODUCTION template validation failed with the following errors:"
+                    Write-Host "FAIL: PRODUCTION template validation failed with the following errors:"
                     foreach ($validationError in $validationResult) {
-                      Write-Host "  🚫 Error Code: $($validationError.Code)"
-                      Write-Host "  📝 Message: $($validationError.Message)"
+                      Write-Host "  ERROR: Error Code: $($validationError.Code)"
+                      Write-Host "  MESSAGE: Message: $($validationError.Message)"
                       if ($validationError.Details) {
-                        Write-Host "  🔍 Details: $($validationError.Details | ConvertTo-Json -Depth 3)"
+                        Write-Host "  VALIDATE: Details: $($validationError.Details | ConvertTo-Json -Depth 3)"
                       }
                       if ($validationError.Target) {
-                        Write-Host "  🎯 Target: $($validationError.Target)"
+                        Write-Host "  TARGET: Target: $($validationError.Target)"
                       }
                     }
                     throw "PRODUCTION template validation failed. See errors above."
                   }
-                  
-                  Write-Host "✅ PRODUCTION template validation passed successfully!"
-                  
+
+                  Write-Host "PASS: PRODUCTION template validation passed successfully!"
+
                   # Deploy production infrastructure using PowerShell
-                  Write-Host "🚀 Starting PRODUCTION Bicep deployment with PowerShell..."
-                  
+                  Write-Host "START: Starting PRODUCTION Bicep deployment with PowerShell..."
+
                   $deploymentResult = New-AzSubscriptionDeployment `
                     -Name $deploymentName `
                     -Location "$(azureLocation)" `
                     -TemplateFile $templatePath `
                     -TemplateParameterObject $parameters `
                     -Verbose
-                  
-                  Write-Host "✅ PRODUCTION infrastructure deployment completed successfully!"
-                  Write-Host "📊 Final State: $($deploymentResult.ProvisioningState)"
-                  Write-Host "🆔 Deployment ID: $($deploymentResult.Id)"
-                  
+
+                  Write-Host "PASS: PRODUCTION infrastructure deployment completed successfully!"
+                  Write-Host "DATA: Final State: $($deploymentResult.ProvisioningState)"
+                  Write-Host "  Deployment ID: $($deploymentResult.Id)"
+
                   # Output deployment results for production
                   if ($deploymentResult.Outputs) {
-                    Write-Host "📤 PRODUCTION Deployment Outputs:"
+                    Write-Host "  PRODUCTION Deployment Outputs:"
                     $deploymentResult.Outputs | ConvertTo-Json -Depth 3
-                    
+
                     # Extract web app name for production
                     if ($deploymentResult.Outputs.ContainsKey('webAppName')) {
                       $webAppName = $deploymentResult.Outputs.webAppName.Value
@@ -834,28 +834,28 @@ stages:
                     # Fallback to production BTP naming convention
                     $webAppName = "app-btp-p-copa-stop-search-001"
                   }
-                  
-                  Write-Host "🌐 PRODUCTION Web App Name: $webAppName"
+
+                  Write-Host "WEB: PRODUCTION Web App Name: $webAppName"
                   Write-Host "##vso[task.setvariable variable=webAppName]$webAppName"
-                  
+
                 } catch {
-                  Write-Error "❌ PRODUCTION PowerShell deployment failed: $($_.Exception.Message)"
-                  Write-Host "🔍 Exception details: $($_.Exception.ToString())"
-                  
+                  Write-Error "FAIL: PRODUCTION PowerShell deployment failed: $($_.Exception.Message)"
+                  Write-Host "VALIDATE: Exception details: $($_.Exception.ToString())"
+
                   # Try to get production deployment details for debugging
                   try {
-                    Write-Host "🔍 Getting PRODUCTION deployment status..."
+                    Write-Host "VALIDATE: Getting PRODUCTION deployment status..."
                     $deployment = Get-AzSubscriptionDeployment -Name $deploymentName -ErrorAction SilentlyContinue
                     if ($deployment) {
-                      Write-Host "📊 PRODUCTION Deployment State: $($deployment.ProvisioningState)"
-                      
+                      Write-Host "DATA: PRODUCTION Deployment State: $($deployment.ProvisioningState)"
+
                       if ($deployment.ProvisioningState -eq "Failed") {
-                        Write-Host "🔍 Getting PRODUCTION deployment operation details..."
+                        Write-Host "VALIDATE: Getting PRODUCTION deployment operation details..."
                         $operations = Get-AzSubscriptionDeploymentOperation -DeploymentName $deploymentName -ErrorAction SilentlyContinue
-                        
+
                         if ($operations) {
                           foreach ($op in $operations | Where-Object { $_.Properties.ProvisioningState -eq "Failed" }) {
-                            Write-Host "❌ Failed PRODUCTION Operation:"
+                            Write-Host "FAIL: Failed PRODUCTION Operation:"
                             Write-Host "  Resource: $($op.Properties.TargetResource.ResourceName)"
                             Write-Host "  Type: $($op.Properties.TargetResource.ResourceType)"
                             if ($op.Properties.StatusMessage) {
@@ -866,12 +866,12 @@ stages:
                       }
                     }
                   } catch {
-                    Write-Host "⚠️  Error getting PRODUCTION deployment details: $($_.Exception.Message)"
+                    Write-Host "   Error getting PRODUCTION deployment details: $($_.Exception.Message)"
                   }
-                  
+
                   throw
                 }
-                
+
           - task: AzureCLI@2
             displayName: 'Verify Web App Exists'
             inputs:
@@ -880,16 +880,16 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 echo "Checking if production web app exists: $(webAppName)"
-                
+
                 if az webapp show --name "$(webAppName)" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
-                  echo "✅ Production web app $(webAppName) exists and is ready for deployment"
+                  echo "PASS: Production web app $(webAppName) exists and is ready for deployment"
                 else
-                  echo "❌ Production web app $(webAppName) does not exist!"
+                  echo "FAIL: Production web app $(webAppName) does not exist!"
                   echo "Available web apps in resource group $(resourceGroupName):"
                   az webapp list --resource-group "$(resourceGroupName)" --query "[].name" --output table || echo "No web apps found"
                   exit 1
                 fi
-                    
+
           - task: AzureWebApp@1
             displayName: 'Deploy Application'
             inputs:
@@ -898,7 +898,7 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/copa-application'
               runtimeStack: 'PYTHON|3.11'
-              
+
           - task: AzureCLI@2
             displayName: 'Verify Production Application Deployment'
             inputs:
@@ -909,17 +909,17 @@ stages:
                 echo "Verifying production web app deployment..."
                 WEB_APP_URL="https://$(webAppName).azurewebsites.net"
                 echo "Production web app URL: $WEB_APP_URL"
-                
+
                 # Wait a moment for the app to start
                 sleep 30
-                
+
                 # Check if the app is responding
                 HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$WEB_APP_URL" || echo "000")
                 echo "HTTP Status: $HTTP_STATUS"
-                
+
                 if [[ "$HTTP_STATUS" == "200" ]] || [[ "$HTTP_STATUS" == "302" ]]; then
-                  echo "✅ Production web app is responding successfully"
+                  echo "PASS: Production web app is responding successfully"
                 else
-                  echo "⚠️ Production web app returned status $HTTP_STATUS, but deployment completed"
+                  echo "  Production web app returned status $HTTP_STATUS, but deployment completed"
                   echo "This might be normal if the app takes time to start"
                 fi
