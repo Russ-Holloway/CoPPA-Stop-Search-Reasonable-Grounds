@@ -496,9 +496,35 @@ stages:
                 Write-Host "🏷️  Deployment name: $deploymentName"
                 
                 try {
+                  # First, validate the template before attempting deployment
+                  Write-Host "🔍 Validating Bicep template before deployment..."
+                  Write-Host "📍 Target location: $(azureLocation)"
+                  
+                  $validationResult = Test-AzSubscriptionDeployment `
+                    -Location "$(azureLocation)" `
+                    -TemplateFile $templatePath `
+                    -TemplateParameterObject $parameters `
+                    -Verbose
+                  
+                  if ($validationResult) {
+                    Write-Host "❌ Template validation failed with the following errors:"
+                    foreach ($error in $validationResult) {
+                      Write-Host "  🚫 Error Code: $($error.Code)"
+                      Write-Host "  📝 Message: $($error.Message)"
+                      if ($error.Details) {
+                        Write-Host "  � Details: $($error.Details | ConvertTo-Json -Depth 3)"
+                      }
+                      if ($error.Target) {
+                        Write-Host "  🎯 Target: $($error.Target)"
+                      }
+                    }
+                    throw "Template validation failed. See errors above."
+                  }
+                  
+                  Write-Host "✅ Template validation passed successfully!"
+                  
                   # Deploy infrastructure using PowerShell (avoids CLI response handling bug)
                   Write-Host "🚀 Starting Bicep deployment with PowerShell..."
-                  Write-Host "📍 Target location: $(azureLocation)"
                   
                   $deploymentResult = New-AzSubscriptionDeployment `
                     -Name $deploymentName `
@@ -748,9 +774,35 @@ stages:
                 Write-Host "🏷️  PRODUCTION Deployment name: $deploymentName"
                 
                 try {
+                  # First, validate the production template before attempting deployment
+                  Write-Host "� Validating PRODUCTION Bicep template before deployment..."
+                  Write-Host "📍 Target location: $(azureLocation)"
+                  
+                  $validationResult = Test-AzSubscriptionDeployment `
+                    -Location "$(azureLocation)" `
+                    -TemplateFile $templatePath `
+                    -TemplateParameterObject $parameters `
+                    -Verbose
+                  
+                  if ($validationResult) {
+                    Write-Host "❌ PRODUCTION template validation failed with the following errors:"
+                    foreach ($error in $validationResult) {
+                      Write-Host "  🚫 Error Code: $($error.Code)"
+                      Write-Host "  📝 Message: $($error.Message)"
+                      if ($error.Details) {
+                        Write-Host "  🔍 Details: $($error.Details | ConvertTo-Json -Depth 3)"
+                      }
+                      if ($error.Target) {
+                        Write-Host "  🎯 Target: $($error.Target)"
+                      }
+                    }
+                    throw "PRODUCTION template validation failed. See errors above."
+                  }
+                  
+                  Write-Host "✅ PRODUCTION template validation passed successfully!"
+                  
                   # Deploy production infrastructure using PowerShell
                   Write-Host "🚀 Starting PRODUCTION Bicep deployment with PowerShell..."
-                  Write-Host "📍 Target location: $(azureLocation)"
                   
                   $deploymentResult = New-AzSubscriptionDeployment `
                     -Name $deploymentName `
