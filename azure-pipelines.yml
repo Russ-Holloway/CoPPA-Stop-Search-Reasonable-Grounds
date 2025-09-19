@@ -16,7 +16,20 @@ trigger:
     - '.gitignore'
     - '.vscode/**'
     - '.devcontainer/**'
-  batch: true  # Batch builds - if multiple commits pushed quickly, only build the latest
+  batch: true  # Batch builds - if mult                  if ($validationResult) {
+                    Write-Host "❌ Template validation failed with the following errors:"
+                    foreach ($validationError in $validationResult) {
+                      Write-Host "  🚫 Error Code: $($validationError.Code)"
+                      Write-Host "  📝 Message: $($validationError.Message)"
+                      if ($validationError.Details) {
+                        Write-Host "  🔍 Details: $($validationError.Details | ConvertTo-Json -Depth 3)"
+                      }
+                      if ($validationError.Target) {
+                        Write-Host "  🎯 Target: $($validationError.Target)"
+                      }
+                    }
+                    throw "Template validation failed. See errors above."
+                  }ushed quickly, only build the latest
 
 pr: none  # Disable automatic PR builds - manual trigger only for PRs
 
@@ -786,14 +799,14 @@ stages:
                   
                   if ($validationResult) {
                     Write-Host "❌ PRODUCTION template validation failed with the following errors:"
-                    foreach ($error in $validationResult) {
-                      Write-Host "  🚫 Error Code: $($error.Code)"
-                      Write-Host "  📝 Message: $($error.Message)"
-                      if ($error.Details) {
-                        Write-Host "  🔍 Details: $($error.Details | ConvertTo-Json -Depth 3)"
+                    foreach ($validationError in $validationResult) {
+                      Write-Host "  🚫 Error Code: $($validationError.Code)"
+                      Write-Host "  📝 Message: $($validationError.Message)"
+                      if ($validationError.Details) {
+                        Write-Host "  🔍 Details: $($validationError.Details | ConvertTo-Json -Depth 3)"
                       }
-                      if ($error.Target) {
-                        Write-Host "  🎯 Target: $($error.Target)"
+                      if ($validationError.Target) {
+                        Write-Host "  🎯 Target: $($validationError.Target)"
                       }
                     }
                     throw "PRODUCTION template validation failed. See errors above."
