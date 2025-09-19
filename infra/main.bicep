@@ -31,7 +31,7 @@ param backendServiceName string = ''
 param resourceGroupName string = ''
 
 param searchServiceName string = ''
-param searchServiceResourceGroupName string = ''
+// param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
 param searchServiceSkuName string = ''
 param searchIndexName string = 'gptkbindex'
@@ -45,7 +45,7 @@ param searchTitleColumn string = 'title'
 param searchUrlColumn string = 'url'
 
 param openAiResourceName string = ''
-param openAiResourceGroupName string = ''
+// param openAiResourceGroupName string = ''
 param openAiResourceGroupLocation string = location
 param openAiSkuName string = ''
 param openAIModel string = 'turbo16k'
@@ -112,14 +112,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : btpResourceGroupName
   location: location
   tags: tags
-}
-
-resource openAiResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(openAiResourceGroupName)) {
-  name: !empty(openAiResourceGroupName) ? openAiResourceGroupName : resourceGroup.name
-}
-
-resource searchServiceResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(searchServiceResourceGroupName)) {
-  name: !empty(searchServiceResourceGroupName) ? searchServiceResourceGroupName : resourceGroup.name
 }
 
 // Network Security Infrastructure
@@ -367,7 +359,7 @@ module keyVaultAccessPolicy 'core/security/key-vault-access-policy.bicep' = {
 
 module openAi 'core/ai/cognitiveservices.bicep' = {
   name: 'openai'
-  scope: openAiResourceGroup
+  scope: resourceGroup
   params: {
     name: !empty(openAiResourceName) ? openAiResourceName : 'cog-${btpNamingPrefix}-${instanceNumber}'
     location: openAiResourceGroupLocation
@@ -400,7 +392,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
 
 module searchService 'core/search/search-services.bicep' = {
   name: 'search-service'
-  scope: searchServiceResourceGroup
+  scope: resourceGroup
   params: {
     name: !empty(searchServiceName) ? searchServiceName : 'srch-${btpNamingPrefix}-${instanceNumber}'
     location: searchServiceResourceGroupLocation
@@ -478,10 +470,10 @@ module cognitiveServicesPrivateEndpoint 'core/network/private-endpoint.bicep' = 
 
 module searchPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
   name: 'search-private-endpoint'
-  scope: searchServiceResourceGroup
+  scope: resourceGroup
   params: {
     name: 'pe-search-${btpNamingPrefix}-${instanceNumber}'
-    location: searchServiceResourceGroupLocation
+    location: location
     tags: tags
     privateLinkServiceId: searchService.outputs.id
     groupIds: ['searchService']
@@ -537,7 +529,7 @@ module formRecognizerPrivateEndpoint 'core/network/private-endpoint.bicep' = if 
 
 // USER ROLES
 module openAiRoleUser 'core/security/role.bicep' = {
-  scope: openAiResourceGroup
+  scope: resourceGroup
   name: 'openai-role-user'
   params: {
     principalId: principalId
@@ -547,7 +539,7 @@ module openAiRoleUser 'core/security/role.bicep' = {
 }
 
 module searchRoleUser 'core/security/role.bicep' = {
-  scope: searchServiceResourceGroup
+  scope: resourceGroup
   name: 'search-role-user'
   params: {
     principalId: principalId
@@ -557,7 +549,7 @@ module searchRoleUser 'core/security/role.bicep' = {
 }
 
 module searchIndexDataContribRoleUser 'core/security/role.bicep' = {
-  scope: searchServiceResourceGroup
+  scope: resourceGroup
   name: 'search-index-data-contrib-role-user'
   params: {
     principalId: principalId
@@ -567,7 +559,7 @@ module searchIndexDataContribRoleUser 'core/security/role.bicep' = {
 }
 
 module searchServiceContribRoleUser 'core/security/role.bicep' = {
-  scope: searchServiceResourceGroup
+  scope: resourceGroup
   name: 'search-service-contrib-role-user'
   params: {
     principalId: principalId
@@ -578,7 +570,7 @@ module searchServiceContribRoleUser 'core/security/role.bicep' = {
 
 // SYSTEM IDENTITIES
 module openAiRoleBackend 'core/security/role.bicep' = {
-  scope: openAiResourceGroup
+  scope: resourceGroup
   name: 'openai-role-backend'
   params: {
     principalId: backend.outputs.identityPrincipalId
@@ -588,7 +580,7 @@ module openAiRoleBackend 'core/security/role.bicep' = {
 }
 
 module searchRoleBackend 'core/security/role.bicep' = {
-  scope: searchServiceResourceGroup
+  scope: resourceGroup
   name: 'search-role-backend'
   params: {
     principalId: backend.outputs.identityPrincipalId
@@ -622,7 +614,7 @@ output BACKEND_URI string = backend.outputs.uri
 // search
 output AZURE_SEARCH_INDEX string = searchIndexName
 output AZURE_SEARCH_SERVICE string = searchService.outputs.name
-output AZURE_SEARCH_SERVICE_RESOURCE_GROUP string = searchServiceResourceGroup.name
+output AZURE_SEARCH_SERVICE_RESOURCE_GROUP string = resourceGroup.name
 output AZURE_SEARCH_SKU_NAME string = searchService.outputs.skuName
 output AZURE_SEARCH_USE_SEMANTIC_SEARCH bool = searchUseSemanticSearch
 output AZURE_SEARCH_SEMANTIC_SEARCH_CONFIG string = searchSemanticSearchConfig
@@ -635,7 +627,7 @@ output AZURE_SEARCH_URL_COLUMN string = searchUrlColumn
 
 // openai
 output AZURE_OPENAI_RESOURCE string = openAi.outputs.name
-output AZURE_OPENAI_RESOURCE_GROUP string = openAiResourceGroup.name
+output AZURE_OPENAI_RESOURCE_GROUP string = resourceGroup.name
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output AZURE_OPENAI_MODEL string = openAIModel
 output AZURE_OPENAI_MODEL_NAME string = openAIModelName
