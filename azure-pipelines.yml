@@ -442,13 +442,31 @@ stages:
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
               scriptType: 'pscore'
-              scriptLocation: 'scriptPath'
-              scriptPath: 'scripts/Create-AppRegistration-AzCli.ps1'
-              arguments: >
-                -AppName "CoPA-Stop-Search-Dev-001"
-                -AppServiceUrl "https://$(webAppName).azurewebsites.net"
-                -EnvironmentName "$(environmentName)"
-                -OutputFormat "json"
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Determine script path - use artifacts if available, otherwise source
+                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration-AzCli.ps1"
+                $sourceScriptPath = "scripts/Create-AppRegistration-AzCli.ps1"
+                
+                if (Test-Path $artifactsScriptPath) {
+                  Write-Host "Using Azure CLI script from artifacts: $artifactsScriptPath"
+                  $scriptPath = $artifactsScriptPath
+                } elseif (Test-Path $sourceScriptPath) {
+                  Write-Host "Using Azure CLI script from source: $sourceScriptPath"
+                  $scriptPath = $sourceScriptPath
+                } else {
+                  Write-Error "Cannot find Create-AppRegistration-AzCli.ps1 script in either location"
+                  Write-Host "Checked paths:"
+                  Write-Host "- $artifactsScriptPath"
+                  Write-Host "- $sourceScriptPath"
+                  Write-Host "Current directory: $(Get-Location)"
+                  Write-Host "Available files in current directory:"
+                  if (Test-Path ".") { Get-ChildItem -Recurse -Name "*.ps1" | Select-Object -First 10 }
+                  throw "Azure CLI script not found"
+                }
+                
+                Write-Host "Executing Azure CLI script: $scriptPath"
+                & $scriptPath -AppName "CoPA-Stop-Search-Dev-001" -AppServiceUrl "https://$(webAppName).azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -800,13 +818,31 @@ stages:
             inputs:
               azureSubscription: $(azureServiceConnectionProd)
               scriptType: 'pscore'
-              scriptLocation: 'scriptPath'
-              scriptPath: 'scripts/Create-AppRegistration-AzCli.ps1'
-              arguments: >
-                -AppName "CoPA-Stop-Search-Prod-001"
-                -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net"
-                -EnvironmentName "$(environmentName)"
-                -OutputFormat "json"
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Determine script path for production - use artifacts if available, otherwise source
+                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration-AzCli.ps1"
+                $sourceScriptPath = "scripts/Create-AppRegistration-AzCli.ps1"
+                
+                if (Test-Path $artifactsScriptPath) {
+                  Write-Host "Using production Azure CLI script from artifacts: $artifactsScriptPath"
+                  $scriptPath = $artifactsScriptPath
+                } elseif (Test-Path $sourceScriptPath) {
+                  Write-Host "Using production Azure CLI script from source: $sourceScriptPath"
+                  $scriptPath = $sourceScriptPath
+                } else {
+                  Write-Error "Cannot find Create-AppRegistration-AzCli.ps1 script in either location for production"
+                  Write-Host "Checked paths:"
+                  Write-Host "- $artifactsScriptPath"
+                  Write-Host "- $sourceScriptPath"
+                  Write-Host "Current directory: $(Get-Location)"
+                  Write-Host "Available files in current directory:"
+                  if (Test-Path ".") { Get-ChildItem -Recurse -Name "*.ps1" | Select-Object -First 10 }
+                  throw "Production Azure CLI script not found"
+                }
+                
+                Write-Host "Executing production Azure CLI script: $scriptPath"
+                & $scriptPath -AppName "CoPA-Stop-Search-Prod-001" -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
