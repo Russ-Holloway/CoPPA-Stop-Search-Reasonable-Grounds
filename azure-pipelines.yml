@@ -438,6 +438,7 @@ stages:
               pwsh: true
 
           - task: AzureCLI@2
+            name: CreateAppRegistration
             displayName: 'Create Azure AD App Registration'
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
@@ -467,6 +468,60 @@ stages:
                 
                 Write-Host "Executing Azure CLI script: $scriptPath"
                 & $scriptPath -AppName "CoPA-Stop-Search-Dev-001" -AppServiceUrl "https://$(webAppName).azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
+            continueOnError: true
+
+          - task: PowerShell@2
+            displayName: 'Check App Registration Status'
+            condition: always()
+            inputs:
+              targetType: 'inline'
+              script: |
+                Write-Host "Checking app registration task output variables..."
+                
+                $manualConfigRequired = "$(CreateAppRegistration.AppRegistration.ManualConfigRequired)"
+                $clientId = "$(CreateAppRegistration.AppRegistration.ClientId)"
+                $redirectUri = "$(CreateAppRegistration.AppRegistration.RedirectUri)"
+                $appName = "$(CreateAppRegistration.AppRegistration.AppName)"
+                
+                Write-Host "Manual Config Required: $manualConfigRequired"
+                Write-Host "Client ID: $clientId"
+                Write-Host "Redirect URI: $redirectUri"
+                Write-Host "App Name: $appName"
+                
+                if ($manualConfigRequired -eq "true" -or [string]::IsNullOrEmpty($clientId)) {
+                  Write-Warning "=================================================================="
+                  Write-Warning "MANUAL APP REGISTRATION SETUP REQUIRED"
+                  Write-Warning "=================================================================="
+                  Write-Warning ""
+                  Write-Warning "The automated app registration creation failed due to insufficient"
+                  Write-Warning "permissions. Please follow these steps to complete the setup:"
+                  Write-Warning ""
+                  Write-Warning "1. Create App Registration manually:"
+                  Write-Warning "   - Go to: https://portal.azure.com"
+                  Write-Warning "   - Navigate to: Azure Active Directory > App registrations"
+                  Write-Warning "   - Click: New registration"
+                  Write-Warning "   - Name: $appName"
+                  Write-Warning "   - Redirect URI: $redirectUri"
+                  Write-Warning ""
+                  Write-Warning "2. Create Client Secret:"
+                  Write-Warning "   - In the app registration, go to 'Certificates & secrets'"
+                  Write-Warning "   - Click 'New client secret'"
+                  Write-Warning "   - Copy the secret value"
+                  Write-Warning ""
+                  Write-Warning "3. Update Pipeline Variables:"
+                  Write-Warning "   - Set AUTH_CLIENT_ID to the Application ID"
+                  Write-Warning "   - Set AUTH_CLIENT_SECRET to the client secret (mark as secret)"
+                  Write-Warning ""
+                  Write-Warning "4. Re-run the pipeline after setting these variables"
+                  Write-Warning ""
+                  Write-Warning "For detailed instructions, see:"
+                  Write-Warning "docs/SERVICE-PRINCIPAL-PERMISSIONS.md"
+                  Write-Warning ""
+                  Write-Warning "The deployment will continue but authentication will need manual setup."
+                  Write-Warning "=================================================================="
+                } else {
+                  Write-Host "✓ App registration created successfully - no manual setup required"
+                }
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -814,6 +869,7 @@ stages:
               pwsh: true
 
           - task: AzureCLI@2
+            name: CreateAppRegistrationProd
             displayName: 'Create Azure AD App Registration (Production)'
             inputs:
               azureSubscription: $(azureServiceConnectionProd)
@@ -843,6 +899,60 @@ stages:
                 
                 Write-Host "Executing production Azure CLI script: $scriptPath"
                 & $scriptPath -AppName "CoPA-Stop-Search-Prod-001" -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
+            continueOnError: true
+
+          - task: PowerShell@2
+            displayName: 'Check App Registration Status (Production)'
+            condition: always()
+            inputs:
+              targetType: 'inline'
+              script: |
+                Write-Host "Checking production app registration task output variables..."
+                
+                $manualConfigRequired = "$(CreateAppRegistrationProd.AppRegistration.ManualConfigRequired)"
+                $clientId = "$(CreateAppRegistrationProd.AppRegistration.ClientId)"
+                $redirectUri = "$(CreateAppRegistrationProd.AppRegistration.RedirectUri)"
+                $appName = "$(CreateAppRegistrationProd.AppRegistration.AppName)"
+                
+                Write-Host "Manual Config Required: $manualConfigRequired"
+                Write-Host "Client ID: $clientId"
+                Write-Host "Redirect URI: $redirectUri"
+                Write-Host "App Name: $appName"
+                
+                if ($manualConfigRequired -eq "true" -or [string]::IsNullOrEmpty($clientId)) {
+                  Write-Warning "=================================================================="
+                  Write-Warning "MANUAL APP REGISTRATION SETUP REQUIRED (PRODUCTION)"
+                  Write-Warning "=================================================================="
+                  Write-Warning ""
+                  Write-Warning "The automated app registration creation failed due to insufficient"
+                  Write-Warning "permissions. Please follow these steps to complete the setup:"
+                  Write-Warning ""
+                  Write-Warning "1. Create App Registration manually:"
+                  Write-Warning "   - Go to: https://portal.azure.com"
+                  Write-Warning "   - Navigate to: Azure Active Directory > App registrations"
+                  Write-Warning "   - Click: New registration"
+                  Write-Warning "   - Name: $appName"
+                  Write-Warning "   - Redirect URI: $redirectUri"
+                  Write-Warning ""
+                  Write-Warning "2. Create Client Secret:"
+                  Write-Warning "   - In the app registration, go to 'Certificates & secrets'"
+                  Write-Warning "   - Click 'New client secret'"
+                  Write-Warning "   - Copy the secret value"
+                  Write-Warning ""
+                  Write-Warning "3. Update Production Pipeline Variables:"
+                  Write-Warning "   - Set AUTH_CLIENT_ID to the Application ID"
+                  Write-Warning "   - Set AUTH_CLIENT_SECRET to the client secret (mark as secret)"
+                  Write-Warning ""
+                  Write-Warning "4. Re-run the pipeline after setting these variables"
+                  Write-Warning ""
+                  Write-Warning "For detailed instructions, see:"
+                  Write-Warning "docs/SERVICE-PRINCIPAL-PERMISSIONS.md"
+                  Write-Warning ""
+                  Write-Warning "The deployment will continue but authentication will need manual setup."
+                  Write-Warning "=================================================================="
+                } else {
+                  Write-Host "✓ Production app registration created successfully - no manual setup required"
+                }
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
