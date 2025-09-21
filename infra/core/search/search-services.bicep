@@ -6,7 +6,6 @@ param sku object = {
   name: 'standard'
 }
 
-param authOptions object = {}
 param semanticSearch string = 'disabled'
 
 resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
@@ -17,7 +16,7 @@ resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
     type: 'SystemAssigned'
   }
   properties: {
-    authOptions: authOptions
+    authOptions: null
     disableLocalAuth: true
     disabledDataExfiltrationOptions: []
     encryptionWithCmk: {

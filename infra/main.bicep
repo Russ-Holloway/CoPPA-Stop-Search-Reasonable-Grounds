@@ -207,7 +207,7 @@ module keyVault 'core/security/key-vault.bicep' = {
   name: 'key-vault'
   scope: resourceGroup
   params: {
-    name: !empty(keyVaultName) ? keyVaultName : 'kv-${btpNamingPrefix}-${instanceNumber}'
+    name: !empty(keyVaultName) ? keyVaultName : 'kv-${environmentCode}-copa-ss-${instanceNumber}'
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
@@ -400,11 +400,6 @@ module searchService 'core/search/search-services.bicep' = {
     name: !empty(searchServiceName) ? searchServiceName : 'srch-${btpNamingPrefix}-${instanceNumber}'
     location: searchServiceResourceGroupLocation
     tags: tags
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
     sku: {
       name: !empty(searchServiceSkuName) ? searchServiceSkuName : 'standard'
     }
