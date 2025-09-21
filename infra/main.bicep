@@ -385,7 +385,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         model: {
           format: 'OpenAI'
           name: embeddingModelName
-          version: '2'
+          version: embeddingModelName == 'text-embedding-3-small' ? '1' : '2'
         }
         capacity: 30
       }

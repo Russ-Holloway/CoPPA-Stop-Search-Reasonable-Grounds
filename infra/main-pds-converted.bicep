@@ -207,7 +207,7 @@ resource openAIEmbeddingDeployment 'Microsoft.CognitiveServices/accounts/deploym
     model: {
       format: 'OpenAI'
       name: azureOpenAIEmbeddingName
-      version: '2'
+      version: azureOpenAIEmbeddingName == 'text-embedding-3-small' ? '1' : '2'
     }
   }
   sku: {
