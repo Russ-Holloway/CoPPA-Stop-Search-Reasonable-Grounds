@@ -332,6 +332,13 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_SEARCH_FILENAME_COLUMN: searchFilenameColumn
       AZURE_SEARCH_TITLE_COLUMN: searchTitleColumn
       AZURE_SEARCH_URL_COLUMN: searchUrlColumn
+      // Additional search configuration from working version
+      AZURE_SEARCH_DATA_SOURCE: 'copa-stop-search-datasource'
+      AZURE_SEARCH_INDEXER: 'copa-stop-search-indexer'
+      AZURE_SEARCH_SKILLSET: 'copa-stop-search-skillset'
+      AZURE_SEARCH_STRICTNESS: '3'
+      AZURE_SEARCH_PERMITTED_GROUPS_COLUMN: ''
+      AZURE_SEARCH_QUERY_TYPE: 'vector_semantic_hybrid'
       // openai - using managed identity authentication
       AZURE_OPENAI_RESOURCE: openAi.outputs.name
       AZURE_OPENAI_ENDPOINT: openAi.outputs.endpoint
@@ -343,6 +350,26 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_STOP_SEQUENCE: openAIStopSequence
       AZURE_OPENAI_SYSTEM_MESSAGE: openAISystemMessage
       AZURE_OPENAI_STREAM: openAIStream
+      AZURE_OPENAI_EMBEDDING_NAME: embeddingModelName
+      // CosmosDB configuration
+      AZURE_COSMOSDB_ACCOUNT: !empty(cosmosAccountName) ? cosmosAccountName : 'db-${btpNamingPrefix}-${instanceNumber}'
+      AZURE_COSMOSDB_URI: 'https://${(!empty(cosmosAccountName) ? cosmosAccountName : 'db-${btpNamingPrefix}-${instanceNumber}')}.documents.azure.com:443/'
+      AZURE_COSMOSDB_DATABASE: 'db_conversation_history'
+      AZURE_COSMOSDB_CONVERSATIONS_CONTAINER: 'conversations'
+      // Storage configuration
+      AZURE_STORAGE_CONTAINER_NAME: 'ai-library-stop-search'
+      // Data source type
+      DATASOURCE_TYPE: 'AzureCognitiveSearch'
+      // UI Configuration
+      UI_TITLE: 'CoPA for Stop Search'
+      UI_CHAT_TITLE: 'CoPA for Stop Search'
+      UI_POLICE_FORCE_TAGLINE: 'This version of CoPA is configured for British Transport Police Stop & Search Reasonable Grounds Review'
+      UI_POLICE_FORCE_TAGLINE_2: 'Paste the reasonable grounds from a stop search record exactly as they are written and the CoPA Assistant will provide operational guidance and feedback'
+      UI_FAVICON: '/favicon.ico'
+      UI_FEEDBACK_EMAIL: ''
+      UI_FIND_OUT_MORE_LINK: ''
+      UI_POLICE_FORCE_LOGO: ''
+      UI_LOGO: ''
     }
   }
 }
