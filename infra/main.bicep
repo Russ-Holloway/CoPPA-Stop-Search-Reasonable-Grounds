@@ -568,7 +568,7 @@ module searchServiceContribRoleUser 'core/security/role.bicep' = if (deployUserR
 }
 
 // SYSTEM IDENTITIES
-module openAiRoleBackend 'core/security/role.bicep' = {
+module openAiRoleBackend 'core/security/role.bicep' = if (deployUserRoles) {
   scope: resourceGroup
   name: 'openai-role-backend'
   params: {
@@ -578,7 +578,7 @@ module openAiRoleBackend 'core/security/role.bicep' = {
   }
 }
 
-module searchRoleBackend 'core/security/role.bicep' = {
+module searchRoleBackend 'core/security/role.bicep' = if (deployUserRoles) {
   scope: resourceGroup
   name: 'search-role-backend'
   params: {
