@@ -2,6 +2,7 @@
 # Secure deployment with Infrastructure as Code using Bicep templates
 # PASS: SOLUTION: Uses Azure PowerShell instead of Azure CLI to avoid the
 # "content for this response was already consumed" bug in Azure CLI 2.77.0
+# Updated: GlobalStandard SKU fixes applied for text-embedding-3-small support
 
 trigger:
   branches:
