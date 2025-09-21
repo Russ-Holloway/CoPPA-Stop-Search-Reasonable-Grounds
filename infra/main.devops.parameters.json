@@ -64,6 +64,9 @@
     },
     "environmentTag": {
       "value": "Development"
+    },
+    "createAppRegistration": {
+      "value": true
     }
   }
 }

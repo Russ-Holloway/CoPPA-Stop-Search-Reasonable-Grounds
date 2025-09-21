@@ -65,10 +65,11 @@ param formRecognizerServiceName string = ''
 // param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = ''
 
-// Used for the Azure AD application - now optional for post-deployment configuration
+// Used for the Azure AD application
 param authClientId string = ''
 @secure()
 param authClientSecret string = ''
+param createAppRegistration bool = true  // New parameter to control app registration creation
 
 // Used for Cosmos DB
 param cosmosAccountName string = ''
@@ -214,14 +215,14 @@ module keyVault 'core/security/key-vault.bicep' = {
   }
 }
 
-// Key Vault Secret for AUTH_CLIENT_SECRET
-module authClientSecretKvSecret 'core/security/key-vault-secret.bicep' = if (!empty(authClientSecret)) {
+// Key Vault Secret for AUTH_CLIENT_SECRET - Updated to use final values
+module authClientSecretKvSecret 'core/security/key-vault-secret.bicep' = if (shouldCreateAppRegistration || !empty(authClientSecret)) {
   name: 'auth-client-secret'
   scope: resourceGroup
   params: {
     keyVaultName: keyVault.outputs.name
     secretName: 'auth-client-secret'
-    secretValue: authClientSecret
+    secretValue: shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.clientSecret : authClientSecret
     contentType: 'application/x-pkcs12'
   }
 }
@@ -302,7 +303,23 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 // The application frontend
 var appServiceName = !empty(backendServiceName) ? backendServiceName : 'app-${btpNamingPrefix}-${instanceNumber}'
 var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().tenantId}/v2.0'
-var authClientSecretKeyVaultRef = !empty(authClientSecret) ? '@Microsoft.KeyVault(SecretUri=${authClientSecretKvSecret!.outputs.secretUri})' : ''
+
+// Create Azure AD App Registration if needed
+var shouldCreateAppRegistration = createAppRegistration && (empty(authClientId) || empty(authClientSecret))
+module appRegistration 'core/security/app-registration.bicep' = if (shouldCreateAppRegistration) {
+  name: 'app-registration'
+  scope: resourceGroup
+  params: {
+    appName: 'CoPA-Stop-Search-${environmentCode}-${instanceNumber}'
+    appServiceUrl: 'https://${appServiceName}.azurewebsites.net'
+    environmentName: environmentName
+    location: location
+    tags: tags
+  }
+}
+
+// Use provided values or values from app registration
+var authClientSecretKeyVaultRef = (shouldCreateAppRegistration || !empty(authClientSecret)) ? '@Microsoft.KeyVault(SecretUri=${authClientSecretKvSecret!.outputs.secretUri})' : ''
 module backend 'core/host/appservice.bicep' = {
   name: 'web'
   scope: resourceGroup
@@ -317,8 +334,8 @@ module backend 'core/host/appservice.bicep' = {
     scmDoBuildDuringDeployment: true
     managedIdentity: true
     authClientSecret: authClientSecretKeyVaultRef
-    authClientId: authClientId
-    authIssuerUri: authIssuerUri
+    authClientId: shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.clientId : authClientId
+    authIssuerUri: shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.issuerUri : authIssuerUri
     subnetIdForIntegration: '${vnet.outputs.id}/subnets/app-service-subnet'
     appSettings: {
       // search - using managed identity authentication
@@ -679,6 +696,8 @@ output AZURE_COSMOSDB_DATABASE string = cosmos.outputs.databaseName
 output AZURE_COSMOSDB_CONVERSATIONS_CONTAINER string = cosmos.outputs.containerName
 
 output AUTH_ISSUER_URI string = authIssuerUri
+output AUTH_CLIENT_ID string = shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.clientId : authClientId
+output APP_REGISTRATION_CREATED bool = shouldCreateAppRegistration
 
 // Network Security Infrastructure
 output AZURE_VNET_NAME string = vnet.outputs.name

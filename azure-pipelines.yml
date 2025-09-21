@@ -418,6 +418,33 @@ stages:
               artifactName: 'copa-application'
               downloadPath: '$(Pipeline.Workspace)'
 
+          - task: AzurePowerShell@5
+            displayName: 'Install Microsoft Graph PowerShell Module'
+            inputs:
+              azureSubscription: $(azureServiceConnectionDev)
+              ScriptType: 'InlineScript'
+              Inline: |
+                Write-Host "Installing Microsoft Graph PowerShell modules..."
+                Install-Module -Name Microsoft.Graph.Applications -Force -Scope CurrentUser -AllowClobber
+                Install-Module -Name Microsoft.Graph.Authentication -Force -Scope CurrentUser -AllowClobber
+                Write-Host "Microsoft Graph PowerShell modules installed successfully"
+              azurePowerShellVersion: 'LatestVersion'
+              pwsh: true
+
+          - task: AzurePowerShell@5
+            displayName: 'Create Azure AD App Registration'
+            inputs:
+              azureSubscription: $(azureServiceConnectionDev)
+              ScriptType: 'FilePath'
+              ScriptPath: 'scripts/Create-AppRegistration.ps1'
+              ScriptArguments: >
+                -AppName "CoPA-Stop-Search-Dev-001"
+                -AppServiceUrl "https://$(webAppName).azurewebsites.net"
+                -EnvironmentName "$(environmentName)"
+                -OutputFormat "json"
+              azurePowerShellVersion: 'LatestVersion'
+              pwsh: true
+
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
             inputs:
@@ -514,6 +541,21 @@ stages:
                     $parameters['embeddingModelName'] = "$(embeddingModel)"
                     Write-Host "DATA: Added embedding model: $(embeddingModel)"
                   }
+                  
+                  # Add app registration parameters if they were created
+                  if ("$(AppRegistration.ClientId)" -ne "`$(AppRegistration.ClientId)" -and "$(AppRegistration.ClientId)" -ne "") {
+                    $parameters['authClientId'] = "$(AppRegistration.ClientId)"
+                    Write-Host "AUTH: Added App Registration Client ID"
+                  }
+                  
+                  if ("$(AppRegistration.ClientSecret)" -ne "`$(AppRegistration.ClientSecret)" -and "$(AppRegistration.ClientSecret)" -ne "") {
+                    $parameters['authClientSecret'] = "$(AppRegistration.ClientSecret)"
+                    Write-Host "AUTH: Added App Registration Client Secret"
+                  }
+                  
+                  # Disable app registration creation in Bicep since we created it via PowerShell
+                  $parameters['createAppRegistration'] = $false
+                  Write-Host "AUTH: Disabled Bicep app registration creation"
 
                 } catch {
                   Write-Error "FAIL: Failed to load parameters: $($_.Exception.Message)"
@@ -735,6 +777,33 @@ stages:
               artifactName: 'copa-application'
               downloadPath: '$(Pipeline.Workspace)'
 
+          - task: AzurePowerShell@5
+            displayName: 'Install Microsoft Graph PowerShell Module (Production)'
+            inputs:
+              azureSubscription: $(azureServiceConnectionProd)
+              ScriptType: 'InlineScript'
+              Inline: |
+                Write-Host "Installing Microsoft Graph PowerShell modules for production..."
+                Install-Module -Name Microsoft.Graph.Applications -Force -Scope CurrentUser -AllowClobber
+                Install-Module -Name Microsoft.Graph.Authentication -Force -Scope CurrentUser -AllowClobber
+                Write-Host "Microsoft Graph PowerShell modules installed successfully for production"
+              azurePowerShellVersion: 'LatestVersion'
+              pwsh: true
+
+          - task: AzurePowerShell@5
+            displayName: 'Create Azure AD App Registration (Production)'
+            inputs:
+              azureSubscription: $(azureServiceConnectionProd)
+              ScriptType: 'FilePath'
+              ScriptPath: 'scripts/Create-AppRegistration.ps1'
+              ScriptArguments: >
+                -AppName "CoPA-Stop-Search-Prod-001"
+                -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net"
+                -EnvironmentName "$(environmentName)"
+                -OutputFormat "json"
+              azurePowerShellVersion: 'LatestVersion'
+              pwsh: true
+
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
             inputs:
@@ -832,6 +901,21 @@ stages:
                     $parameters['embeddingModelName'] = "$(embeddingModel)"
                     Write-Host "DATA: Added PRODUCTION embedding model: $(embeddingModel)"
                   }
+                  
+                  # Add app registration parameters for production if they were created
+                  if ("$(AppRegistration.ClientId)" -ne "`$(AppRegistration.ClientId)" -and "$(AppRegistration.ClientId)" -ne "") {
+                    $parameters['authClientId'] = "$(AppRegistration.ClientId)"
+                    Write-Host "AUTH: Added PRODUCTION App Registration Client ID"
+                  }
+                  
+                  if ("$(AppRegistration.ClientSecret)" -ne "`$(AppRegistration.ClientSecret)" -and "$(AppRegistration.ClientSecret)" -ne "") {
+                    $parameters['authClientSecret'] = "$(AppRegistration.ClientSecret)"
+                    Write-Host "AUTH: Added PRODUCTION App Registration Client Secret"
+                  }
+                  
+                  # Disable app registration creation in Bicep since we created it via PowerShell
+                  $parameters['createAppRegistration'] = $false
+                  Write-Host "AUTH: Disabled PRODUCTION Bicep app registration creation"
 
                 } catch {
                   Write-Error "FAIL: Failed to load production parameters: $($_.Exception.Message)"
