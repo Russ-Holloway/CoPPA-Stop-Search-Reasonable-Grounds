@@ -48,7 +48,7 @@ param openAiResourceName string = ''
 // param openAiResourceGroupName string = ''
 param openAiResourceGroupLocation string = location
 param openAiSkuName string = ''
-param openAIModel string = 'turbo16k'
+param openAIModel string = 'gpt4o'
 param openAIModelName string = 'gpt-35-turbo-16k'
 param openAITemperature int = 0
 param openAITopP int = 1
@@ -378,7 +378,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: openAIModelName
           version: '2024-11-20'
         }
-        capacity: 30
+        capacity: 100
       }
       {
         name: embeddingDeploymentName
@@ -387,7 +387,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
           name: embeddingModelName
           version: embeddingModelName == 'text-embedding-3-small' ? '1' : '2'
         }
-        capacity: 30
+        capacity: 100
       }
     ]
   }
