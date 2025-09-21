@@ -358,17 +358,25 @@ stages:
         # Copy Bicep templates
         cp -r infra/ $(Build.ArtifactStagingDirectory)/
 
+        # Copy scripts directory (including PowerShell scripts for app registration)
+        cp -r scripts/ $(Build.ArtifactStagingDirectory)/
+
         # Copy createUIDefinition for portal deployments (backup option)
         cp infrastructure/createUiDefinition.json $(Build.ArtifactStagingDirectory)/infra/ || true
 
         echo "Infrastructure package prepared"
+        echo "Contents of artifact staging directory:"
+        ls -la $(Build.ArtifactStagingDirectory)/
+        echo "Contents of infra directory:"
         ls -la $(Build.ArtifactStagingDirectory)/infra/
+        echo "Contents of scripts directory:"
+        ls -la $(Build.ArtifactStagingDirectory)/scripts/
       displayName: 'Package Infrastructure'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Infrastructure Artifact'
       inputs:
-        pathToPublish: '$(Build.ArtifactStagingDirectory)/infra'
+        pathToPublish: '$(Build.ArtifactStagingDirectory)/'
         artifactName: 'copa-infrastructure'
 
 - stage: DeployDevelopment
@@ -435,15 +443,30 @@ stages:
             displayName: 'Create Azure AD App Registration'
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
-              ScriptType: 'FilePath'
-              ScriptPath: 'scripts/Create-AppRegistration.ps1'
-              ScriptArguments: >
-                -AppName "CoPA-Stop-Search-Dev-001"
-                -AppServiceUrl "https://$(webAppName).azurewebsites.net"
-                -EnvironmentName "$(environmentName)"
-                -OutputFormat "json"
+              ScriptType: 'InlineScript'
               azurePowerShellVersion: 'LatestVersion'
               pwsh: true
+              Inline: |
+                # Determine script path - use artifacts if available, otherwise source
+                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration.ps1"
+                $sourceScriptPath = "scripts/Create-AppRegistration.ps1"
+                
+                if (Test-Path $artifactsScriptPath) {
+                  Write-Host "Using script from artifacts: $artifactsScriptPath"
+                  $scriptPath = $artifactsScriptPath
+                } elseif (Test-Path $sourceScriptPath) {
+                  Write-Host "Using script from source: $sourceScriptPath"
+                  $scriptPath = $sourceScriptPath
+                } else {
+                  Write-Error "Cannot find Create-AppRegistration.ps1 script in either location"
+                  Write-Host "Checked paths:"
+                  Write-Host "- $artifactsScriptPath"
+                  Write-Host "- $sourceScriptPath"
+                  throw "Script not found"
+                }
+                
+                Write-Host "Executing script: $scriptPath"
+                & $scriptPath -AppName "CoPA-Stop-Search-Dev-001" -AppServiceUrl "https://$(webAppName).azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -477,14 +500,14 @@ stages:
 
                 Write-Host "START: Starting PowerShell-based infrastructure deployment (Bypassing Azure CLI 2.77.0 bug)"
 
-                # Always use source files when artifacts aren't downloaded
-                $artifactsPath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                # Always use source files when artifacts aren't downloaded, or artifacts when available
+                $artifactsPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.bicep"
                 $sourcePath = "infra/main.bicep"
 
                 if (Test-Path $artifactsPath) {
                   Write-Host "PACKAGE: Using pipeline artifacts (full deployment mode)"
                   $templatePath = $artifactsPath
-                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.devops.parameters.json"
+                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.devops.parameters.json"
                 } else {
                   Write-Host "FOLDER: Using source files (infrastructure-only mode or no artifacts)"
                   $templatePath = $sourcePath
@@ -759,7 +782,9 @@ stages:
       runOnce:
         deploy:
           steps:
-          - checkout: none
+          - checkout: self
+            fetchDepth: 1
+            condition: variables.infrastructureOnly
 
           - task: DownloadBuildArtifacts@1
             displayName: 'Download Infrastructure Artifacts'
@@ -794,15 +819,30 @@ stages:
             displayName: 'Create Azure AD App Registration (Production)'
             inputs:
               azureSubscription: $(azureServiceConnectionProd)
-              ScriptType: 'FilePath'
-              ScriptPath: 'scripts/Create-AppRegistration.ps1'
-              ScriptArguments: >
-                -AppName "CoPA-Stop-Search-Prod-001"
-                -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net"
-                -EnvironmentName "$(environmentName)"
-                -OutputFormat "json"
+              ScriptType: 'InlineScript'
               azurePowerShellVersion: 'LatestVersion'
               pwsh: true
+              Inline: |
+                # Determine script path for production - use artifacts if available, otherwise source
+                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration.ps1"
+                $sourceScriptPath = "scripts/Create-AppRegistration.ps1"
+                
+                if (Test-Path $artifactsScriptPath) {
+                  Write-Host "Using production script from artifacts: $artifactsScriptPath"
+                  $scriptPath = $artifactsScriptPath
+                } elseif (Test-Path $sourceScriptPath) {
+                  Write-Host "Using production script from source: $sourceScriptPath"
+                  $scriptPath = $sourceScriptPath
+                } else {
+                  Write-Error "Cannot find Create-AppRegistration.ps1 script in either location for production"
+                  Write-Host "Checked paths:"
+                  Write-Host "- $artifactsScriptPath"
+                  Write-Host "- $sourceScriptPath"
+                  throw "Production script not found"
+                }
+                
+                Write-Host "Executing production script: $scriptPath"
+                & $scriptPath -AppName "CoPA-Stop-Search-Prod-001" -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -837,13 +877,13 @@ stages:
                 Write-Host "START: Starting PRODUCTION PowerShell-based infrastructure deployment"
 
                 # Fallback logic for production deployment
-                $artifactsTemplatePath = "$(Pipeline.Workspace)/copa-infrastructure/main.bicep"
+                $artifactsTemplatePath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.bicep"
                 $sourceTemplatePath = "infra/main.bicep"
                 
                 if (Test-Path $artifactsTemplatePath) {
                   Write-Host "PACKAGE: Using pipeline artifacts for production deployment"
                   $templatePath = $artifactsTemplatePath
-                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/main.production.parameters.json"
+                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.production.parameters.json"
                 } else {
                   Write-Host "FOLDER: Using source files for production deployment (infrastructure-only mode)"
                   $templatePath = $sourceTemplatePath
