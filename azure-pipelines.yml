@@ -432,41 +432,23 @@ stages:
               azureSubscription: $(azureServiceConnectionDev)
               ScriptType: 'InlineScript'
               Inline: |
-                Write-Host "Installing Microsoft Graph PowerShell modules..."
-                Install-Module -Name Microsoft.Graph.Applications -Force -Scope CurrentUser -AllowClobber
-                Install-Module -Name Microsoft.Graph.Authentication -Force -Scope CurrentUser -AllowClobber
-                Write-Host "Microsoft Graph PowerShell modules installed successfully"
+                Write-Host "Skipping Microsoft Graph PowerShell modules installation - using Azure CLI approach instead"
+                Write-Host "This avoids managed identity authentication issues in Azure DevOps"
               azurePowerShellVersion: 'LatestVersion'
               pwsh: true
 
-          - task: AzurePowerShell@5
+          - task: AzureCLI@2
             displayName: 'Create Azure AD App Registration'
             inputs:
               azureSubscription: $(azureServiceConnectionDev)
-              ScriptType: 'InlineScript'
-              azurePowerShellVersion: 'LatestVersion'
-              pwsh: true
-              Inline: |
-                # Determine script path - use artifacts if available, otherwise source
-                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration.ps1"
-                $sourceScriptPath = "scripts/Create-AppRegistration.ps1"
-                
-                if (Test-Path $artifactsScriptPath) {
-                  Write-Host "Using script from artifacts: $artifactsScriptPath"
-                  $scriptPath = $artifactsScriptPath
-                } elseif (Test-Path $sourceScriptPath) {
-                  Write-Host "Using script from source: $sourceScriptPath"
-                  $scriptPath = $sourceScriptPath
-                } else {
-                  Write-Error "Cannot find Create-AppRegistration.ps1 script in either location"
-                  Write-Host "Checked paths:"
-                  Write-Host "- $artifactsScriptPath"
-                  Write-Host "- $sourceScriptPath"
-                  throw "Script not found"
-                }
-                
-                Write-Host "Executing script: $scriptPath"
-                & $scriptPath -AppName "CoPA-Stop-Search-Dev-001" -AppServiceUrl "https://$(webAppName).azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
+              scriptType: 'pscore'
+              scriptLocation: 'scriptPath'
+              scriptPath: 'scripts/Create-AppRegistration-AzCli.ps1'
+              arguments: >
+                -AppName "CoPA-Stop-Search-Dev-001"
+                -AppServiceUrl "https://$(webAppName).azurewebsites.net"
+                -EnvironmentName "$(environmentName)"
+                -OutputFormat "json"
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -808,41 +790,23 @@ stages:
               azureSubscription: $(azureServiceConnectionProd)
               ScriptType: 'InlineScript'
               Inline: |
-                Write-Host "Installing Microsoft Graph PowerShell modules for production..."
-                Install-Module -Name Microsoft.Graph.Applications -Force -Scope CurrentUser -AllowClobber
-                Install-Module -Name Microsoft.Graph.Authentication -Force -Scope CurrentUser -AllowClobber
-                Write-Host "Microsoft Graph PowerShell modules installed successfully for production"
+                Write-Host "Skipping Microsoft Graph PowerShell modules installation for production - using Azure CLI approach instead"
+                Write-Host "This avoids managed identity authentication issues in Azure DevOps"
               azurePowerShellVersion: 'LatestVersion'
               pwsh: true
 
-          - task: AzurePowerShell@5
+          - task: AzureCLI@2
             displayName: 'Create Azure AD App Registration (Production)'
             inputs:
               azureSubscription: $(azureServiceConnectionProd)
-              ScriptType: 'InlineScript'
-              azurePowerShellVersion: 'LatestVersion'
-              pwsh: true
-              Inline: |
-                # Determine script path for production - use artifacts if available, otherwise source
-                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration.ps1"
-                $sourceScriptPath = "scripts/Create-AppRegistration.ps1"
-                
-                if (Test-Path $artifactsScriptPath) {
-                  Write-Host "Using production script from artifacts: $artifactsScriptPath"
-                  $scriptPath = $artifactsScriptPath
-                } elseif (Test-Path $sourceScriptPath) {
-                  Write-Host "Using production script from source: $sourceScriptPath"
-                  $scriptPath = $sourceScriptPath
-                } else {
-                  Write-Error "Cannot find Create-AppRegistration.ps1 script in either location for production"
-                  Write-Host "Checked paths:"
-                  Write-Host "- $artifactsScriptPath"
-                  Write-Host "- $sourceScriptPath"
-                  throw "Production script not found"
-                }
-                
-                Write-Host "Executing production script: $scriptPath"
-                & $scriptPath -AppName "CoPA-Stop-Search-Prod-001" -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
+              scriptType: 'pscore'
+              scriptLocation: 'scriptPath'
+              scriptPath: 'scripts/Create-AppRegistration-AzCli.ps1'
+              arguments: >
+                -AppName "CoPA-Stop-Search-Prod-001"
+                -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net"
+                -EnvironmentName "$(environmentName)"
+                -OutputFormat "json"
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'

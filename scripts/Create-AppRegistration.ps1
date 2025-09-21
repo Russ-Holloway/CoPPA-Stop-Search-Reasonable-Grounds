@@ -50,12 +50,35 @@ try {
     # Check if we're already connected to Microsoft Graph
     $context = Get-MgContext -ErrorAction SilentlyContinue
     if (-not $context) {
-        Write-Host "Connecting to Microsoft Graph..."
-        Connect-MgGraph -Identity
-        $context = Get-MgContext
-        Write-Host "Connected to tenant: $($context.TenantId)"
+        Write-Host "Connecting to Microsoft Graph using Azure PowerShell service principal..."
+        
+        # Get the current Azure PowerShell context
+        $azContext = Get-AzContext
+        if (-not $azContext) {
+            throw "No Azure PowerShell context found. This script must run within an Azure PowerShell task."
+        }
+        
+        Write-Host "Azure context: Account=$($azContext.Account.Id), Tenant=$($azContext.Tenant.Id)"
+        
+        # Connect to Microsoft Graph using the same service principal credentials
+        # The Azure PowerShell task provides the authentication context
+        try {
+            # Try connecting with the tenant ID from Azure context
+            Connect-MgGraph -TenantId $azContext.Tenant.Id -NoWelcome
+            $context = Get-MgContext
+            Write-Host "Connected to Microsoft Graph in tenant: $($context.TenantId)"
+        } catch {
+            Write-Host "Failed to connect with tenant-only method, trying alternative approach..."
+            
+            # Alternative: Use device code or interactive if available (fallback)
+            # This should not be needed in Azure DevOps but provides a fallback
+            Write-Host "Attempting to connect using service principal identity inheritance..."
+            Connect-MgGraph -Identity -NoWelcome
+            $context = Get-MgContext
+            Write-Host "Connected to Microsoft Graph using identity: $($context.TenantId)"
+        }
     } else {
-        Write-Host "Already connected to tenant: $($context.TenantId)"
+        Write-Host "Already connected to Microsoft Graph in tenant: $($context.TenantId)"
     }
 
     $redirectUri = "$AppServiceUrl/.auth/login/aad/callback"
