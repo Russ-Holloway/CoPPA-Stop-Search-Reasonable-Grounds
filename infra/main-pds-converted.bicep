@@ -194,7 +194,7 @@ resource openAIModelDeployment 'Microsoft.CognitiveServices/accounts/deployments
     }
   }
   sku: {
-    name: 'Standard'
+    name: 'GlobalStandard'
     capacity: 10
   }
 }
@@ -211,7 +211,7 @@ resource openAIEmbeddingDeployment 'Microsoft.CognitiveServices/accounts/deploym
     }
   }
   sku: {
-    name: 'Standard'
+    name: 'GlobalStandard'
     capacity: 10
   }
   dependsOn: [
