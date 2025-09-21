@@ -39,8 +39,8 @@ variables:
   resourceGroupName: 'rg-btp-d-copa-stop-search'
 
   # OpenAI Configuration (overrideable via pipeline variables)
-  openAIModel: 'gpt-35-turbo-16k'
-  embeddingModel: 'text-embedding-ada-002'
+  openAIModel: 'gpt-4o'
+  embeddingModel: 'text-embedding-3-small'
 
   # Build and deployment settings
   pythonVersion: '3.10'
@@ -384,9 +384,9 @@ stages:
   - name: azureLocation
     value: 'uksouth'
   - name: openAIModel
-    value: 'gpt-35-turbo-16k'
+    value: 'gpt-4o'
   - name: embeddingModel
-    value: 'text-embedding-ada-002'
+    value: 'text-embedding-3-small'
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure to Development'
@@ -703,9 +703,9 @@ stages:
   - name: azureLocation
     value: 'uksouth'
   - name: openAIModel
-    value: 'gpt-35-turbo-16k'
+    value: 'gpt-4o'
   - name: embeddingModel
-    value: 'text-embedding-ada-002'
+    value: 'text-embedding-3-small'
   jobs:
   - deployment: DeployInfrastructure
     displayName: 'Deploy Infrastructure to Production'

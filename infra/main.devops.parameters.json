@@ -33,10 +33,10 @@
       "value": "10.0.2.0/24"
     },
     "openAIModelName": {
-      "value": "gpt-35-turbo-16k"
+      "value": "gpt-4o"
     },
     "embeddingModelName": {
-      "value": "text-embedding-ada-002"
+      "value": "text-embedding-3-small"
     },
     "openAiSkuName": {
       "value": "S0"

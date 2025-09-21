@@ -29,6 +29,24 @@
     "privateEndpointSubnetAddressPrefix": {
       "value": "10.1.2.0/24"
     },
+    "openAIModelName": {
+      "value": "gpt-4o"
+    },
+    "embeddingModelName": {
+      "value": "text-embedding-3-small"
+    },
+    "openAiSkuName": {
+      "value": "S0"
+    },
+    "searchServiceSkuName": {
+      "value": "standard"
+    },
+    "formRecognizerSkuName": {
+      "value": "S0"
+    },
+    "deployUserRoles": {
+      "value": false
+    },
     "ownerTag": {
       "value": "Production-Team"
     },
