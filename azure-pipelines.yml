@@ -47,11 +47,15 @@ variables:
   nodeVersion: '18.x'
   vmImageName: 'ubuntu-latest'
 
+  # Template and resource naming
+  bicepTemplatePath: 'infra/main.bicep'
+  bicepParametersPath: 'infra/main.parameters.json'
+  webAppName: 'app-btp-d-copa-stop-search-001'
+
   # Performance optimizations
   AZURE_CORE_OUTPUT: 'table'
   AZURE_CORE_COLLECT_TELEMETRY: 'false'
   AZURE_CLI_DISABLE_CONNECTION_VERIFICATION: '1'
-  bicepParametersPath: 'infra/main.parameters.json'
 
   # Build variables
   buildConfiguration: 'Release'
@@ -368,7 +372,8 @@ stages:
 
 - stage: DeployDevelopment
   displayName: 'Deploy to Development'
-  dependsOn: []
+  dependsOn: 
+  - BuildAndPackage
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/Dev-Ops-Deployment'))
   variables:
   - group: 'copa-stop-search-dev-variables'
@@ -396,13 +401,21 @@ stages:
             fetchDepth: 1
             condition: variables.infrastructureOnly
 
-          - download: current
-            artifact: 'copa-infrastructure'
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Download Infrastructure Artifacts'
             condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
+            inputs:
+              buildType: 'current'
+              artifactName: 'copa-infrastructure'
+              downloadPath: '$(Pipeline.Workspace)'
 
-          - download: current
-            artifact: 'copa-application'
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Download Application Artifacts'
             condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
+            inputs:
+              buildType: 'current'
+              artifactName: 'copa-application'
+              downloadPath: '$(Pipeline.Workspace)'
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -560,16 +573,18 @@ stages:
                     # Extract web app name from outputs or use BTP naming convention
                     if ($deploymentResult.Outputs.ContainsKey('webAppName')) {
                       $webAppName = $deploymentResult.Outputs.webAppName.Value
+                    } elseif ($deploymentResult.Outputs.ContainsKey('appServiceName')) {
+                      $webAppName = $deploymentResult.Outputs.appServiceName.Value
                     } else {
-                      $webAppName = "app-btp-d-copa-stop-search-001"
+                      $webAppName = "$(webAppName)"
                     }
                   } else {
-                    # Fallback to BTP naming convention
-                    $webAppName = "app-btp-d-copa-stop-search-001"
+                    # Fallback to pipeline variable or BTP naming convention
+                    $webAppName = "$(webAppName)"
                   }
 
                   Write-Host "WEB: Web App Name: $webAppName"
-                  Write-Host "##vso[task.setvariable variable=webAppName]$webAppName"
+                  Write-Host "##vso[task.setvariable variable=webAppName;isOutput=true]$webAppName"
 
                 } catch {
                   Write-Error "FAIL: PowerShell deployment failed: $($_.Exception.Message)"
@@ -615,14 +630,26 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "Checking if web app exists: $(webAppName)"
+                # Use the pipeline variable for web app name
+                WEBAPP_NAME="$(webAppName)"
+                echo "Checking if web app exists: $WEBAPP_NAME"
 
-                if az webapp show --name "$(webAppName)" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
-                  echo "PASS: Web app $(webAppName) exists and is ready for deployment"
+                if az webapp show --name "$WEBAPP_NAME" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
+                  echo "PASS: Web app $WEBAPP_NAME exists and is ready for deployment"
                 else
-                  echo "FAIL: Web app $(webAppName) does not exist!"
+                  echo "FAIL: Web app $WEBAPP_NAME does not exist!"
                   echo "Available web apps in resource group $(resourceGroupName):"
                   az webapp list --resource-group "$(resourceGroupName)" --query "[].name" --output table || echo "No web apps found"
+                  
+                  # Also check if resource group exists
+                  echo "Checking if resource group exists..."
+                  if az group show --name "$(resourceGroupName)" >/dev/null 2>&1; then
+                    echo "Resource group $(resourceGroupName) exists"
+                  else
+                    echo "ERROR: Resource group $(resourceGroupName) does not exist!"
+                    echo "This indicates the infrastructure deployment may have failed"
+                  fi
+                  
                   exit 1
                 fi
 
@@ -645,7 +672,8 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 echo "Verifying web app deployment..."
-                WEB_APP_URL="https://$(webAppName).azurewebsites.net"
+                WEBAPP_NAME="$(webAppName)"
+                WEB_APP_URL="https://$WEBAPP_NAME.azurewebsites.net"
                 echo "Web app URL: $WEB_APP_URL"
 
                 # Wait a moment for the app to start
@@ -690,13 +718,21 @@ stages:
           steps:
           - checkout: none
 
-          - download: current
-            artifact: 'copa-infrastructure'
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Download Infrastructure Artifacts'
             condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
+            inputs:
+              buildType: 'current'
+              artifactName: 'copa-infrastructure'
+              downloadPath: '$(Pipeline.Workspace)'
 
-          - download: current
-            artifact: 'copa-application'
+          - task: DownloadBuildArtifacts@1
+            displayName: 'Download Application Artifacts'
             condition: and(succeeded(), not(variables.infrastructureOnly), not(variables.skipBuild))
+            inputs:
+              buildType: 'current'
+              artifactName: 'copa-application'
+              downloadPath: '$(Pipeline.Workspace)'
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -855,6 +891,8 @@ stages:
                     # Extract web app name for production
                     if ($deploymentResult.Outputs.ContainsKey('webAppName')) {
                       $webAppName = $deploymentResult.Outputs.webAppName.Value
+                    } elseif ($deploymentResult.Outputs.ContainsKey('appServiceName')) {
+                      $webAppName = $deploymentResult.Outputs.appServiceName.Value
                     } else {
                       $webAppName = "app-btp-p-copa-stop-search-001"
                     }
@@ -864,7 +902,7 @@ stages:
                   }
 
                   Write-Host "WEB: PRODUCTION Web App Name: $webAppName"
-                  Write-Host "##vso[task.setvariable variable=webAppName]$webAppName"
+                  Write-Host "##vso[task.setvariable variable=webAppName;isOutput=true]$webAppName"
 
                 } catch {
                   Write-Error "FAIL: PRODUCTION PowerShell deployment failed: $($_.Exception.Message)"
@@ -907,12 +945,14 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                echo "Checking if production web app exists: $(webAppName)"
+                # Use the pipeline variable for production web app name
+                WEBAPP_NAME="$(webAppName)"
+                echo "Checking if production web app exists: $WEBAPP_NAME"
 
-                if az webapp show --name "$(webAppName)" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
-                  echo "PASS: Production web app $(webAppName) exists and is ready for deployment"
+                if az webapp show --name "$WEBAPP_NAME" --resource-group "$(resourceGroupName)" >/dev/null 2>&1; then
+                  echo "PASS: Production web app $WEBAPP_NAME exists and is ready for deployment"
                 else
-                  echo "FAIL: Production web app $(webAppName) does not exist!"
+                  echo "FAIL: Production web app $WEBAPP_NAME does not exist!"
                   echo "Available web apps in resource group $(resourceGroupName):"
                   az webapp list --resource-group "$(resourceGroupName)" --query "[].name" --output table || echo "No web apps found"
                   exit 1
@@ -935,7 +975,8 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 echo "Verifying production web app deployment..."
-                WEB_APP_URL="https://$(webAppName).azurewebsites.net"
+                WEBAPP_NAME="$(webAppName)"
+                WEB_APP_URL="https://$WEBAPP_NAME.azurewebsites.net"
                 echo "Production web app URL: $WEB_APP_URL"
 
                 # Wait a moment for the app to start
