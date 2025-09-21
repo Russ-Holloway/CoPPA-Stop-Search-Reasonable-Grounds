@@ -534,22 +534,22 @@ stages:
                     -TemplateParameterObject $parameters `
                     -Verbose
 
-                  if ($validationResult) {
+                  if ($validationResult -and $validationResult.Count -gt 0) {
                     Write-Host "FAIL: Template validation failed with the following errors:"
-                    foreach ($error in $validationResult) {
-                      Write-Host "  ERROR: Error Code: $($error.Code)"
-                      Write-Host "  MESSAGE: Message: $($error.Message)"
-                      if ($error.Details) {
-                        Write-Host "    Details: $($error.Details | ConvertTo-Json -Depth 3)"
+                    foreach ($validationErr in $validationResult) {
+                      Write-Host "  ERROR: Error Code: $($validationErr.Code)"
+                      Write-Host "  MESSAGE: Message: $($validationErr.Message)"
+                      if ($validationErr.Details) {
+                        Write-Host "    Details: $($validationErr.Details | ConvertTo-Json -Depth 3)"
                       }
-                      if ($error.Target) {
-                        Write-Host "  TARGET: Target: $($error.Target)"
+                      if ($validationErr.Target) {
+                        Write-Host "  TARGET: Target: $($validationErr.Target)"
                       }
                     }
                     throw "Template validation failed. See errors above."
+                  } else {
+                    Write-Host "PASS: Template validation passed successfully!"
                   }
-
-                  Write-Host "PASS: Template validation passed successfully!"
 
                   # Deploy infrastructure using PowerShell (avoids CLI response handling bug)
                   Write-Host "START: Starting Bicep deployment with PowerShell..."
@@ -852,22 +852,22 @@ stages:
                     -TemplateParameterObject $parameters `
                     -Verbose
 
-                  if ($validationResult) {
+                  if ($validationResult -and $validationResult.Count -gt 0) {
                     Write-Host "FAIL: PRODUCTION template validation failed with the following errors:"
-                    foreach ($validationError in $validationResult) {
-                      Write-Host "  ERROR: Error Code: $($validationError.Code)"
-                      Write-Host "  MESSAGE: Message: $($validationError.Message)"
-                      if ($validationError.Details) {
-                        Write-Host "  VALIDATE: Details: $($validationError.Details | ConvertTo-Json -Depth 3)"
+                    foreach ($validationErr in $validationResult) {
+                      Write-Host "  ERROR: Error Code: $($validationErr.Code)"
+                      Write-Host "  MESSAGE: Message: $($validationErr.Message)"
+                      if ($validationErr.Details) {
+                        Write-Host "  VALIDATE: Details: $($validationErr.Details | ConvertTo-Json -Depth 3)"
                       }
-                      if ($validationError.Target) {
-                        Write-Host "  TARGET: Target: $($validationError.Target)"
+                      if ($validationErr.Target) {
+                        Write-Host "  TARGET: Target: $($validationErr.Target)"
                       }
                     }
                     throw "PRODUCTION template validation failed. See errors above."
+                  } else {
+                    Write-Host "PASS: PRODUCTION template validation passed successfully!"
                   }
-
-                  Write-Host "PASS: PRODUCTION template validation passed successfully!"
 
                   # Deploy production infrastructure using PowerShell
                   Write-Host "START: Starting PRODUCTION Bicep deployment with PowerShell..."
