@@ -36,7 +36,7 @@
       "value": "gpt-4o"
     },
     "embeddingModelName": {
-      "value": "text-embedding-3-small"
+      "value": "text-embedding-ada-002"
     },
     "openAiSkuName": {
       "value": "S0"

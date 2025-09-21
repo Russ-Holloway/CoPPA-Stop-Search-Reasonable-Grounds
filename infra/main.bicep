@@ -376,7 +376,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
         model: {
           format: 'OpenAI'
           name: openAIModelName
-          version: '0613'
+          version: '2024-08-06'
         }
         capacity: 30
       }
