@@ -26,7 +26,7 @@ param enablePrivateDnsZones bool = false
 // Security Configuration
 param keyVaultName string = ''
 param logAnalyticsWorkspaceName string = ''
-param restoreKeyVault bool = false
+param restoreKeyVault bool = true
 
 param appServicePlanName string = ''
 param backendServiceName string = ''
