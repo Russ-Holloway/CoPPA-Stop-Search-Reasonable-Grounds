@@ -21,10 +21,12 @@ param vnetAddressPrefix string = '10.0.0.0/16'
 param appServiceSubnetAddressPrefix string = '10.0.1.0/24'
 param privateEndpointSubnetAddressPrefix string = '10.0.2.0/24'
 param enablePrivateEndpoints bool = true
+param enablePrivateDnsZones bool = false
 
 // Security Configuration
 param keyVaultName string = ''
 param logAnalyticsWorkspaceName string = ''
+param restoreKeyVault bool = true
 
 param appServicePlanName string = ''
 param backendServiceName string = ''
@@ -221,6 +223,7 @@ module keyVault 'core/security/key-vault.bicep' = {
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
+    restore: restoreKeyVault
   }
 }
 
@@ -241,7 +244,7 @@ module authClientSecretKvSecret 'core/security/key-vault-secret.bicep' = if (has
 }
 
 // Private DNS Zones
-module storagePrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+module storagePrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints && enablePrivateDnsZones) {
   name: 'storage-private-dns-zone'
   scope: resourceGroup
   params: {
@@ -252,7 +255,7 @@ module storagePrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enableP
   }
 }
 
-module cognitiveServicesPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+module cognitiveServicesPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints && enablePrivateDnsZones) {
   name: 'cognitive-services-private-dns-zone'
   scope: resourceGroup
   params: {
@@ -263,7 +266,7 @@ module cognitiveServicesPrivateDnsZone 'core/network/private-dns-zone.bicep' = i
   }
 }
 
-module searchPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+module searchPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints && enablePrivateDnsZones) {
   name: 'search-private-dns-zone'
   scope: resourceGroup
   params: {
@@ -274,7 +277,7 @@ module searchPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePr
   }
 }
 
-module keyVaultPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+module keyVaultPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints && enablePrivateDnsZones) {
   name: 'key-vault-private-dns-zone'
   scope: resourceGroup
   params: {
@@ -285,7 +288,7 @@ module keyVaultPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enable
   }
 }
 
-module cosmosPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints) {
+module cosmosPrivateDnsZone 'core/network/private-dns-zone.bicep' = if (enablePrivateEndpoints && enablePrivateDnsZones) {
   name: 'cosmos-private-dns-zone'
   scope: resourceGroup
   params: {
@@ -524,7 +527,7 @@ module storagePrivateEndpoint 'core/network/private-endpoint.bicep' = if (enable
     privateLinkServiceId: storage.outputs.id
     groupIds: ['blob']
     subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && storagePrivateDnsZone != null) ? storagePrivateDnsZone!.outputs.id : ''
+    privateDnsZoneId: (enablePrivateEndpoints && enablePrivateDnsZones && storagePrivateDnsZone != null) ? storagePrivateDnsZone!.outputs.id : ''
   }
 }
 
@@ -538,7 +541,7 @@ module cognitiveServicesPrivateEndpoint 'core/network/private-endpoint.bicep' = 
     privateLinkServiceId: openAi.outputs.id
     groupIds: ['account']
     subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
+    privateDnsZoneId: (enablePrivateEndpoints && enablePrivateDnsZones && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
   }
 }
 
@@ -552,7 +555,7 @@ module searchPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enableP
     privateLinkServiceId: searchService.outputs.id
     groupIds: ['searchService']
     subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && searchPrivateDnsZone != null) ? searchPrivateDnsZone!.outputs.id : ''
+    privateDnsZoneId: (enablePrivateEndpoints && enablePrivateDnsZones && searchPrivateDnsZone != null) ? searchPrivateDnsZone!.outputs.id : ''
   }
 }
 
@@ -566,7 +569,7 @@ module keyVaultPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enabl
     privateLinkServiceId: keyVault.outputs.id
     groupIds: ['vault']
     subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && keyVaultPrivateDnsZone != null) ? keyVaultPrivateDnsZone!.outputs.id : ''
+    privateDnsZoneId: (enablePrivateEndpoints && enablePrivateDnsZones && keyVaultPrivateDnsZone != null) ? keyVaultPrivateDnsZone!.outputs.id : ''
   }
 }
 
@@ -580,7 +583,7 @@ module cosmosPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enableP
     privateLinkServiceId: cosmos.outputs.id
     groupIds: ['Sql']
     subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && cosmosPrivateDnsZone != null) ? cosmosPrivateDnsZone!.outputs.id : ''
+    privateDnsZoneId: (enablePrivateEndpoints && enablePrivateDnsZones && cosmosPrivateDnsZone != null) ? cosmosPrivateDnsZone!.outputs.id : ''
   }
 }
 
@@ -677,7 +680,7 @@ module formRecognizerPrivateEndpoint 'core/network/private-endpoint.bicep' = if 
     privateLinkServiceId: docPrepResources.outputs.AZURE_FORMRECOGNIZER_ID
     groupIds: ['account']
     subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
+    privateDnsZoneId: (enablePrivateEndpoints && enablePrivateDnsZones && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
   }
 }
 

@@ -23,12 +23,16 @@ param accessPolicies array = []
 @allowed(['Enabled', 'Disabled'])
 param publicNetworkAccess string = 'Disabled'
 
+@description('Set to true to restore a soft-deleted Key Vault')
+param restore bool = false
+
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: name
   location: location
   tags: tags
   properties: {
     tenantId: tenant().tenantId
+    createMode: restore ? 'recover' : 'default'
     sku: {
       family: skuFamily
       name: skuName

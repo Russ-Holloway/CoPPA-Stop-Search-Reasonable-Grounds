@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4890888309567826009"
+      "templateHash": "12505574133013627076"
     }
   },
   "parameters": {
@@ -54,6 +54,10 @@
       "type": "bool",
       "defaultValue": true
     },
+    "enablePrivateDnsZones": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "keyVaultName": {
       "type": "string",
       "defaultValue": ""
@@ -61,6 +65,10 @@
     "logAnalyticsWorkspaceName": {
       "type": "string",
       "defaultValue": ""
+    },
+    "restoreKeyVault": {
+      "type": "bool",
+      "defaultValue": true
     },
     "appServicePlanName": {
       "type": "string",
@@ -697,6 +705,9 @@
           },
           "publicNetworkAccess": {
             "value": "Disabled"
+          },
+          "restore": {
+            "value": "[parameters('restoreKeyVault')]"
           }
         },
         "template": {
@@ -706,7 +717,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "14062062762477903367"
+              "templateHash": "1019452955855156125"
             }
           },
           "parameters": {
@@ -781,6 +792,13 @@
                 "Enabled",
                 "Disabled"
               ]
+            },
+            "restore": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Set to true to restore a soft-deleted Key Vault"
+              }
             }
           },
           "resources": [
@@ -792,6 +810,7 @@
               "tags": "[parameters('tags')]",
               "properties": {
                 "tenantId": "[tenant().tenantId]",
+                "createMode": "[if(parameters('restore'), 'recover', 'default')]",
                 "sku": {
                   "family": "[parameters('skuFamily')]",
                   "name": "[parameters('skuName')]"
@@ -923,7 +942,7 @@
       ]
     },
     {
-      "condition": "[parameters('enablePrivateEndpoints')]",
+      "condition": "[and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "storage-private-dns-zone",
@@ -1015,7 +1034,7 @@
       ]
     },
     {
-      "condition": "[parameters('enablePrivateEndpoints')]",
+      "condition": "[and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "cognitive-services-private-dns-zone",
@@ -1107,7 +1126,7 @@
       ]
     },
     {
-      "condition": "[parameters('enablePrivateEndpoints')]",
+      "condition": "[and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "search-private-dns-zone",
@@ -1199,7 +1218,7 @@
       ]
     },
     {
-      "condition": "[parameters('enablePrivateEndpoints')]",
+      "condition": "[and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "key-vault-private-dns-zone",
@@ -1291,7 +1310,7 @@
       ]
     },
     {
-      "condition": "[parameters('enablePrivateEndpoints')]",
+      "condition": "[and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "cosmos-private-dns-zone",
@@ -3253,7 +3272,7 @@
           "subnetId": {
             "value": "[format('{0}/subnets/private-endpoint-subnet', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'vnet'), '2022-09-01').outputs.id.value)]"
           },
-          "privateDnsZoneId": "[if(and(parameters('enablePrivateEndpoints'), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'storage-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'storage-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
+          "privateDnsZoneId": "[if(and(and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones')), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'storage-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'storage-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3384,7 +3403,7 @@
           "subnetId": {
             "value": "[format('{0}/subnets/private-endpoint-subnet', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'vnet'), '2022-09-01').outputs.id.value)]"
           },
-          "privateDnsZoneId": "[if(and(parameters('enablePrivateEndpoints'), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
+          "privateDnsZoneId": "[if(and(and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones')), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3515,7 +3534,7 @@
           "subnetId": {
             "value": "[format('{0}/subnets/private-endpoint-subnet', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'vnet'), '2022-09-01').outputs.id.value)]"
           },
-          "privateDnsZoneId": "[if(and(parameters('enablePrivateEndpoints'), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'search-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'search-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
+          "privateDnsZoneId": "[if(and(and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones')), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'search-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'search-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3646,7 +3665,7 @@
           "subnetId": {
             "value": "[format('{0}/subnets/private-endpoint-subnet', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'vnet'), '2022-09-01').outputs.id.value)]"
           },
-          "privateDnsZoneId": "[if(and(parameters('enablePrivateEndpoints'), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'key-vault-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'key-vault-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
+          "privateDnsZoneId": "[if(and(and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones')), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'key-vault-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'key-vault-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3777,7 +3796,7 @@
           "subnetId": {
             "value": "[format('{0}/subnets/private-endpoint-subnet', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'vnet'), '2022-09-01').outputs.id.value)]"
           },
-          "privateDnsZoneId": "[if(and(parameters('enablePrivateEndpoints'), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cosmos-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cosmos-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
+          "privateDnsZoneId": "[if(and(and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones')), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cosmos-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cosmos-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4786,7 +4805,7 @@
           "subnetId": {
             "value": "[format('{0}/subnets/private-endpoint-subnet', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'vnet'), '2022-09-01').outputs.id.value)]"
           },
-          "privateDnsZoneId": "[if(and(parameters('enablePrivateEndpoints'), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
+          "privateDnsZoneId": "[if(and(and(parameters('enablePrivateEndpoints'), parameters('enablePrivateDnsZones')), not(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01'), null()))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), variables('btpResourceGroupName'))), 'Microsoft.Resources/deployments', 'cognitive-services-private-dns-zone'), '2022-09-01').outputs.id.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
