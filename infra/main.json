@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "12505574133013627076"
+      "templateHash": "16183448408743059512"
     }
   },
   "parameters": {
@@ -68,7 +68,7 @@
     },
     "restoreKeyVault": {
       "type": "bool",
-      "defaultValue": true
+      "defaultValue": false
     },
     "appServicePlanName": {
       "type": "string",
@@ -196,7 +196,7 @@
     },
     "restoreFormRecognizer": {
       "type": "bool",
-      "defaultValue": true
+      "defaultValue": false
     },
     "authClientId": {
       "type": "string",

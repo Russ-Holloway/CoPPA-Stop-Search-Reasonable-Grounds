@@ -26,7 +26,7 @@ param enablePrivateDnsZones bool = false
 // Security Configuration
 param keyVaultName string = ''
 param logAnalyticsWorkspaceName string = ''
-param restoreKeyVault bool = true
+param restoreKeyVault bool = false
 
 param appServicePlanName string = ''
 param backendServiceName string = ''
@@ -67,7 +67,7 @@ param formRecognizerServiceName string = ''
 // param formRecognizerResourceGroupName string = ''
 // param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = ''
-param restoreFormRecognizer bool = true
+param restoreFormRecognizer bool = false
 
 // Used for the Azure AD application
 param authClientId string = ''
