@@ -553,35 +553,42 @@ stages:
                   }
 
                   # Add OpenAI model parameters if variables are set
-                  if ("$(openAIModel)" -ne "`$(openAIModel)" -and "$(openAIModel)" -ne "") {
-                    $parameters['openAIModelName'] = "$(openAIModel)"
-                    Write-Host "AI: Added OpenAI model: $(openAIModel)"
+                  $openAIModelVar = '$(openAIModel)'
+                  if ($openAIModelVar -ne '`$(openAIModel)' -and $openAIModelVar -ne '' -and $openAIModelVar -ne '$`(openAIModel)') {
+                    $parameters['openAIModelName'] = $openAIModelVar
+                    Write-Host "AI: Added OpenAI model: $openAIModelVar"
                   }
 
-                  if ("$(embeddingModel)" -ne "`$(embeddingModel)" -and "$(embeddingModel)" -ne "") {
-                    $parameters['embeddingModelName'] = "$(embeddingModel)"
-                    Write-Host "DATA: Added embedding model: $(embeddingModel)"
+                  $embeddingModelVar = '$(embeddingModel)'
+                  if ($embeddingModelVar -ne '`$(embeddingModel)' -and $embeddingModelVar -ne '' -and $embeddingModelVar -ne '$`(embeddingModel)') {
+                    $parameters['embeddingModelName'] = $embeddingModelVar
+                    Write-Host "DATA: Added embedding model: $embeddingModelVar"
                   }
                   
                   # Override parameters with pipeline variables for auth
-                  if ("$(AUTH_CLIENT_ID)" -ne "`$(AUTH_CLIENT_ID)" -and "$(AUTH_CLIENT_ID)" -ne "") {
-                    $parameters['authClientId'] = "$(AUTH_CLIENT_ID)"
+                  $authClientIdVar = '$(AUTH_CLIENT_ID)'
+                  if ($authClientIdVar -ne '`$(AUTH_CLIENT_ID)' -and $authClientIdVar -ne '' -and $authClientIdVar -ne '$`(AUTH_CLIENT_ID)') {
+                    $parameters['authClientId'] = $authClientIdVar
                     Write-Host "AUTH: Using pipeline variable AUTH_CLIENT_ID"
                   } else {
                     Write-Warning "AUTH: AUTH_CLIENT_ID pipeline variable not set - using parameter file value"
                   }
                   
-                  if ("$(AUTH_CLIENT_SECRET)" -ne "`$(AUTH_CLIENT_SECRET)" -and "$(AUTH_CLIENT_SECRET)" -ne "") {
-                    $parameters['authClientSecret'] = "$(AUTH_CLIENT_SECRET)"
+                  $authClientSecretVar = '$(AUTH_CLIENT_SECRET)'
+                  if ($authClientSecretVar -ne '`$(AUTH_CLIENT_SECRET)' -and $authClientSecretVar -ne '' -and $authClientSecretVar -ne '$`(AUTH_CLIENT_SECRET)') {
+                    $parameters['authClientSecret'] = $authClientSecretVar
                     Write-Host "AUTH: Using pipeline variable AUTH_CLIENT_SECRET"
                   } else {
                     Write-Warning "AUTH: AUTH_CLIENT_SECRET pipeline variable not set - using parameter file value"
                   }
                   
                   # Override storage account name if provided via pipeline variable
-                  if ("$(STORAGE_ACCOUNT_NAME)" -ne "`$(STORAGE_ACCOUNT_NAME)" -and "$(STORAGE_ACCOUNT_NAME)" -ne "") {
-                    $parameters['storageAccountName'] = "$(STORAGE_ACCOUNT_NAME)"
-                    Write-Host "STORAGE: Using pipeline variable STORAGE_ACCOUNT_NAME: $(STORAGE_ACCOUNT_NAME)"
+                  $storageAccountNameVar = '$(STORAGE_ACCOUNT_NAME)'
+                  if ($storageAccountNameVar -ne '`$(STORAGE_ACCOUNT_NAME)' -and $storageAccountNameVar -ne '' -and $storageAccountNameVar -ne '$`(STORAGE_ACCOUNT_NAME)') {
+                    $parameters['storageAccountName'] = $storageAccountNameVar
+                    Write-Host "STORAGE: Using pipeline variable STORAGE_ACCOUNT_NAME: $storageAccountNameVar"
+                  } else {
+                    Write-Host "STORAGE: STORAGE_ACCOUNT_NAME pipeline variable not set - using Bicep auto-generated name"
                   }
 
                 } catch {
@@ -934,35 +941,42 @@ stages:
                   }
 
                   # Add OpenAI model parameters for production
-                  if ("$(openAIModel)" -ne "`$(openAIModel)" -and "$(openAIModel)" -ne "") {
-                    $parameters['openAIModelName'] = "$(openAIModel)"
-                    Write-Host "AI: Added PRODUCTION OpenAI model: $(openAIModel)"
+                  $openAIModelVar = '$(openAIModel)'
+                  if ($openAIModelVar -ne '`$(openAIModel)' -and $openAIModelVar -ne '' -and $openAIModelVar -ne '$`(openAIModel)') {
+                    $parameters['openAIModelName'] = $openAIModelVar
+                    Write-Host "AI: Added PRODUCTION OpenAI model: $openAIModelVar"
                   }
 
-                  if ("$(embeddingModel)" -ne "`$(embeddingModel)" -and "$(embeddingModel)" -ne "") {
-                    $parameters['embeddingModelName'] = "$(embeddingModel)"
-                    Write-Host "DATA: Added PRODUCTION embedding model: $(embeddingModel)"
+                  $embeddingModelVar = '$(embeddingModel)'
+                  if ($embeddingModelVar -ne '`$(embeddingModel)' -and $embeddingModelVar -ne '' -and $embeddingModelVar -ne '$`(embeddingModel)') {
+                    $parameters['embeddingModelName'] = $embeddingModelVar
+                    Write-Host "DATA: Added PRODUCTION embedding model: $embeddingModelVar"
                   }
                   
                   # Override production parameters with pipeline variables for auth
-                  if ("$(AUTH_CLIENT_ID)" -ne "`$(AUTH_CLIENT_ID)" -and "$(AUTH_CLIENT_ID)" -ne "") {
-                    $parameters['authClientId'] = "$(AUTH_CLIENT_ID)"
+                  $authClientIdVar = '$(AUTH_CLIENT_ID)'
+                  if ($authClientIdVar -ne '`$(AUTH_CLIENT_ID)' -and $authClientIdVar -ne '' -and $authClientIdVar -ne '$`(AUTH_CLIENT_ID)') {
+                    $parameters['authClientId'] = $authClientIdVar
                     Write-Host "AUTH: Using PRODUCTION pipeline variable AUTH_CLIENT_ID"
                   } else {
                     Write-Warning "AUTH: PRODUCTION AUTH_CLIENT_ID pipeline variable not set"
                   }
                   
-                  if ("$(AUTH_CLIENT_SECRET)" -ne "`$(AUTH_CLIENT_SECRET)" -and "$(AUTH_CLIENT_SECRET)" -ne "") {
-                    $parameters['authClientSecret'] = "$(AUTH_CLIENT_SECRET)"
+                  $authClientSecretVar = '$(AUTH_CLIENT_SECRET)'
+                  if ($authClientSecretVar -ne '`$(AUTH_CLIENT_SECRET)' -and $authClientSecretVar -ne '' -and $authClientSecretVar -ne '$`(AUTH_CLIENT_SECRET)') {
+                    $parameters['authClientSecret'] = $authClientSecretVar
                     Write-Host "AUTH: Using PRODUCTION pipeline variable AUTH_CLIENT_SECRET"
                   } else {
                     Write-Warning "AUTH: PRODUCTION AUTH_CLIENT_SECRET pipeline variable not set"
                   }
                   
                   # Override production storage account name if provided
-                  if ("$(STORAGE_ACCOUNT_NAME)" -ne "`$(STORAGE_ACCOUNT_NAME)" -and "$(STORAGE_ACCOUNT_NAME)" -ne "") {
-                    $parameters['storageAccountName'] = "$(STORAGE_ACCOUNT_NAME)"
-                    Write-Host "STORAGE: Using PRODUCTION pipeline variable STORAGE_ACCOUNT_NAME: $(STORAGE_ACCOUNT_NAME)"
+                  $storageAccountNameVar = '$(STORAGE_ACCOUNT_NAME)'
+                  if ($storageAccountNameVar -ne '`$(STORAGE_ACCOUNT_NAME)' -and $storageAccountNameVar -ne '' -and $storageAccountNameVar -ne '$`(STORAGE_ACCOUNT_NAME)') {
+                    $parameters['storageAccountName'] = $storageAccountNameVar
+                    Write-Host "STORAGE: Using PRODUCTION pipeline variable STORAGE_ACCOUNT_NAME: $storageAccountNameVar"
+                  } else {
+                    Write-Host "STORAGE: PRODUCTION STORAGE_ACCOUNT_NAME pipeline variable not set - using Bicep auto-generated name"
                   }
 
                 } catch {
