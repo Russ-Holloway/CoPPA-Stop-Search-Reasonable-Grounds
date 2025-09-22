@@ -50,7 +50,7 @@ variables:
 
   # Template and resource naming
   bicepTemplatePath: 'infra/main.bicep'
-  bicepParametersPath: 'infra/main.parameters.json'
+  bicepParametersPath: 'infra/main.prerequisites.parameters.json'
   webAppName: 'app-btp-d-copa-stop-search-001'
 
   # Performance optimizations
@@ -437,91 +437,34 @@ stages:
               azurePowerShellVersion: 'LatestVersion'
               pwsh: true
 
-          - task: AzureCLI@2
-            name: CreateAppRegistration
-            displayName: 'Create Azure AD App Registration'
-            inputs:
-              azureSubscription: $(azureServiceConnectionDev)
-              scriptType: 'pscore'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                # Determine script path - use artifacts if available, otherwise source
-                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration-AzCli.ps1"
-                $sourceScriptPath = "scripts/Create-AppRegistration-AzCli.ps1"
-                
-                if (Test-Path $artifactsScriptPath) {
-                  Write-Host "Using Azure CLI script from artifacts: $artifactsScriptPath"
-                  $scriptPath = $artifactsScriptPath
-                } elseif (Test-Path $sourceScriptPath) {
-                  Write-Host "Using Azure CLI script from source: $sourceScriptPath"
-                  $scriptPath = $sourceScriptPath
-                } else {
-                  Write-Error "Cannot find Create-AppRegistration-AzCli.ps1 script in either location"
-                  Write-Host "Checked paths:"
-                  Write-Host "- $artifactsScriptPath"
-                  Write-Host "- $sourceScriptPath"
-                  Write-Host "Current directory: $(Get-Location)"
-                  Write-Host "Available files in current directory:"
-                  if (Test-Path ".") { Get-ChildItem -Recurse -Name "*.ps1" | Select-Object -First 10 }
-                  throw "Azure CLI script not found"
-                }
-                
-                Write-Host "Executing Azure CLI script: $scriptPath"
-                & $scriptPath -AppName "CoPA-Stop-Search-Dev-001" -AppServiceUrl "https://$(webAppName).azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
-            continueOnError: true
-
           - task: PowerShell@2
-            displayName: 'Check App Registration Status'
-            condition: always()
+            displayName: 'Verify Prerequisites Configuration'
             inputs:
               targetType: 'inline'
               script: |
-                Write-Host "Checking app registration task output variables..."
-                
-                $manualConfigRequired = "$(CreateAppRegistration.AppRegistration.ManualConfigRequired)"
-                $clientId = "$(CreateAppRegistration.AppRegistration.ClientId)"
-                $redirectUri = "$(CreateAppRegistration.AppRegistration.RedirectUri)"
-                $appName = "$(CreateAppRegistration.AppRegistration.AppName)"
-                
-                Write-Host "Manual Config Required: $manualConfigRequired"
-                Write-Host "Client ID: $clientId"
-                Write-Host "Redirect URI: $redirectUri"
-                Write-Host "App Name: $appName"
-                
-                if ($manualConfigRequired -eq "true" -or [string]::IsNullOrEmpty($clientId)) {
-                  Write-Warning "=================================================================="
-                  Write-Warning "MANUAL APP REGISTRATION SETUP REQUIRED"
-                  Write-Warning "=================================================================="
-                  Write-Warning ""
-                  Write-Warning "The automated app registration creation failed due to insufficient"
-                  Write-Warning "permissions. Please follow these steps to complete the setup:"
-                  Write-Warning ""
-                  Write-Warning "1. Create App Registration manually:"
-                  Write-Warning "   - Go to: https://portal.azure.com"
-                  Write-Warning "   - Navigate to: Azure Active Directory > App registrations"
-                  Write-Warning "   - Click: New registration"
-                  Write-Warning "   - Name: $appName"
-                  Write-Warning "   - Redirect URI: $redirectUri"
-                  Write-Warning ""
-                  Write-Warning "2. Create Client Secret:"
-                  Write-Warning "   - In the app registration, go to 'Certificates & secrets'"
-                  Write-Warning "   - Click 'New client secret'"
-                  Write-Warning "   - Copy the secret value"
-                  Write-Warning ""
-                  Write-Warning "3. Update Pipeline Variables:"
-                  Write-Warning "   - Set AUTH_CLIENT_ID to the Application ID"
-                  Write-Warning "   - Set AUTH_CLIENT_SECRET to the client secret (mark as secret)"
-                  Write-Warning ""
-                  Write-Warning "4. Re-run the pipeline after setting these variables"
-                  Write-Warning ""
-                  Write-Warning "For detailed instructions, see:"
-                  Write-Warning "docs/SERVICE-PRINCIPAL-PERMISSIONS.md"
-                  Write-Warning ""
-                  Write-Warning "The deployment will continue but authentication will need manual setup."
-                  Write-Warning "=================================================================="
-                } else {
-                  Write-Host "✓ App registration created successfully - no manual setup required"
-                }
+                Write-Host "=================================================================="
+                Write-Host "MANUAL PREREQUISITES DEPLOYMENT APPROACH"
+                Write-Host "=================================================================="
+                Write-Host ""
+                Write-Host "This deployment uses manual prerequisites for better security and"
+                Write-Host "reliability. Please ensure the following have been created:"
+                Write-Host ""
+                Write-Host "1. Azure AD App Registration:"
+                Write-Host "   - Application ID must be set in pipeline variables as AUTH_CLIENT_ID"
+                Write-Host "   - Client Secret must be set in pipeline variables as AUTH_CLIENT_SECRET"
+                Write-Host ""
+                Write-Host "2. Storage Account with containers:"
+                Write-Host "   - Storage account name must be set in parameters file"
+                Write-Host "   - Required containers: ai-library-stop-search, web-app-logos, content"
+                Write-Host ""
+                Write-Host "3. Logo files (optional but recommended):"
+                Write-Host "   - copa-logo.png, police-force-logo.png, favicon.ico in web-app-logos container"
+                Write-Host ""
+                Write-Host "For detailed setup instructions, see:"
+                Write-Host "docs/MANUAL_PREREQUISITES_GUIDE.md"
+                Write-Host ""
+                Write-Host "Proceeding with deployment using manual prerequisites..."
+                Write-Host "=================================================================="
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -562,11 +505,11 @@ stages:
                 if (Test-Path $artifactsPath) {
                   Write-Host "PACKAGE: Using pipeline artifacts (full deployment mode)"
                   $templatePath = $artifactsPath
-                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.devops.parameters.json"
+                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.prerequisites.parameters.json"
                 } else {
                   Write-Host "FOLDER: Using source files (infrastructure-only mode or no artifacts)"
                   $templatePath = $sourcePath
-                  $parametersPath = "infra/main.devops.parameters.json"
+                  $parametersPath = "infra/main.prerequisites.parameters.json"
                 }
 
                 Write-Host "FILE: Template path: $templatePath"
@@ -620,20 +563,26 @@ stages:
                     Write-Host "DATA: Added embedding model: $(embeddingModel)"
                   }
                   
-                  # Add app registration parameters if they were created
-                  if ("$(AppRegistration.ClientId)" -ne "`$(AppRegistration.ClientId)" -and "$(AppRegistration.ClientId)" -ne "") {
-                    $parameters['authClientId'] = "$(AppRegistration.ClientId)"
-                    Write-Host "AUTH: Added App Registration Client ID"
+                  # Override parameters with pipeline variables for auth
+                  if ("$(AUTH_CLIENT_ID)" -ne "`$(AUTH_CLIENT_ID)" -and "$(AUTH_CLIENT_ID)" -ne "") {
+                    $parameters['authClientId'] = "$(AUTH_CLIENT_ID)"
+                    Write-Host "AUTH: Using pipeline variable AUTH_CLIENT_ID"
+                  } else {
+                    Write-Warning "AUTH: AUTH_CLIENT_ID pipeline variable not set - using parameter file value"
                   }
                   
-                  if ("$(AppRegistration.ClientSecret)" -ne "`$(AppRegistration.ClientSecret)" -and "$(AppRegistration.ClientSecret)" -ne "") {
-                    $parameters['authClientSecret'] = "$(AppRegistration.ClientSecret)"
-                    Write-Host "AUTH: Added App Registration Client Secret"
+                  if ("$(AUTH_CLIENT_SECRET)" -ne "`$(AUTH_CLIENT_SECRET)" -and "$(AUTH_CLIENT_SECRET)" -ne "") {
+                    $parameters['authClientSecret'] = "$(AUTH_CLIENT_SECRET)"
+                    Write-Host "AUTH: Using pipeline variable AUTH_CLIENT_SECRET"
+                  } else {
+                    Write-Warning "AUTH: AUTH_CLIENT_SECRET pipeline variable not set - using parameter file value"
                   }
                   
-                  # Disable app registration creation in Bicep since we created it via PowerShell
-                  $parameters['createAppRegistration'] = $false
-                  Write-Host "AUTH: Disabled Bicep app registration creation"
+                  # Override storage account name if provided via pipeline variable
+                  if ("$(STORAGE_ACCOUNT_NAME)" -ne "`$(STORAGE_ACCOUNT_NAME)" -and "$(STORAGE_ACCOUNT_NAME)" -ne "") {
+                    $parameters['storageAccountName'] = "$(STORAGE_ACCOUNT_NAME)"
+                    Write-Host "STORAGE: Using pipeline variable STORAGE_ACCOUNT_NAME: $(STORAGE_ACCOUNT_NAME)"
+                  }
 
                 } catch {
                   Write-Error "FAIL: Failed to load parameters: $($_.Exception.Message)"
@@ -868,91 +817,34 @@ stages:
               azurePowerShellVersion: 'LatestVersion'
               pwsh: true
 
-          - task: AzureCLI@2
-            name: CreateAppRegistrationProd
-            displayName: 'Create Azure AD App Registration (Production)'
-            inputs:
-              azureSubscription: $(azureServiceConnectionProd)
-              scriptType: 'pscore'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                # Determine script path for production - use artifacts if available, otherwise source
-                $artifactsScriptPath = "$(Pipeline.Workspace)/copa-infrastructure/scripts/Create-AppRegistration-AzCli.ps1"
-                $sourceScriptPath = "scripts/Create-AppRegistration-AzCli.ps1"
-                
-                if (Test-Path $artifactsScriptPath) {
-                  Write-Host "Using production Azure CLI script from artifacts: $artifactsScriptPath"
-                  $scriptPath = $artifactsScriptPath
-                } elseif (Test-Path $sourceScriptPath) {
-                  Write-Host "Using production Azure CLI script from source: $sourceScriptPath"
-                  $scriptPath = $sourceScriptPath
-                } else {
-                  Write-Error "Cannot find Create-AppRegistration-AzCli.ps1 script in either location for production"
-                  Write-Host "Checked paths:"
-                  Write-Host "- $artifactsScriptPath"
-                  Write-Host "- $sourceScriptPath"
-                  Write-Host "Current directory: $(Get-Location)"
-                  Write-Host "Available files in current directory:"
-                  if (Test-Path ".") { Get-ChildItem -Recurse -Name "*.ps1" | Select-Object -First 10 }
-                  throw "Production Azure CLI script not found"
-                }
-                
-                Write-Host "Executing production Azure CLI script: $scriptPath"
-                & $scriptPath -AppName "CoPA-Stop-Search-Prod-001" -AppServiceUrl "https://app-btp-p-copa-stop-search-001.azurewebsites.net" -EnvironmentName "$(environmentName)" -OutputFormat "json"
-            continueOnError: true
-
           - task: PowerShell@2
-            displayName: 'Check App Registration Status (Production)'
-            condition: always()
+            displayName: 'Verify Production Prerequisites Configuration'
             inputs:
               targetType: 'inline'
               script: |
-                Write-Host "Checking production app registration task output variables..."
-                
-                $manualConfigRequired = "$(CreateAppRegistrationProd.AppRegistration.ManualConfigRequired)"
-                $clientId = "$(CreateAppRegistrationProd.AppRegistration.ClientId)"
-                $redirectUri = "$(CreateAppRegistrationProd.AppRegistration.RedirectUri)"
-                $appName = "$(CreateAppRegistrationProd.AppRegistration.AppName)"
-                
-                Write-Host "Manual Config Required: $manualConfigRequired"
-                Write-Host "Client ID: $clientId"
-                Write-Host "Redirect URI: $redirectUri"
-                Write-Host "App Name: $appName"
-                
-                if ($manualConfigRequired -eq "true" -or [string]::IsNullOrEmpty($clientId)) {
-                  Write-Warning "=================================================================="
-                  Write-Warning "MANUAL APP REGISTRATION SETUP REQUIRED (PRODUCTION)"
-                  Write-Warning "=================================================================="
-                  Write-Warning ""
-                  Write-Warning "The automated app registration creation failed due to insufficient"
-                  Write-Warning "permissions. Please follow these steps to complete the setup:"
-                  Write-Warning ""
-                  Write-Warning "1. Create App Registration manually:"
-                  Write-Warning "   - Go to: https://portal.azure.com"
-                  Write-Warning "   - Navigate to: Azure Active Directory > App registrations"
-                  Write-Warning "   - Click: New registration"
-                  Write-Warning "   - Name: $appName"
-                  Write-Warning "   - Redirect URI: $redirectUri"
-                  Write-Warning ""
-                  Write-Warning "2. Create Client Secret:"
-                  Write-Warning "   - In the app registration, go to 'Certificates & secrets'"
-                  Write-Warning "   - Click 'New client secret'"
-                  Write-Warning "   - Copy the secret value"
-                  Write-Warning ""
-                  Write-Warning "3. Update Production Pipeline Variables:"
-                  Write-Warning "   - Set AUTH_CLIENT_ID to the Application ID"
-                  Write-Warning "   - Set AUTH_CLIENT_SECRET to the client secret (mark as secret)"
-                  Write-Warning ""
-                  Write-Warning "4. Re-run the pipeline after setting these variables"
-                  Write-Warning ""
-                  Write-Warning "For detailed instructions, see:"
-                  Write-Warning "docs/SERVICE-PRINCIPAL-PERMISSIONS.md"
-                  Write-Warning ""
-                  Write-Warning "The deployment will continue but authentication will need manual setup."
-                  Write-Warning "=================================================================="
-                } else {
-                  Write-Host "✓ Production app registration created successfully - no manual setup required"
-                }
+                Write-Host "=================================================================="
+                Write-Host "PRODUCTION MANUAL PREREQUISITES DEPLOYMENT"
+                Write-Host "=================================================================="
+                Write-Host ""
+                Write-Host "This production deployment uses manual prerequisites for maximum"
+                Write-Host "security and compliance. Ensure the following are configured:"
+                Write-Host ""
+                Write-Host "1. Production Azure AD App Registration:"
+                Write-Host "   - Application ID set in PRODUCTION pipeline variables as AUTH_CLIENT_ID"
+                Write-Host "   - Client Secret set in PRODUCTION pipeline variables as AUTH_CLIENT_SECRET"
+                Write-Host ""
+                Write-Host "2. Production Storage Account with containers:"
+                Write-Host "   - Production storage account name in parameters file"
+                Write-Host "   - Required containers: ai-library-stop-search, web-app-logos, content"
+                Write-Host ""
+                Write-Host "3. Production logo files:"
+                Write-Host "   - Production-specific branding in web-app-logos container"
+                Write-Host ""
+                Write-Host "For detailed setup instructions, see:"
+                Write-Host "docs/MANUAL_PREREQUISITES_GUIDE.md"
+                Write-Host ""
+                Write-Host "Proceeding with PRODUCTION deployment using manual prerequisites..."
+                Write-Host "=================================================================="
 
           - task: AzureCLI@2
             displayName: 'Create Resource Group'
@@ -993,11 +885,11 @@ stages:
                 if (Test-Path $artifactsTemplatePath) {
                   Write-Host "PACKAGE: Using pipeline artifacts for production deployment"
                   $templatePath = $artifactsTemplatePath
-                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.production.parameters.json"
+                  $parametersPath = "$(Pipeline.Workspace)/copa-infrastructure/infra/main.prerequisites.production.parameters.json"
                 } else {
                   Write-Host "FOLDER: Using source files for production deployment (infrastructure-only mode)"
                   $templatePath = $sourceTemplatePath
-                  $parametersPath = "infra/main.production.parameters.json"
+                  $parametersPath = "infra/main.prerequisites.production.parameters.json"
                 }
 
                 Write-Host "FILE: Production Template path: $templatePath"
@@ -1052,20 +944,26 @@ stages:
                     Write-Host "DATA: Added PRODUCTION embedding model: $(embeddingModel)"
                   }
                   
-                  # Add app registration parameters for production if they were created
-                  if ("$(AppRegistration.ClientId)" -ne "`$(AppRegistration.ClientId)" -and "$(AppRegistration.ClientId)" -ne "") {
-                    $parameters['authClientId'] = "$(AppRegistration.ClientId)"
-                    Write-Host "AUTH: Added PRODUCTION App Registration Client ID"
+                  # Override production parameters with pipeline variables for auth
+                  if ("$(AUTH_CLIENT_ID)" -ne "`$(AUTH_CLIENT_ID)" -and "$(AUTH_CLIENT_ID)" -ne "") {
+                    $parameters['authClientId'] = "$(AUTH_CLIENT_ID)"
+                    Write-Host "AUTH: Using PRODUCTION pipeline variable AUTH_CLIENT_ID"
+                  } else {
+                    Write-Warning "AUTH: PRODUCTION AUTH_CLIENT_ID pipeline variable not set"
                   }
                   
-                  if ("$(AppRegistration.ClientSecret)" -ne "`$(AppRegistration.ClientSecret)" -and "$(AppRegistration.ClientSecret)" -ne "") {
-                    $parameters['authClientSecret'] = "$(AppRegistration.ClientSecret)"
-                    Write-Host "AUTH: Added PRODUCTION App Registration Client Secret"
+                  if ("$(AUTH_CLIENT_SECRET)" -ne "`$(AUTH_CLIENT_SECRET)" -and "$(AUTH_CLIENT_SECRET)" -ne "") {
+                    $parameters['authClientSecret'] = "$(AUTH_CLIENT_SECRET)"
+                    Write-Host "AUTH: Using PRODUCTION pipeline variable AUTH_CLIENT_SECRET"
+                  } else {
+                    Write-Warning "AUTH: PRODUCTION AUTH_CLIENT_SECRET pipeline variable not set"
                   }
                   
-                  # Disable app registration creation in Bicep since we created it via PowerShell
-                  $parameters['createAppRegistration'] = $false
-                  Write-Host "AUTH: Disabled PRODUCTION Bicep app registration creation"
+                  # Override production storage account name if provided
+                  if ("$(STORAGE_ACCOUNT_NAME)" -ne "`$(STORAGE_ACCOUNT_NAME)" -and "$(STORAGE_ACCOUNT_NAME)" -ne "") {
+                    $parameters['storageAccountName'] = "$(STORAGE_ACCOUNT_NAME)"
+                    Write-Host "STORAGE: Using PRODUCTION pipeline variable STORAGE_ACCOUNT_NAME: $(STORAGE_ACCOUNT_NAME)"
+                  }
 
                 } catch {
                   Write-Error "FAIL: Failed to load production parameters: $($_.Exception.Message)"
