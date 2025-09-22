@@ -74,6 +74,13 @@ param createAppRegistration bool = true  // New parameter to control app registr
 // Used for Cosmos DB
 param cosmosAccountName string = ''
 
+// Storage Account Configuration - Always created by pipeline
+param storageAccountName string = '' // For naming override only
+param createStorageAccount bool = true  // Always create storage account
+param aiLibraryContainerName string = 'ai-library-stop-search'
+param webAppLogosContainerName string = 'web-app-logos'
+param contentContainerName string = 'content'
+
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
@@ -215,15 +222,19 @@ module keyVault 'core/security/key-vault.bicep' = {
   }
 }
 
-// Key Vault Secret for AUTH_CLIENT_SECRET - Updated to use final values
-module authClientSecretKvSecret 'core/security/key-vault-secret.bicep' = if (shouldCreateAppRegistration || !empty(authClientSecret)) {
+// Create helper variables for auth secret logic
+var hasAuthSecret = shouldCreateAppRegistration || !empty(authClientSecret)
+
+// Key Vault Secret for AUTH_CLIENT_SECRET - Conditional creation based on scenario
+module authClientSecretKvSecret 'core/security/key-vault-secret.bicep' = if (hasAuthSecret) {
   name: 'auth-client-secret'
   scope: resourceGroup
   params: {
     keyVaultName: keyVault.outputs.name
     secretName: 'auth-client-secret'
-    secretValue: shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.clientSecret : authClientSecret
-    contentType: 'application/x-pkcs12'
+    // Use parameter value initially - will be updated by pipeline if app registration is used
+    secretValue: authClientSecret
+    contentType: 'text/plain'
   }
 }
 
@@ -306,6 +317,11 @@ var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().ten
 
 // Create Azure AD App Registration if needed
 var shouldCreateAppRegistration = createAppRegistration && (empty(authClientId) || empty(authClientSecret))
+
+// Variables for auth configuration that handle conditional app registration
+var finalAuthClientId = empty(authClientId) ? '' : authClientId
+var finalAuthIssuerUri = authIssuerUri
+
 module appRegistration 'core/security/app-registration.bicep' = if (shouldCreateAppRegistration) {
   name: 'app-registration'
   scope: resourceGroup
@@ -319,7 +335,7 @@ module appRegistration 'core/security/app-registration.bicep' = if (shouldCreate
 }
 
 // Use provided values or values from app registration
-var authClientSecretKeyVaultRef = (shouldCreateAppRegistration || !empty(authClientSecret)) ? '@Microsoft.KeyVault(SecretUri=${authClientSecretKvSecret!.outputs.secretUri})' : ''
+var authClientSecretKeyVaultRef = hasAuthSecret ? '@Microsoft.KeyVault(VaultName=${keyVault.outputs.name};SecretName=auth-client-secret)' : ''
 module backend 'core/host/appservice.bicep' = {
   name: 'web'
   scope: resourceGroup
@@ -334,8 +350,8 @@ module backend 'core/host/appservice.bicep' = {
     scmDoBuildDuringDeployment: true
     managedIdentity: true
     authClientSecret: authClientSecretKeyVaultRef
-    authClientId: shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.clientId : authClientId
-    authIssuerUri: shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.issuerUri : authIssuerUri
+    authClientId: finalAuthClientId
+    authIssuerUri: finalAuthIssuerUri
     subnetIdForIntegration: '${vnet.outputs.id}/subnets/app-service-subnet'
     appSettings: {
       // search - using managed identity authentication
@@ -374,19 +390,22 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_COSMOSDB_DATABASE: 'db_conversation_history'
       AZURE_COSMOSDB_CONVERSATIONS_CONTAINER: 'conversations'
       // Storage configuration
-      AZURE_STORAGE_CONTAINER_NAME: 'ai-library-stop-search'
+      AZURE_STORAGE_ACCOUNT_NAME: !empty(storageAccountName) ? storageAccountName : 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'
+      AZURE_STORAGE_CONTAINER_NAME: aiLibraryContainerName
+      AZURE_STORAGE_WEBAPP_LOGOS_CONTAINER: webAppLogosContainerName
+      AZURE_STORAGE_CONTENT_CONTAINER: contentContainerName
       // Data source type
       DATASOURCE_TYPE: 'AzureCognitiveSearch'
-      // UI Configuration
+      // UI Configuration with automatic logo URLs from storage
       UI_TITLE: 'CoPA for Stop Search'
       UI_CHAT_TITLE: 'CoPA for Stop Search'
       UI_POLICE_FORCE_TAGLINE: 'This version of CoPA is configured for British Transport Police Stop & Search Reasonable Grounds Review'
       UI_POLICE_FORCE_TAGLINE_2: 'Paste the reasonable grounds from a stop search record exactly as they are written and the CoPA Assistant will provide operational guidance and feedback'
-      UI_FAVICON: '/favicon.ico'
+      UI_FAVICON: 'https://${!empty(storageAccountName) ? storageAccountName : 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'}.blob.${environment().suffixes.storage}/${webAppLogosContainerName}/favicon.ico'
       UI_FEEDBACK_EMAIL: ''
       UI_FIND_OUT_MORE_LINK: ''
-      UI_POLICE_FORCE_LOGO: ''
-      UI_LOGO: ''
+      UI_POLICE_FORCE_LOGO: 'https://${!empty(storageAccountName) ? storageAccountName : 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'}.blob.${environment().suffixes.storage}/${webAppLogosContainerName}/police-force-logo.png'
+      UI_LOGO: 'https://${!empty(storageAccountName) ? storageAccountName : 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'}.blob.${environment().suffixes.storage}/${webAppLogosContainerName}/copa-logo.png'
     }
   }
 }
@@ -453,17 +472,26 @@ module searchService 'core/search/search-services.bicep' = {
 }
 
 // Storage Account for document processing and file uploads
+// Always created by pipeline to ensure proper integration with Key Vault and private endpoints
 module storage 'core/storage/storage-account.bicep' = {
   name: 'storage'
   scope: resourceGroup
   params: {
-    name: 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'
+    name: !empty(storageAccountName) ? storageAccountName : 'st${replace(btpNamingPrefix, '-', '')}${instanceNumber}'
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
     containers: [
       {
-        name: 'content'
+        name: contentContainerName
+        publicAccess: 'None'
+      }
+      {
+        name: aiLibraryContainerName
+        publicAccess: 'None'
+      }
+      {
+        name: webAppLogosContainerName
         publicAccess: 'None'
       }
     ]
@@ -553,23 +581,6 @@ module cosmosPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enableP
   }
 }
 
-module formRecognizerPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
-  name: 'form-recognizer-private-endpoint'
-  scope: resourceGroup
-  params: {
-    name: 'pe-formrec-${btpNamingPrefix}-${instanceNumber}'
-    location: location
-    tags: tags
-    privateLinkServiceId: docPrepResources.outputs.AZURE_FORMRECOGNIZER_ID
-    groupIds: ['account']
-    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
-    privateDnsZoneId: (enablePrivateEndpoints && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
-  }
-}
-
-
-
-
 // USER ROLES - Only deploy if explicitly enabled and principalId is provided
 // Skip user roles for service principal-only deployments (DevOps scenarios)
 module openAiRoleUser 'core/security/role.bicep' = if (deployUserRoles && !empty(principalId)) {
@@ -650,6 +661,22 @@ module docPrepResources 'docprep.bicep' = {
     deployUserRoles: deployUserRoles
   }
 }
+
+// Form Recognizer Private Endpoint (must be after docPrepResources)
+module formRecognizerPrivateEndpoint 'core/network/private-endpoint.bicep' = if (enablePrivateEndpoints) {
+  name: 'form-recognizer-private-endpoint'
+  scope: resourceGroup
+  params: {
+    name: 'pe-formrec-${btpNamingPrefix}-${instanceNumber}'
+    location: location
+    tags: tags
+    privateLinkServiceId: docPrepResources.outputs.AZURE_FORMRECOGNIZER_ID
+    groupIds: ['account']
+    subnetId: '${vnet.outputs.id}/subnets/private-endpoint-subnet'
+    privateDnsZoneId: (enablePrivateEndpoints && cognitiveServicesPrivateDnsZone != null) ? cognitiveServicesPrivateDnsZone!.outputs.id : ''
+  }
+}
+
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
@@ -696,7 +723,7 @@ output AZURE_COSMOSDB_DATABASE string = cosmos.outputs.databaseName
 output AZURE_COSMOSDB_CONVERSATIONS_CONTAINER string = cosmos.outputs.containerName
 
 output AUTH_ISSUER_URI string = authIssuerUri
-output AUTH_CLIENT_ID string = shouldCreateAppRegistration && appRegistration != null ? appRegistration!.outputs.clientId : authClientId
+output AUTH_CLIENT_ID string = finalAuthClientId
 output APP_REGISTRATION_CREATED bool = shouldCreateAppRegistration
 
 // Network Security Infrastructure
@@ -705,9 +732,17 @@ output AZURE_VNET_ID string = vnet.outputs.id
 output AZURE_NSG_NAME string = nsg.outputs.name
 output AZURE_NSG_ID string = nsg.outputs.id
 
-// Storage Account
-output AZURE_STORAGE_ACCOUNT_NAME string = storage.outputs.name
-output AZURE_STORAGE_PRIMARY_ENDPOINTS object = storage.outputs.primaryEndpoints
+// Storage Account - handle both created and existing storage
+output AZURE_STORAGE_ACCOUNT_NAME string = createStorageAccount ? storage!.outputs.name : storageAccountName
+output AZURE_STORAGE_PRIMARY_ENDPOINTS object = createStorageAccount ? storage!.outputs.primaryEndpoints : {
+  blob: 'https://${storageAccountName}.blob.${environment().suffixes.storage}/'
+  file: 'https://${storageAccountName}.file.${environment().suffixes.storage}/'
+}
+output AZURE_STORAGE_CONTAINER_NAMES object = {
+  aiLibrary: aiLibraryContainerName
+  webAppLogos: webAppLogosContainerName
+  content: contentContainerName
+}
 
 // Key Vault
 output AZURE_KEYVAULT_NAME string = keyVault.outputs.name

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "production"
+    },
+    "location": {
+      "value": "uksouth"
+    },
+    "environmentCode": {
+      "value": "p"
+    },
+    "instanceNumber": {
+      "value": "001"
+    },
+    "createAppRegistration": {
+      "value": false
+    },
+    "createStorageAccount": {
+      "value": true
+    },
+    "authClientId": {
+      "value": "YOUR_APP_REGISTRATION_CLIENT_ID"
+    },
+    "authClientSecret": {
+      "value": "YOUR_APP_REGISTRATION_CLIENT_SECRET"
+    },
+    "storageAccountName": {
+      "value": ""
+    },
+    "aiLibraryContainerName": {
+      "value": "ai-library-stop-search"
+    },
+    "webAppLogosContainerName": {
+      "value": "web-app-logos"
+    },
+    "contentContainerName": {
+      "value": "content"
+    },
+    "openAIModel": {
+      "value": "gpt-4o"
+    },
+    "openAIModelName": {
+      "value": "gpt-4o"
+    },
+    "embeddingModelName": {
+      "value": "text-embedding-3-small"
+    },
+    "ownerTag": {
+      "value": "Production-Team"
+    },
+    "costCentreTag": {
+      "value": "IT-001"
+    },
+    "forceIdTag": {
+      "value": "BTP"
+    },
+    "locationIdTag": {
+      "value": "UK-South"
+    },
+    "environmentTag": {
+      "value": "Production"
+    },
+    "deployUserRoles": {
+      "value": false
+    }
+  }
+}
