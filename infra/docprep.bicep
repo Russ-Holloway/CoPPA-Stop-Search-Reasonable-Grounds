@@ -12,6 +12,7 @@ param formRecognizerServiceName string = ''
 // param formRecognizerResourceGroupName string = ''
 // param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = 'S0'
+param restoreFormRecognizer bool = false
 
 var abbrs = loadJsonContent('abbreviations.json')
 
@@ -30,6 +31,7 @@ module formRecognizer 'core/ai/cognitiveservices.bicep' = {
     sku: {
       name: formRecognizerSkuName
     }
+    restore: restoreFormRecognizer
   }
 }
 

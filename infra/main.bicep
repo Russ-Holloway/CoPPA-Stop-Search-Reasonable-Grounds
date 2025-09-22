@@ -58,12 +58,14 @@ param openAISystemMessage string = 'The goal is to offer decision support assist
 param openAIStream bool = true
 param embeddingDeploymentName string = 'embedding'
 param embeddingModelName string = 'text-embedding-ada-002'
+param restoreOpenAi bool = false
 
 // Used by prepdocs.py: Form recognizer
 param formRecognizerServiceName string = ''
 // param formRecognizerResourceGroupName string = ''
 // param formRecognizerResourceGroupLocation string = location
 param formRecognizerSkuName string = ''
+param restoreFormRecognizer bool = true
 
 // Used for the Azure AD application
 param authClientId string = ''
@@ -434,6 +436,7 @@ module openAi 'core/ai/cognitiveservices.bicep' = {
     sku: {
       name: !empty(openAiSkuName) ? openAiSkuName : 'S0'
     }
+    restore: restoreOpenAi
     deployments: [
       {
         name: openAIModel
@@ -659,6 +662,7 @@ module docPrepResources 'docprep.bicep' = {
     // formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
     formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
     deployUserRoles: deployUserRoles
+    restoreFormRecognizer: restoreFormRecognizer
   }
 }
 

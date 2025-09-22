@@ -9,6 +9,7 @@ param publicNetworkAccess string = 'Disabled'
 param sku object = {
   name: 'S0'
 }
+param restore bool = false
 
 resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: name
@@ -24,6 +25,7 @@ resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
       ipRules: []
       virtualNetworkRules: []
     }
+    restore: restore
   }
   sku: sku
 }
