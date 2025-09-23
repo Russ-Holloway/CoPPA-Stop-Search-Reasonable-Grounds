@@ -43,7 +43,7 @@
 - **WCAG 2.1 AA Accessibility:** Full accessibility compliance for inclusive access
 - **Security Standards:** Enterprise-grade security with Azure best practices
 
-[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstcopadeployment02.blob.core.windows.net%2Fcopa-deployment%2FcreateUiDefinition.json)
+[![Deploy PDS Compliant](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fstbtpprodcoppa02.blob.core.windows.net%2Fcopa-stop-search-deployment%2Fdeployment.json/createUIDefinitionUri/https%3A%2F%2Fstbtpprodcoppa02.blob.core.windows.net%2Fcopa-stop-search-deployment%2FcreateUiDefinition.json)
 
 **🎯 Simplified Deployment Process:**
 1. **Create Resource Group:** Use PDS naming like `rg-btp-prod-01`, `rg-met-prod-01`, etc.
