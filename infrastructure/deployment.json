@@ -36,7 +36,7 @@
         "AzureSearchService": "[concat('srch-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureOpenAIResource": "[concat('cog-', variables('ForceCode'), '-', variables('EnvironmentSuffix'), '-', variables('ServiceSuffix'))]",
         "AzureSearchSku": "standard",
-        "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), variables('ServiceSuffix'))]",
+        "StorageAccountName": "[concat('st', variables('ForceCode'), variables('EnvironmentSuffix'), 'copastopsearch')]",
         "StorageContainerName": "ai-library-stop-search",
         "cosmosdb_account_name": "[concat('db-app-', variables('ForceCode'), '-', variables('ServiceSuffix'))]",
         "cosmosdb_database_name": "db_conversation_history",
